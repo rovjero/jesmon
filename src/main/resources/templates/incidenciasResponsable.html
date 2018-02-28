@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Jesmon Seguridad</title>
+
+<div th:replace="fragments/header.html :: header-css" />
+
+<script type="text/javascript">
+
+	jQuery(document).ready( function() {
+		jQuery(".fecha").datepicker({changeYear:true});
+	});
+
+	
+</script>
+
+
+</head>
+<body>
+	<div th:replace="fragments/header.html :: navegacionCliente" />
+
+	<br />
+	<form action="incidencias" method="post"
+		th:object="${buscadorIncidenciasForm}">
+		<div class="container">
+			<div class="bd-example-row">
+				<div class="row">
+					<h2 class="col-12 text-primary" style="font-weight: bold">Buscador
+						de incidencias</h2>
+				</div>
+				<div class="row">
+					<div class="form-group col-6">
+						<label for="idEstado">Estado</label> <select name="idEstado"
+							id="idEstado">
+							<option></option>
+							<option th:each="estado : ${listaEstados}"
+								th:value="${estado.idEstado}" th:text="${estado.descripcion}"
+								th:selected="${estado.idEstado ==  buscadorIncidenciasForm.idEstado}" />
+						</select>
+					</div>
+					<div class="form-group col-6">
+						<label for="idSede">Sede</label> <select name="idSede" id="idSede">
+							<option></option>
+							<option th:each="sede : ${listaSedes}" th:value="${sede.idSede}"
+								th:text="${sede.denominacion}"
+								th:selected="${sede.idSede ==  buscadorIncidenciasForm.idSede}" />
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-6">
+						<label for="fechaAltaDesde">Fecha desde</label> <input type="text"
+							name="fechaAltaDesde" id="fechaAltaDesde" class="fecha"
+							th:value="${buscadorIncidenciasForm.fechaAltaDesde}" />
+					</div>
+					<div class="form-group col-6">
+						<label for="fechaAltaHasta">Fecha hasta</label> <input type="text"
+							name="fechaAltaHasta" id="fechaAltaHasta" class="fecha"
+							th:value="${buscadorIncidenciasForm.fechaAltaHasta}" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12 mb-2" align="center">
+						<input type="submit" class="btn btn-sm btn-primary" value="Buscar" />
+						<input type="button" class="btn btn-sm btn-primary"
+							value="Nueva incidencia"
+							onclick="window.location.href='insertarIncidencia'" />
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="container">
+		<div class="starter-template">
+			<h2 class="text-primary">Listado Incidencias</h2>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Fecha</th>
+						<th>Usuario alta</th>
+						<th>Sede</th>
+						<th>Estado</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="incidencia : ${listaIncidencias}">
+						<td th:text="${incidencia.idIncidencia}">Text ...</td>
+						<td th:text="${#dates.format(incidencia.fechaAlta, 'dd/MM/yyyy')}"></td>
+						<td th:text="${incidencia.responsable.nombre}">Text ...</td>
+						<td th:text="${incidencia.sede.denominacion}">Text ...</td>
+						<td th:text="${incidencia.estadoActual.descripcion}">Text ...</td>
+						<td>
+							<input type="button" class="btn btn-sm btn-primary"
+								value="Consultar"
+								onclick="window.location.href='consultarIncidencia?idIncidencia='" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>	
+	</div>
+	<!-- /.container -->
+
+
+	<div th:replace="fragments/footer.html :: footer" />
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Jesmon Seguridad</title>
+
+<div th:replace="fragments/header.html :: header-css" />
+
+<script type="text/javascript">
+
+	jQuery(document).ready( function() {
+		jQuery(".fecha").datepicker({changeYear:true});
+	});
+
+	
+
+</script>
+
+
+</head>
+<body>
+	<div th:replace="fragments/header.html :: navegacionCliente" />
+
+	<br />
+	<form action="insertarIncidencia" method="post">
+		<div class="container">
+			<div class="bd-example-row">
+				<div class="row">
+					<h2 class="col-12 text-primary" style="font-weight: bold">Nueva
+						incidencias</h2>
+				</div>
+				<div class="row">
+					<div class="form-group col-12">
+						<label for="idSede">Sede</label> <select name="idSede" id="idSede">
+							<option></option>
+							<option th:each="sede : ${session.USUAIO_SESION.listaSedes}"
+								th:value="${sede.idSede}" th:text="${sede.denominacion}" />
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-12">
+						<label for="asunto">Asunto</label> <input type="text" class="form-control"
+							name="asunto" id="asunto" placeholder="Asunto incidencia"
+									required="true" autofocus="true"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-12">
+						<label for="texto">Descripción</label>
+						<textarea name="texto" id="texto" placeholder="Descripción incidencia"
+									required="true" class="form-control" rows="3"></textarea>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-12" align="center">
+						<input type="submit" class="btn btn-sm btn-primary" value="Alta" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div th:replace="fragments/footer.html :: footer" />
+
+</body>
+</html>

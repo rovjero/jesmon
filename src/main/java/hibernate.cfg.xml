@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.bytecode.use_reflection_optimizer">false</property>
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.password">1234</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/jesmon</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.default_schema">jesmon</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.search.autoregister_listeners">true</property>
+        <property name="hibernate.validator.apply_to_ddl">false</property>
+        <mapping class="es.jesmon.entities.EstadoIncidencia"/>
+        <mapping class="es.jesmon.entities.Direccion"/>
+        <mapping class="es.jesmon.entities.Tramitador"/>
+        <mapping class="es.jesmon.entities.Responsable"/>
+        <mapping class="es.jesmon.entities.UserRoles"/>
+        <mapping class="es.jesmon.entities.Empresa"/>
+        <mapping class="es.jesmon.entities.Estado"/>
+        <mapping class="es.jesmon.entities.Incidencia"/>
+        <mapping class="es.jesmon.entities.Users"/>
+        <mapping class="es.jesmon.entities.Sede"/>
+        <mapping class="es.jesmon.entities.Mensaje"/>
+        <mapping class="es.jesmon.entities.Provincia"/>
+    </session-factory>
+</hibernate-configuration>

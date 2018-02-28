@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Jesmon Seguridad</title>
+
+<div th:replace="fragments/header.html :: header-css" />
+
+<script type="text/javascript">
+
+	jQuery(document).ready( function() {
+		jQuery(".fecha").datepicker({changeYear:true});
+	});
+
+	
+
+</script>
+
+
+</head>
+<body>
+	<div th:replace="fragments/header.html :: navegacionCliente" />
+
+	<br />
+	<form action="insertarIncidencia" method="post">
+		<div class="container">
+			<div class="bd-example-row">
+				<div class="row">
+					<h2 class="col-12 text-primary" style="font-weight: bold">Consulta
+						incidencias</h2>
+				</div>
+				<div class="row">
+					<div class="col-2">
+						Asunto
+					</div>
+					<div class="col-10" th:text="${incidencia.asunto}"/>
+				</div>
+				<div class="row">
+					<div class="col-2">
+						<label for="texto">Descripción</label>
+					</div>
+					<div class="col-10" th:text="${incidencia.descripcion}"/>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div th:replace="fragments/footer.html :: footer" />
+
+</body>
+</html>
