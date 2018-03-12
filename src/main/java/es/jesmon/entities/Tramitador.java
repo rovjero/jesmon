@@ -196,4 +196,14 @@ public class Tramitador extends JesmonEntity implements java.io.Serializable {
 			nombreCompleto += " " + apellido2;
 		return nombreCompleto.trim();
 	}
+	
+	@Transient
+	public Integer getId() {
+		return idTramitador;
+	}
+	
+	@Transient
+	public String getNombreCampoId() {
+		return "idTramitador";
+	}
 }

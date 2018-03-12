@@ -1,13 +1,19 @@
 package es.jesmon.controller.forms;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class IncidenciaForm {
 
-	@NotNull(message = "El campo asunto es obligatorio")
+	//@NotEmpty(message = "El campo asunto es obligatorio")
+	@NotNull
+    @Size(min=2, max=80)
 	private String asunto;
-	@NotNull(message = "El campo descripción es obligatorio")
+	
+	@NotNull
+    @Size(min=2, max=30)
 	private String texto;
+	
 	@NotNull(message = "El campo sede es obligatorio")
 	private Integer idSede;
 	

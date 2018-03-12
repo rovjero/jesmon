@@ -21,12 +21,11 @@ public class SpringBootSendingMailApplication implements CommandLineRunner {
 	@Override
 	public void run(String... arg0) throws Exception {
 		
-		String from = "rovejero@gmail.com";
 		String to = "rovejero@gmail.com";
 		String subject = "JavaMailSender";
 		String body = "Just-Testing!";
 		
-		mailSender.sendMail(from, to, subject, body);
+		mailSender.sendMail(to, subject, body);
 	}
 
 }

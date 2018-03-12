@@ -18,10 +18,15 @@
 	<link rel="stylesheet"
 		th:href="@{/css/bootstrap-datepicker.standalone.min.css}"
 		href="../../../css/bootstrap-datepicker.standalone.min.css" />
+	
+	<script type="text/javascript" src="../js/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="../js/localization/messages_es.js"></script>
+	<script type="text/javascript" src="../js/jesmon.js"></script>
+	<script type="text/javascript" src="../js/utils.js"></script>
 </div>
 </head>
 <body>
-	<div th:fragment="navegacion">
+	<div th:fragment="navegacionTramitador">
 		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
 			<a class="navbar-brand" href="#">Jesmon</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -41,18 +46,13 @@
 					</li>
 					<li class="nav-item"><a class="nav-link" href="#">About</a></li>
 				</ul>
-				<form class="form-inline">
-					<input class="form-control mr-sm-2" type="search"
-						placeholder="Search" aria-label="Search" />
-					<button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
-				</form>
 			</div>
 		</nav>
 	</div>
 
 	<div th:fragment="navegacionCliente">
 		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-			<a class="navbar-brand" href="#">Jesmon</a>
+			<a class="navbar-brand" href="#">Jesmon Seguridad</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
 				data-target="#navbarColor02" aria-controls="navbarColor02"
 				aria-expanded="false" aria-label="Toggle navigation">
@@ -61,20 +61,16 @@
 
 			<div class="collapse navbar-collapse" id="navbarColor02">
 				<ul class="navbar-nav mr-auto">
-					<li class="nav-item active"><a class="nav-link" href="#">Mis
-							incidencias<span class="sr-only">(current)</span>
-					</a></li>
-					<li class="nav-item"><a class="nav-link" href="#">Features</a>
+					<li th:class="${#httpServletRequest.getRequestURI().contains('ncidencia')? 'nav-item active': 'nav-item'}">
+						<a class="nav-link" href="incidencias">Mis incidencias</a>
 					</li>
-					<li class="nav-item"><a class="nav-link" href="#">Pricing</a>
+					<li th:class="${#httpServletRequest.getRequestURI().contains('Perfil')? 'nav-item active': 'nav-item'}">
+						<a class="nav-link" href="consultarPerfil">Mis datos</a>
 					</li>
-					<li class="nav-item"><a class="nav-link" href="#">About</a></li>
+					<li th:class="${#httpServletRequest.getRequestURI().contains('contacto')? 'nav-item active': 'nav-item'}">
+						<a class="nav-link" href="contacto">Contaco</a>
+					</li>
 				</ul>
-				<form class="form-inline">
-					<input class="form-control mr-sm-2" type="search"
-						placeholder="Search" aria-label="Search" />
-					<button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
-				</form>
 			</div>
 		</nav>
 	</div>
@@ -82,7 +78,7 @@
 
 	<div th:fragment="nav-vacio">
 		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-			<a class="navbar-brand" href="#">Jesmon</a>
+			<a class="navbar-brand" href="#">Jesmon Seguridad</a>
 		</nav>
 	</div>
 

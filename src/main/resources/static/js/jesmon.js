@@ -5,7 +5,8 @@ function getValidationObject(rules, submitHandler) {
         mySubmitHandler = submitHandler;
     } else {
         mySubmitHandler = function(form) {
-            $(form).find('button[type=submit]').attr('disabled','disabled');
+            $(form).find('.btn').attr('disabled','disabled');
+            //alert($(form).find('input[type=submit]').length);
             form.submit();
         }
     }
@@ -53,7 +54,6 @@ var solicitarCambioPasswordFormRules = {
 	  }
 };
 
-
 var loginFormRules = {
 	rules: {
 		username: {
@@ -64,3 +64,85 @@ var loginFormRules = {
 		}
 	}
 };
+
+var insertarIncidenciaFormRules = {
+	rules: {
+		idSede: {
+			required: true
+		},
+		asunto: {
+			required: true
+		},
+		texto: {
+			required: true
+		}
+	}
+};
+
+
+var estadoFormRules = {
+	rules: {
+		idEstado: {
+			required: true
+		},
+		idIncidenciaEstado: {
+			required: true
+		}
+	}
+};
+
+var mensajeFormRules = {
+	rules: {
+		idIncidenciaMensaje: {
+			required: true
+		}
+	}
+};
+
+var cambiarPasswordFomRules = {
+	rules: {
+		passwordActual: {
+	      required: true,
+	      minlength: 6
+	    },
+	    nuevoPassword: {
+	      required: true,
+	      minlength: 6
+	    },
+	    repitaNuevoPassword: {
+	    	required: true,
+	    	minlength: 6,
+	  		equalTo: "#nuevoPassword"
+	    }
+	  }
+};
+
+if (!String.prototype.startsWith) {
+	  String.prototype.startsWith = function(stringBuscada, posicion) {
+	    posicion = posicion || 0;
+	    return this.indexOf(stringBuscada, posicion) === posicion;
+	  };
+	}
+
+
+if (!String.prototype.trim) {
+  (function() {
+    // Make sure we trim BOM and NBSP
+    var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+    String.prototype.trim = function() {
+      return this.replace(rtrim, '');
+    };
+  })();
+}
+
+if (!String.prototype.endsWith) {
+  String.prototype.endsWith = function(searchString, position) {
+      var subjectString = this.toString();
+      if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+        position = subjectString.length;
+      }
+      position -= searchString.length;
+      var lastIndex = subjectString.indexOf(searchString, position);
+      return lastIndex !== -1 && lastIndex === position;
+  };
+}

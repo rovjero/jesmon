@@ -36,4 +36,16 @@ public abstract class JesmonEntity implements Serializable {
 				listaEmpresas.add(sede.getEmpresa());
 		return listaEmpresas;
 	}
+	
+	@Transient
+	public abstract Integer getId();
+	
+	@Transient
+	public abstract String getNombreCampoId();
+	
+	@Transient
+	public abstract void setPassword(byte[] password);
+	
+	@Transient
+	public abstract byte[] getPassword();
 }

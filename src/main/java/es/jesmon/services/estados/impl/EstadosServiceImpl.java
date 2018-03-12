@@ -5,8 +5,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.jesmon.entities.Estado;
+import es.jesmon.entities.EstadoIncidencia;
+import es.jesmon.repository.EstadoIncidenciaRepository;
 import es.jesmon.repository.JesmonRepository;
 import es.jesmon.repository.util.CriteriosBusqueda;
 import es.jesmon.repository.util.ParBean;
@@ -20,6 +24,8 @@ public class EstadosServiceImpl implements EstadosService {
 	@Autowired
 	JesmonRepository jesmonRepository;
 	
+	@Override
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRED, rollbackFor = ServicesExpception.class)
 	public List<Estado> getListaEstados() throws ServicesExpception {
 		try {
 			List<Estado> listaEstados = SingletonJesmon.getLista(SingletonJesmon.LISTA_ESTADOS);
@@ -36,4 +42,5 @@ public class EstadosServiceImpl implements EstadosService {
 			throw new ServicesExpception(e);
 		}
 	}
+	
 }

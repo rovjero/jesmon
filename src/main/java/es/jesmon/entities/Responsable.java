@@ -241,5 +241,15 @@ public class Responsable extends JesmonEntity implements java.io.Serializable {
 			nombreCompleto += " " + apellido2;
 		return nombreCompleto.trim();
 	}
+	
+	@Transient
+	public Integer getId() {
+		return idResponsable;
+	}
+	
+	@Transient
+	public String getNombreCampoId() {
+		return "idResponsable";
+	}
 
 }

@@ -69,7 +69,7 @@ public class Sede implements java.io.Serializable {
 		this.idSede = idSede;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_direccion")
 	public Direccion getDireccion() {
 		return this.direccion;

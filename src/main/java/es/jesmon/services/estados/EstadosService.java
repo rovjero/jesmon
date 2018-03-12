@@ -8,4 +8,5 @@ import es.jesmon.services.exception.ServicesExpception;
 public interface EstadosService {
 
 	public List<Estado> getListaEstados() throws ServicesExpception;
+	
 }

@@ -6,12 +6,10 @@
 <title>Jesmon Seguridad</title>
 <meta charset="UTF-8" />
 
+<link rel="icon" href="../img/logo_small.png"/>
+
 <div th:replace="fragments/header.html :: header-css" />
 
-<script type="text/javascript" src="../js/jquery.validate.min.js"></script>
-<script type="text/javascript" src="../js/localization/messages_es.js"></script>
-<script type="text/javascript" src="../js/jesmon.js"></script>
-<script type="text/javascript" src="../js/utils.js"></script>
 <script type="text/javascript">
 	jQuery(document).ready( function() {
 		
@@ -53,17 +51,16 @@
 
 		<div class="row" style="margin-top: 20px">
 			<div
-				class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+				class="col-xs-12 col-sm-10 col-md-8">
 				<form th:action="@{/login/login}" method="post" id="formLogin">
 					<fieldset>
-						<h1 class="text-primary">Please Sign In</h1>
+						<h1 class="text-primary">Iniciar sesión en Jesmon Seguridad</h1>
 
 						<div th:if="${param.error}">
-							<div class="alert alert-danger">Invalid username and
-								password.</div>
+							<div class="alert alert-danger">Invalido usuario o contraseña.</div>
 						</div>
 						<div th:if="${param.logout}">
-							<div class="alert alert-info">You have been logged out.</div>
+							<div class="alert alert-info">Sesión cerrada de forma correcta.</div>
 						</div>
 						<div th:if="${param.mensaje != null}">
 							<div class="alert alert-info" th:text="${(param.mensaje + '')}" />
@@ -74,30 +71,30 @@
 								th:text="${(param.errorLogin + '')}" />
 						</div>
 
-						<div class="form-group row">
+						<div class="form-group row w-50">
 							<label for="username" class="col-md-3 col_form-label">Usuario</label>
 							<div class="col-md-9">
 								<input type="text" name="username" id="username"
-									class="form-control input-lg" placeholder="UserName"
+									class="form-control input-lg" placeholder="Usuario"
 									required="true" autofocus="true" />
 							</div>
 						</div>
-						<div class="form-group row">
+						<div class="form-group row w-50">
 							<label for="password" class="col-md-3 col_form-label">Contraseña</label>
 							<div class="col-md-9">
 								<input type="password" name="password" id="password"
-									class="form-control input-lg" placeholder="Password"
+									class="form-control input-lg" placeholder="Contraseña"
 									required="true" />
 							</div>
 						</div>
 
 						<div class="row">
 							<div class="col-md-12 col-lg-4 mb-2">
-								<input type="submit" class="btn btn-lg btn-primary btn-block"
-									value="Sign In" />
+								<input type="submit" class="btn btn-lg btn-primary "
+									value="Acceder" />
 							</div>
 							<div class="col-md-12 col-lg-8 mb-2">
-								<button type="button" class="btn btn-lg btn-secondary btn-block"
+								<button type="button" class="btn btn-lg btn-secondary"
 									data-toggle="modal" data-target="#exampleModal">¿Ha
 									olvidado su contraseña?</button>
 							</div>

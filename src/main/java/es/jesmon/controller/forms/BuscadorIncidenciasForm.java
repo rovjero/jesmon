@@ -11,7 +11,14 @@ public class BuscadorIncidenciasForm implements Serializable {
 	private Integer idResponsable;
 	private String fechaAltaDesde;
 	private String fechaAltaHasta;
+	private Integer idIncidencia;
 	
+	public Integer getIdIncidencia() {
+		return idIncidencia;
+	}
+	public void setIdIncidencia(Integer idIncidencia) {
+		this.idIncidencia = idIncidencia;
+	}
 	public Integer getIdSede() {
 		return idSede;
 	}

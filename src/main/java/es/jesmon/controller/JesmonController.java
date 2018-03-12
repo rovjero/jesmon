@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 
 import es.jesmon.config.JesmonConstantes;
+import es.jesmon.entities.JesmonEntity;
 
 public abstract class JesmonController {
 	
@@ -15,8 +16,8 @@ public abstract class JesmonController {
 	
 	private static String urlAplicacion;
 	
-	public Object getUsuarioSesion(HttpServletRequest request) {
-		return request.getSession().getAttribute(JesmonConstantes.USUARIO_SESION);
+	public JesmonEntity getUsuarioSesion(HttpServletRequest request) {
+		return (JesmonEntity)request.getSession().getAttribute(JesmonConstantes.USUARIO_SESION);
 	}
 
 	public String procesarViewResolver(String view, HttpServletRequest request) {
