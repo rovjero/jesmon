@@ -1,7 +1,9 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 <title>Jesmon Seguridad</title>
+<link rel="icon" href="../img/logo_small.png"/>
 <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"/>
 <div th:replace="fragments/header.html :: header-css" />
 
@@ -14,8 +16,10 @@
 	function FnBuscarSedes(){
 		var idEmpresa = jQuery("#idEmpresa").val();
 		//alert(idEmpresa);
-		if(idEmpresa == "")
+		if(idEmpresa == ""){
 			document.getElementById("idSede").options.length = 0;
+			jQuery("#celdaSede").hide();
+		}
 		else {
 			var parametros = {};
 			parametros["idEmpresa"] = idEmpresa;
@@ -27,6 +31,7 @@
 				type: "post",
 				async: false,
 				success: function(data) {
+					jQuery("#celdaSede").show();
 					var selectSede = jQuery("#idSede")[0];
 					selectSede.options[0] = new Option ("", "");
 					jQuery(data).each(function(indice, sede){
@@ -74,12 +79,24 @@
 
 </head>
 <body>
-	<div th:replace="fragments/header.html :: navegacion" />
-
+	<div sec:authorize="hasRole('ROLE_CLIENTE')">
+		<div th:replace="fragments/header.html :: navegacionCliente" />
+	</div>
+	<div sec:authorize="hasRole('ROLE_TRAMITADOR')">
+		<div th:replace="fragments/header.html :: navegacionTramitador" />
+	</div>
 	<br />
 	<form action="incidencias" method="post"
 		th:object="${buscadorIncidenciasForm}">
 		<div class="container">
+			<div th:if="${param.mensaje != null}">
+				<div class="alert alert-info" th:text="${(param.mensaje + '')}" />
+			</div>
+			
+			<div th:if="${mensaje != null}">
+				<div class="alert alert-info" th:text="${(mensaje)}" />
+			</div>
+			
 			<div class="bd-example-row">
 				<div class="row">
 					<h2 class="col-12 text-primary" style="font-weight: bold">Buscador
@@ -88,7 +105,7 @@
 				<div class="row">
 					<div class="form-group col-4">
 						<label for="idEstado">Estado</label> <select name="idEstado"
-							id="idEstado">
+							id="idEstado" class="form-control">
 							<option></option>
 							<option th:each="estado : ${listaEstados}"
 								th:value="${estado.idEstado}" th:text="${estado.descripcion}"
@@ -96,8 +113,14 @@
 						</select>
 					</div>
 					<div class="form-group col-4">
+						<label for="idIncidencia">Id incidencia</label>
+						<input type="text"
+							name="idIncidencia" id="idIncidencia" class="form-control text-right w-25" placeholder="Id incidencia"
+							th:value="${buscadorIncidenciasForm.idIncidencia}" />
+					</div>
+					<div class="form-group col-4" sec:authorize="hasRole('ROLE_TRAMITADOR')">
 						<label for="idEmpresa">Empresa</label> <select name="idEmpresa"
-							id="idEmpresa" onchange="FnBuscarSedes();FnBuscarResponsables()">
+							id="idEmpresa" onchange="FnBuscarSedes();FnBuscarResponsables()" class="form-control">
 							<option></option>
 							<option th:each="empresa : ${listaEmpresas}"
 								th:value="${empresa.idEmpresa}"
@@ -105,8 +128,8 @@
 								th:selected="${empresa.idEmpresa ==  buscadorIncidenciasForm.idEmpresa}" />
 						</select>
 					</div>
-					<div class="form-group col-4">
-						<label for="idSede">Sede</label> <select name="idSede" id="idSede">
+					<div class="form-group col-4" th:style="${listaSedes == null || listaSedes.size() == 0 ? 'display: none' : ''}" id="celdaSede">
+						<label for="idSede">Sede</label> <select name="idSede" id="idSede" class="form-control">
 							<option></option>
 							<option th:each="sede : ${listaSedes}" th:value="${sede.idSede}"
 								th:text="${sede.denominacion}"
@@ -117,7 +140,7 @@
 				<div class="row">
 					<div class="form-group col-4">
 						<label for="idResponsable">Resposable</label> <select
-							name="idResponsable" id="idResponsable">
+							name="idResponsable" id="idResponsable" class="form-control">
 							<option></option>
 							<option th:each="responsable : ${listaResponsables}"
 								th:value="${responsable.idResponsable}"
@@ -127,45 +150,54 @@
 					</div>
 					<div class="form-group col-4">
 						<label for="fechaAltaDesde">Fecha desde</label> <input type="text"
-							name="fechaAltaDesde" id="fechaAltaDesde" class="fecha"
+							name="fechaAltaDesde" id="fechaAltaDesde" class="fecha form-control"
 							th:value="${buscadorIncidenciasForm.fechaAltaDesde}" />
 					</div>
 					<div class="form-group col-4">
 						<label for="fechaAltaHasta">Fecha hasta</label> <input type="text"
-							name="fechaAltaHasta" id="fechaAltaHasta" class="fecha"
+							name="fechaAltaHasta" id="fechaAltaHasta" class="fecha form-control"
 							th:value="${buscadorIncidenciasForm.fechaAltaHasta}" />
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-12" align="center">
-						<input type="submit" class="btn btn-sm btn-primary" value="Buscar" />
-					</div>
-				</div>
+				
+				<input type="submit" class="btn btn-sm btn-primary" value="Buscar" />
+				<input type="button" sec:authorize="hasRole('ROLE_CLIENTE')" class="btn btn-sm btn-secondary"
+					value="Nueva incidencia"
+					onclick="window.location.href='insertarIncidencia'" />
 			</div>
 		</div>
 	
 	<div class="container">
 		<div class="starter-template">
+			<hr />
 			<h2 class="text-primary">Listado Incidencias</h2>
 			<table class="table table-striped">
 				<thead>
 					<tr>
 						<th>ID <a th:href="@{../tramitador/incidencias(orden=${orden == 'idIncidencia;desc'} ? 'fechaAlta;asc' : 'idIncidencia;desc')}"><i class="fa fa-fw fa-sort"></i></a></th>
 						<th>Fecha <a th:href="@{../tramitador/incidencias(orden=${orden == 'fechaAlta;desc'} ? 'fechaAlta;asc' : 'fechaAlta;desc')}"><i class="fa fa-fw fa-sort"></i></a></th>
+						<th>Asunto</th>
 						<th>Usuario alta</th>
 						<th>Sede</th>
-						<th>Empresa</th>
+						<th sec:authorize="hasRole('ROLE_TRAMITADOR')">Empresa</th>
 						<th>Estado</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:each="incidencia : ${listaIncidencias}">
 						<td th:text="${incidencia.idIncidencia}">Text ...</td>
 						<td th:text="${#dates.format(incidencia.fechaAlta, 'dd/MM/yyyy')}"></td>
+						<td th:text="${incidencia.asunto}">Text ...</td>
 						<td th:text="${incidencia.responsable.nombre}">Text ...</td>
 						<td th:text="${incidencia.sede.denominacion}">Text ...</td>
-						<td th:text="${incidencia.sede.empresa.denominacion}">Text...</td>
+						<td th:text="${incidencia.sede.empresa.denominacion}" sec:authorize="hasRole('ROLE_TRAMITADOR')">Text...</td>
 						<td th:text="${incidencia.estadoActual.descripcion}">Text ...</td>
+						<td>
+							<input type="button" class="btn btn-sm btn-primary"
+								value="Consultar"
+								th:onclick="'window.location.href=\''+ @{consultarIncidencia(idIncidencia=${incidencia.IdIncidenciaB64})} + '\''" />
+						</td>
 					</tr>
 				</tbody>
 			</table>
