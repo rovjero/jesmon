@@ -1,6 +1,7 @@
 package es.jesmon.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -16,6 +17,20 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Order(1)
 public class SpringSecurity extends WebSecurityConfigurerAdapter {
 
+	 @Value("${spring.datasource.url}")
+	 private String dataSourceUrl;
+	 
+	 
+	 @Value("${spring.datasource.username}")
+	 private String datasourceUsername;
+	 
+	 @Value("${spring.datasource.password}")
+	 private String datasourcePassword;
+	 
+	 @Value("${spring.datasource.driver-class-name}")
+	 private String datasourceDriver;
+	 
+	
 	@Autowired
     private AccessDeniedHandler accessDeniedHandler;
 
@@ -68,10 +83,10 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     @Bean(name = "dataSource")
     public DriverManagerDataSource dataSource() {
         DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
-        driverManagerDataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        driverManagerDataSource.setUrl("jdbc:mysql://localhost:3306/jesmon");
-        driverManagerDataSource.setUsername("root");
-        driverManagerDataSource.setPassword("1234");
+        driverManagerDataSource.setDriverClassName(datasourceDriver);
+        driverManagerDataSource.setUrl(dataSourceUrl);
+        driverManagerDataSource.setUsername(datasourceUsername);
+        driverManagerDataSource.setPassword(datasourcePassword);
         return driverManagerDataSource;
     }
 	
