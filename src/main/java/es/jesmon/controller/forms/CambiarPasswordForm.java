@@ -3,6 +3,10 @@ package es.jesmon.controller.forms;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+
+//Más validaciones -> http://www.baeldung.com/spring-mvc-custom-validator
+
+
 public class CambiarPasswordForm {
 
     @NotNull

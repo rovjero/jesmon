@@ -2,6 +2,7 @@ package es.jesmon.controller;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
@@ -184,11 +185,34 @@ public class DefaultController extends JesmonController{
 	        
 	        String error = null;
 	        if(StringUtils.isBlank(cambiarPasswordForm.getNuevoPassword()))
-	        	error = "El campo nuevo password no pu";
-	        	
-	        	
-	        JesmonEntity usuarioSesion = getUsuarioSesion(request);
+	        	error = "El campo nueva contraseña no puede ser vacío";
+	        
+	        if(StringUtils.isBlank(cambiarPasswordForm.getRepitaNuevoPassword()))
+	        	error = "El campo repita nueva contraseña no puede ser vacío";
+	        
+	        if(!StringUtils.equals(cambiarPasswordForm.getNuevoPassword(), cambiarPasswordForm.getRepitaNuevoPassword()))
+	        	error = "El campo nueva contraseña y el de confirmación no coinciden";
+	        
+	        if(StringUtils.isNotBlank(error)) {
+	        	request.setAttribute("error", error);
+	        	return procesarViewResolver("consultarPerfil", request);
+	        }
+	        
+	        
 	        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	        
+	        byte[] passwordActual = passwordEncoder.encode(cambiarPasswordForm.getPasswordActual()).getBytes(StandardCharsets.UTF_8);
+	        JesmonEntity usuarioSesion = getUsuarioSesion(request);
+	        
+	        //System.out.println(passwordActual.toString());
+	        //System.out.println(usuarioSesion.getPassword().toString());
+	        
+	        if(!Arrays.equals(passwordActual, usuarioSesion.getPassword())) {
+	        	request.setAttribute("error", "La contraseña actual no es correcta");
+	        	return procesarViewResolver("consultarPerfil", request);
+	        }
+	        
+	        
 	        JesmonEntity usuario = (JesmonEntity)jesmonServices.buscarByPK(usuarioSesion.getClass(), usuarioSesion.getNombreCampoId(), usuarioSesion.getId());
 	        usuario.setPassword(passwordEncoder.encode(cambiarPasswordForm.getNuevoPassword()).getBytes(StandardCharsets.UTF_8));
 	        //responsable.setPassword(responsable.setPassword(passwordEncoder.encode(password).getBytes(StandardCharsets.UTF_8));/
