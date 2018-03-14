@@ -9,15 +9,29 @@
 
 <script type="text/javascript" src="../js/base64.js"></script>
 <script type="text/javascript">
-
+/*<![CDATA[*/
 	jQuery(document).ready( function() {
-		//$('#cambiarPasswordForm').validate(getValidationObject(cambiarPasswordFomRules));
+		$('#cambiarPasswordForm').validate(getValidationObject(cambiarPasswordFomRules));
+
+		 $('.password').keypress(function(e) { 
+            var capaMensaje = "#mensajeBloqMayusculas";
+            if(this.id == "nuevoPassword")
+            	capaMensaje = "#mensajeBloqMayusculas2";
+            else if(this.id == "repitaNuevoPassword")
+            	capaMensaje = "#mensajeBloqMayusculas3";
+        	var code = e.keyCode || w.which;
+        	if(code > 64 && code < 97 && !e.shiftKey || void 0)
+				$(capaMensaje).show();
+        	else
+        		$(capaMensaje).hide();
+        });
+	
 	});
 
 	function FnMostrarCambiarPassword(){				
 		$('#cambiarPasswordModal').modal();
 	}
-	
+	/*]]>*/	
 </script>
 
 
@@ -115,8 +129,8 @@
 	
 	<div class="modal fade" id="cambiarPasswordModal" tabindex="-1" role="dialog"
 		aria-labelledby="cambiarPasswordModalLabel" aria-hidden="true">
-		<form method="post" th:action="@{/login/cambiarPassword}"
-			id="formCambiarPassword" th:object="${cambiarPasswordForm}">
+		<form method="post" th:action="@{/login/cambiarPasswordPerfil}"
+			id="cambiarPasswordForm" th:object="${cambiarPasswordForm}">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -132,39 +146,42 @@
 							<div class="form-group">
 								<label for="passwordActual">Contraseña actual</label>
 									<input type="password"
-										class="form-control" id="passwordActual" th:field="*{passwordActual}" required="required"
+										class="form-control password" id="passwordActual" th:field="*{passwordActual}" required="required"
 										aria-describedby="passwordActual" placeholder="Contraseña actual" />
 									<div class="alert alert-danger" th:if="${#fields.hasErrors('passwordActual')}" th:errors="*{passwordActual}">Error en el campo contraseña actual.</div>
 									<script th:inline="javascript" th:if="${#fields.hasErrors('passwordActual')}">
 										FnMostrarCambiarPassword();
 									</script>
-									
+									<div class="alert alert-info" id="mensajeBloqMayusculas" style="display: none">Bloqueo mayúsculas activo</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="nuevoPassword">Nueva contraseña</label>
 								<div class="input-group mb-3">
 									<input type="password"
-										class="form-control" id="nuevoPassword" name="nuevoPassword" required="required"
+										class="form-control password" id="nuevoPassword" th:field="*{nuevoPassword}" required="required"
 										aria-describedby="nuevoPasswordHelp" placeholder="Nueva contraseña" />
 									<div class="input-group-append">
 									    <span class="input-group-text" id="nuevoPasswordHelp">6 carácteres mínimo</span>
-									  </div>
+									</div>
+									
 									<div class="alert alert-danger" th:if="${#fields.hasErrors('nuevoPassword')}" th:errors="*{nuevoPassword}">Error en el campo nueva contraseña.</div>
 									<script th:inline="javascript" th:if="${#fields.hasErrors('nuevoPassword')}">
 										FnMostrarCambiarPassword();
 									</script>
+									<div class="alert alert-info" id="mensajeBloqMayusculas2" style="display: none">Bloqueo mayúsculas activo</div> 
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="nuevoPassword">Repita nueva contraseña</label>
 								<div class="input-group mb-3">
 									<input type="password"
-										class="form-control" id="repitaNuevoPassword" name="repitaNuevoPassword" required="required"
+										class="form-control password" id="repitaNuevoPassword" th:field="*{repitaNuevoPassword}" required="required"
 										aria-describedby="repitaNuevoPasswordHelp" placeholder="Nueva contraseña" />
 									<div class="input-group-append">
 								    <span class="input-group-text" id="repitaNuevoPasswordHelp">6 carácteres mínimo</span>								    
 								  </div>
+								  <div class="alert alert-info" id="mensajeBloqMayusculas3" style="display: none">Bloqueo mayúsculas activo</div>
 								  <div class="alert alert-danger" th:if="${#fields.hasErrors('repitaNuevoPassword')}" th:errors="*{repitaNuevoPassword}">Error en el campo repita nueva contraseña.</div>
 								  <script th:inline="javascript" th:if="${#fields.hasErrors('repitaNuevoPassword')}">
 										FnMostrarCambiarPassword();

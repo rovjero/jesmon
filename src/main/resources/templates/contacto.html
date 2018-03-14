@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<title>Jesmon Seguridad</title>
+<link rel="icon" href="../img/logo_small.png"/>
+<div th:replace="fragments/header.html :: header-css" />
+
+<script type="text/javascript" src="../js/base64.js"></script>
+<script type="text/javascript">
+
+	jQuery(document).ready( function() {
+		$('#cambiarPasswordForm').validate(getValidationObject(cambiarPasswordFomRules));
+	});
+
+	function FnMostrarCambiarPassword(){				
+		$('#cambiarPasswordModal').modal();
+	}
+	
+</script>
+
+
+</head>
+<body>
+	<div sec:authorize="hasRole('ROLE_CLIENTE')">
+		<div th:replace="fragments/header.html :: navegacionCliente" />
+	</div>
+	<div sec:authorize="hasRole('ROLE_TRAMITADOR')">
+		<div th:replace="fragments/header.html :: navegacionTramitador" />
+	</div> 
+
+	<br />
+	<div class="container">
+				
+		<div class="card">
+			<h4 class="card-header" th:inline="text">[[${session.USUAIO_SESION.nombreCompleto}]] 
+				<button type="button" class="btn btn-sm btn-primary"
+									data-toggle="modal" data-target="#cambiarPasswordModal">Cambiar contraseña</button>
+			</h4>
+		</div>
+		
+	</div>
+	<div th:replace="fragments/footer.html :: footer" />
+
+</body>
+</html>

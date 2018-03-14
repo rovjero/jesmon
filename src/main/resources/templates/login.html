@@ -11,7 +11,16 @@
 <div th:replace="fragments/header.html :: header-css" />
 
 <script type="text/javascript">
+/*<![CDATA[*/
 	jQuery(document).ready( function() {
+
+        $('#password').keypress(function(e) {
+        	var code = e.keyCode || w.which;
+        	if(code > 64 && code < 97 && !e.shiftKey || void 0)
+				$("#mensajeBloqMayusculas").show();
+        	else
+        		$("#mensajeBloqMayusculas").hide();
+        });
 		
 		$("#formCambioPassword").validate({
 		  rules: {
@@ -39,9 +48,8 @@
 		$('#formLogin').validate(getValidationObject(loginFormRules));
 		//$('#formCambioPassword').validate(getValidationObject(solicitarCambioPasswordFormRules));
 	});
-
-	 
-	</script>
+	/*]]>*/
+</script>
 </head>
 <body>
 
@@ -85,6 +93,7 @@
 								<input type="password" name="password" id="password"
 									class="form-control input-lg" placeholder="Contraseña"
 									required="true" />
+								<div class="alert alert-info" id="mensajeBloqMayusculas" style="display: none">Bloqueo mayúsculas activo</div>
 							</div>
 						</div>
 

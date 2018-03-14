@@ -93,6 +93,7 @@ public class IncidenciasController extends JesmonController {
 			JesmonEntity usuarioSesion = (JesmonEntity)getUsuarioSesion(request);
 			CriteriosBusqueda criteriosBusqueda = new CriteriosBusqueda();
 			criteriosBusqueda.agregarAlias("sede", "sede", AliasBean.INNER_JOIN);
+			criteriosBusqueda.agregarAlias("sede.direccion", "direccion", AliasBean.LEFT_JOIN);
 			criteriosBusqueda.agregarAlias("sede.empresa", "empresa", AliasBean.INNER_JOIN);
 			criteriosBusqueda.agregarAlias("responsable", "responsable", AliasBean.INNER_JOIN);
 			criteriosBusqueda.agregarAlias("estadoActual", "estado", AliasBean.INNER_JOIN);

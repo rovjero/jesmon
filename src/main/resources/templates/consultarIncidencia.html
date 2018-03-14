@@ -7,11 +7,15 @@
 <div th:replace="fragments/header.html :: header-css" />
 
 <script type="text/javascript" src="../js/base64.js"></script>
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
 
 	jQuery(document).ready( function() {
 		jQuery(".fecha").datepicker({changeYear:true});
 
+		jQuery("#botonConsultarSede").bind('click', function() {
+			var idIncidencia = [[${incidencia.idIncidencia}]];
+			alert(idIncidencia);
+		});
 
 		$('#formEstado').validate(getValidationObject(estadoFormRules));
 		$('#formMensaje').validate(getValidationObject(mensajeFormRules));
@@ -76,6 +80,7 @@
 	function FnNuevoMensaje(){
 		$('#mensajeModal').modal();
 	}
+
 	
 </script>
 
@@ -132,8 +137,10 @@
 						  <div class="col-sm-6">
 						    <div class="card">
 						      <div class="card-body">
-						        <h5 class="card-title">Sede <a href="#" class="btn btn-primary btn-sm">Consultar</a></h5>
+						        <h5 class="card-title">Sede</h5>
 						        <p class="card-text" th:text="${incidencia.sede.denominacion}"></p>
+						        <h5 class="card-title">Dirección</h5>
+						        <p class="card-text" th:text="${incidencia.sede.direccion.direccionStr}"></p>
 						      </div>
 						    </div>
 						  </div>

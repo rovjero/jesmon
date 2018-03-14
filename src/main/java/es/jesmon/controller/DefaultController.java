@@ -176,7 +176,7 @@ public class DefaultController extends JesmonController{
 		}
     }
     
-    @PostMapping("/login/cambiarPassword")
+    @PostMapping("/login/cambiarPasswordPerfil")
     public String cambiarPassword(@Valid CambiarPasswordForm cambiarPasswordForm, BindingResult bindingResult, HttpServletRequest request) {
     	try {
 	        if (bindingResult.hasErrors()) {
@@ -201,13 +201,24 @@ public class DefaultController extends JesmonController{
 	        
 	        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	        
-	        byte[] passwordActual = passwordEncoder.encode(cambiarPasswordForm.getPasswordActual()).getBytes(StandardCharsets.UTF_8);
+	        //byte[] passwordActual = passwordEncoder.encode(cambiarPasswordForm.getPasswordActual()).getBytes(StandardCharsets.UTF_8);
+	        
+	        //responsable.setPassword(passwordEncoder.encode(password).getBytes(StandardCharsets.UTF_8));
 	        JesmonEntity usuarioSesion = getUsuarioSesion(request);
 	        
-	        //System.out.println(passwordActual.toString());
-	        //System.out.println(usuarioSesion.getPassword().toString());
+	       // System.out.println(new String(passwordActual));
+	        //System.out.println(new String(usuarioSesion.getPassword()));
 	        
-	        if(!Arrays.equals(passwordActual, usuarioSesion.getPassword())) {
+	        //System.out.println(passwordEncoder.matches(new String(passwordActual, StandardCharsets.UTF_8), 
+	        		//new String(usuarioSesion.getPassword(), StandardCharsets.UTF_8)));
+	        
+	        System.out.println(passwordEncoder.matches( 
+	        		cambiarPasswordForm.getPasswordActual(),
+	        		new String(usuarioSesion.getPassword(), StandardCharsets.UTF_8)));
+	        
+	        if(!passwordEncoder.matches( 
+	        		cambiarPasswordForm.getPasswordActual(),
+	        		new String(usuarioSesion.getPassword(), StandardCharsets.UTF_8))) {
 	        	request.setAttribute("error", "La contraseña actual no es correcta");
 	        	return procesarViewResolver("consultarPerfil", request);
 	        }
@@ -226,6 +237,11 @@ public class DefaultController extends JesmonController{
 		}
     }
     
+    
+    @GetMapping("/*/contacto")
+    public String contacto(HttpServletRequest request) {
+    	return procesarViewResolver("contacto", request);
+    }
     
     public static void main(String[] args) {
     	try {
