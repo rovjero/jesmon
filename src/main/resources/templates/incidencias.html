@@ -159,6 +159,22 @@
 							th:value="${buscadorIncidenciasForm.fechaAltaHasta}" />
 					</div>
 				</div>
+				<div class="row">
+					<div class="form-group col-6">
+						<label for="idTipoIncidencia">Tipo incidencia</label> <select name="idTipoIncidencia" id="idTipoIncidencia" class="form-control form-control-sm">
+							<option></option>
+							<option th:each="tipoIncidencia : ${listaTiposIncidencia}" th:selected="${tipoIncidencia.idTipoIncidencia ==  buscadorIncidenciasForm.idTipoIncidencia}"
+								th:value="${tipoIncidencia.idTipoIncidencia}" th:text="${tipoIncidencia.denominacion}" />
+						</select>
+					</div>
+					<div class="form-group col-6">
+						<label for="idPrioridadIncidencia">Prioridad</label> <select name="idPrioridadIncidencia" id="idPrioridadIncidencia" class="form-control form-control-sm">
+							<option></option>
+							<option th:each="prioridadIncidencia : ${listaPrioridadesIncidencia}" th:selected="${prioridadIncidencia.idPrioridadIncidencia ==  buscadorIncidenciasForm.idPrioridadIncidencia}"
+								th:value="${prioridadIncidencia.idPrioridadIncidencia}" th:text="${prioridadIncidencia.denominacion}" />
+						</select>
+					</div>
+				</div>
 				
 				<input type="submit" class="btn btn-sm btn-primary" value="Buscar" />
 				<input type="button" sec:authorize="hasRole('ROLE_CLIENTE')" class="btn btn-sm btn-secondary"
@@ -181,6 +197,8 @@
 						<th>Sede</th>
 						<th sec:authorize="hasRole('ROLE_TRAMITADOR')">Empresa</th>
 						<th>Estado</th>
+						<th>Prioridad</th>
+						<th>Tipo</th>
 						<th></th>
 					</tr>
 				</thead>
@@ -193,6 +211,8 @@
 						<td th:text="${incidencia.sede.denominacion}">Text ...</td>
 						<td th:text="${incidencia.sede.empresa.denominacion}" sec:authorize="hasRole('ROLE_TRAMITADOR')">Text...</td>
 						<td th:text="${incidencia.estadoActual.descripcion}">Text ...</td>
+						<td th:text="${incidencia.prioridadIncidencia == null ? '' : incidencia.prioridadIncidencia.denominacion}">Text ...</td>
+						<td th:text="${incidencia.tipoIncidencia == null ? '' : incidencia.tipoIncidencia.denominacion}">Text ...</td>
 						<td>
 							<input type="button" class="btn btn-sm btn-primary"
 								value="Consultar"

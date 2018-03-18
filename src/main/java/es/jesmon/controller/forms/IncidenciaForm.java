@@ -17,6 +17,9 @@ public class IncidenciaForm {
 	@NotNull(message = "El campo sede es obligatorio")
 	private Integer idSede;
 	
+	private Integer idTipoIncidencia;
+	private Integer idPrioridadIncidencia;
+	
 	public Integer getIdSede() {
 		return idSede;
 	}
@@ -34,6 +37,18 @@ public class IncidenciaForm {
 	}
 	public void setTexto(String texto) {
 		this.texto = texto;
+	}
+	public Integer getIdTipoIncidencia() {
+		return idTipoIncidencia;
+	}
+	public void setIdTipoIncidencia(Integer idTipoIncidencia) {
+		this.idTipoIncidencia = idTipoIncidencia;
+	}
+	public Integer getIdPrioridadIncidencia() {
+		return idPrioridadIncidencia;
+	}
+	public void setIdPrioridadIncidencia(Integer idPrioridadIncidencia) {
+		this.idPrioridadIncidencia = idPrioridadIncidencia;
 	}
 	
 	

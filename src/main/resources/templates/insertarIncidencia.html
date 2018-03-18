@@ -28,7 +28,7 @@
 				</div>
 				<div class="row">
 					<div class="form-group col-12">
-						<label for="idSede">Sede</label> <select name="idSede" id="idSede" required="true"
+						<label for="idSede">Sede</label> <select name="idSede" id="idSede" required="true" class="form-control form-control-sm"
 							th:autofocus="${session.USUAIO_SESION.listaSedes.size() > 1 ? 'true' : 'false'}">
 							<option th:if="${session.USUAIO_SESION.listaSedes.size() > 1}"></option>
 							<option th:each="sede : ${session.USUAIO_SESION.listaSedes}"
@@ -44,7 +44,6 @@
 						 <div th:if="${#fields.hasErrors('asunto')}" th:errors="*{asunto}">Asunto Error</div>
 					</div>
 				</div>
-				
 				<div class="row">
 					<div class="form-group col-12">
 						<label for="texto">Descripción</label>
@@ -53,7 +52,25 @@
 						 <div th:if="${#fields.hasErrors('texto')}" th:errors="*{texto}">Asunto Error</div>
 					</div>
 				</div>
-
+				<div class="row">
+					<div class="form-group col-12">
+						<label for="idTipoIncidencia">Tipo incidencia</label> <select name="idTipoIncidencia" id="idTipoIncidencia" class="form-control form-control-sm">
+							<option></option>
+							<option th:each="tipoIncidencia : ${listaTiposIncidencia}"
+								th:value="${tipoIncidencia.idTipoIncidencia}" th:text="${tipoIncidencia.denominacion}" />
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-12">
+						<label for="idPrioridadIncidencia">Prioridad</label> <select name="idPrioridadIncidencia" id="idPrioridadIncidencia" class="form-control form-control-sm">
+							<option></option>
+							<option th:each="prioridadIncidencia : ${listaPrioridadesIncidencia}"
+								th:value="${prioridadIncidencia.idPrioridadIncidencia}" th:text="${prioridadIncidencia.denominacion}" />
+						</select>
+					</div>
+				</div>
+				
 				<input type="submit" class="btn btn-sm btn-primary" value="Alta" />
 			</div>
 		</div>

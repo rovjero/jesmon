@@ -20,6 +20,10 @@ public class SingletonJesmon {
 	
 	public static String LISTA_ESTADOS = "listaEstados";
 	
+	public static String LISTA_TIPOS_INCIDENCIA = "listaTiposIncidencia";
+	
+	public static String LISTA_PRIORIDADES_INCIDENCIA = "listaPrioridadesIncidencia";
+	
 	public static void putHashMap(String nombreHashMap, Object nombreObjeto, Object objeto){
 		if(listaHashMap == null){
 			listaHashMap = new HashMap();

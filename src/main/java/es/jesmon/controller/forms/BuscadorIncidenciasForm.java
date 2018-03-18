@@ -12,6 +12,8 @@ public class BuscadorIncidenciasForm implements Serializable {
 	private String fechaAltaDesde;
 	private String fechaAltaHasta;
 	private Integer idIncidencia;
+	private Integer idTipoIncidencia;
+	private Integer idPrioridadIncidencia;
 	
 	public Integer getIdIncidencia() {
 		return idIncidencia;
@@ -54,6 +56,18 @@ public class BuscadorIncidenciasForm implements Serializable {
 	}
 	public void setFechaAltaHasta(String fechaAltaHasta) {
 		this.fechaAltaHasta = fechaAltaHasta;
+	}
+	public Integer getIdTipoIncidencia() {
+		return idTipoIncidencia;
+	}
+	public void setIdTipoIncidencia(Integer idTipoIncidencia) {
+		this.idTipoIncidencia = idTipoIncidencia;
+	}
+	public Integer getIdPrioridadIncidencia() {
+		return idPrioridadIncidencia;
+	}
+	public void setIdPrioridadIncidencia(Integer idPrioridadIncidencia) {
+		this.idPrioridadIncidencia = idPrioridadIncidencia;
 	}
 	
 }

@@ -95,6 +95,9 @@ var mensajeFormRules = {
 	rules: {
 		idIncidenciaMensaje: {
 			required: true
+		},
+		texto: {
+			required: true
 		}
 	}
 };

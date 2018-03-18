@@ -147,5 +147,13 @@ public class Mensaje implements java.io.Serializable {
 		else
 			return responsable.getNombreCompleto();
 	}
+	
+	@Transient
+	public String getLgInternoStr() {
+		if(lgInterno == null || lgInterno.equals(0))
+			return "NO";
+		else
+			return "SI";
+	}
 
 }

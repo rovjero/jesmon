@@ -3,6 +3,8 @@ package es.jesmon.entities;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,6 +17,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "provincia", catalog = "jesmon")
+@Cacheable
+
 public class Provincia implements java.io.Serializable {
 
 	private static final long serialVersionUID = -5808173760648521979L;

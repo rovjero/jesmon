@@ -42,7 +42,8 @@ public class Incidencia implements java.io.Serializable {
 	private String texto;
 	private Set<Mensaje> mensajes = new HashSet<Mensaje>(0);
 	private Set<EstadoIncidencia> estadosIncidencia = new HashSet<EstadoIncidencia>(0);
-	
+	private TipoIncidencia tipoIncidencia;
+	private PrioridadIncidencia prioridadIncidencia;
 	
 	public Incidencia() {
 	}
@@ -171,6 +172,26 @@ public class Incidencia implements java.io.Serializable {
 
 	public void setEstadosIncidencia(Set<EstadoIncidencia> estadosIncidencia) {
 		this.estadosIncidencia = estadosIncidencia;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idtipo_incidencia")
+	public TipoIncidencia getTipoIncidencia() {
+		return tipoIncidencia;
+	}
+
+	public void setTipoIncidencia(TipoIncidencia tipoIncidencia) {
+		this.tipoIncidencia = tipoIncidencia;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idprioridad_incidencia")
+	public PrioridadIncidencia getPrioridadIncidencia() {
+		return prioridadIncidencia;
+	}
+
+	public void setPrioridadIncidencia(PrioridadIncidencia prioridadIncidencia) {
+		this.prioridadIncidencia = prioridadIncidencia;
 	}
 	
 }

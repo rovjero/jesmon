@@ -48,4 +48,16 @@ public abstract class JesmonEntity implements Serializable {
 	
 	@Transient
 	public abstract byte[] getPassword();
+	
+	@Transient
+	public boolean getEsTramitador() {
+		return this.getClass().equals(Tramitador.class);
+	}
+	
+	@Transient
+	public boolean getEsResponsable() {
+		return this.getClass().equals(Responsable.class);
+	}
+	
+	
 }

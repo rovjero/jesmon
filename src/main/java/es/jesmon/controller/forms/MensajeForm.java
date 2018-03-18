@@ -6,7 +6,7 @@ public class MensajeForm {
 
 	private String idIncidenciaB64;
 	private String texto;
-	private Integer lgInterno;
+	private Integer lgInterno = 0;
 	private Integer lgEnviarCorreo;
 	
 	public String getIdIncidenciaB64() {

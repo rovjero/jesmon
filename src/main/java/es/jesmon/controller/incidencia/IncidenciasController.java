@@ -11,13 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import es.jesmon.config.JesmonConstantes;
 import es.jesmon.controller.JesmonController;
 import es.jesmon.controller.forms.BuscadorIncidenciasForm;
 import es.jesmon.controller.forms.EstadoForm;
@@ -39,8 +38,10 @@ import es.jesmon.entities.EstadoIncidencia;
 import es.jesmon.entities.Incidencia;
 import es.jesmon.entities.JesmonEntity;
 import es.jesmon.entities.Mensaje;
+import es.jesmon.entities.PrioridadIncidencia;
 import es.jesmon.entities.Responsable;
 import es.jesmon.entities.Sede;
+import es.jesmon.entities.TipoIncidencia;
 import es.jesmon.entities.Tramitador;
 import es.jesmon.repository.util.AliasBean;
 import es.jesmon.repository.util.CriteriosBusqueda;
@@ -97,6 +98,9 @@ public class IncidenciasController extends JesmonController {
 			criteriosBusqueda.agregarAlias("sede.empresa", "empresa", AliasBean.INNER_JOIN);
 			criteriosBusqueda.agregarAlias("responsable", "responsable", AliasBean.INNER_JOIN);
 			criteriosBusqueda.agregarAlias("estadoActual", "estado", AliasBean.INNER_JOIN);
+			criteriosBusqueda.agregarAlias("tipoIncidencia", "tipoIncidencia", AliasBean.LEFT_JOIN);
+			criteriosBusqueda.agregarAlias("prioridadIncidencia", "prioridadIncidencia", AliasBean.LEFT_JOIN);
+			
 			criteriosBusqueda.addCriterio("sede.idSede", usuarioSesion.getListaIdsSedes().toArray(), CriteriosBusqueda.IN);
 			Integer idIncidencia = new Integer(new String(Base64.getDecoder().decode(idIndicenciaStr.getBytes())));
 			
@@ -104,6 +108,9 @@ public class IncidenciasController extends JesmonController {
 			if(incidencia == null) {
 				return procesarViewResolver("error", request);
 			}
+			
+			if(StringUtils.isNotBlank(request.getParameter("mensaje")))
+				request.setAttribute("mensaje", request.getParameter("mensaje"));
 			
 			model.put("incidencia", incidencia);
 			return procesarViewResolver("consultarIncidencia", request);
@@ -117,11 +124,23 @@ public class IncidenciasController extends JesmonController {
 
 	@GetMapping("/cliente/insertarIncidencia")
     public String getMappingInsertarIncidencia(HttpServletRequest request, 
-    		//Model model
+    		Model model,
     		IncidenciaForm incidenciaForm
     		) {
-		//model.addAttribute("incidenciaForm", new IncidenciaForm());
-    	return procesarViewResolver("insertarIncidencia", request);
+		try {
+			//model.addAttribute("incidenciaForm", new IncidenciaForm());
+			model.addAttribute("listaPrioridadesIncidencia", incidenciasService.getListaPrioridadesIncidencia());
+			model.addAttribute("listaTiposIncidencia", incidenciasService.getListaTiposIncidencia());
+			model.addAttribute("incidenciaForm", new IncidenciaForm());
+			
+	    	return procesarViewResolver("insertarIncidencia", request);
+	    }
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return procesarViewResolver("error", request);
+			// TODO: handle exception
+		}
     }
 	
 	@PostMapping("/cliente/insertarIncidencia")
@@ -134,6 +153,12 @@ public class IncidenciasController extends JesmonController {
     		incidencia.setAsunto(incidenciaForm.getAsunto());
     		incidencia.setTexto(incidenciaForm.getTexto());
     		incidencia.setFechaAlta(new Date());
+    		if(incidenciaForm.getIdPrioridadIncidencia() != null)
+    			incidencia.setPrioridadIncidencia((PrioridadIncidencia)jesmonService.buscarByPK(PrioridadIncidencia.class, "idPrioridadIncidencia", incidenciaForm.getIdPrioridadIncidencia()));
+    		
+    		if(incidenciaForm.getIdTipoIncidencia() != null)
+    			incidencia.setTipoIncidencia((TipoIncidencia)jesmonService.buscarByPK(TipoIncidencia.class, "idTipoIncidencia",incidenciaForm.getIdTipoIncidencia()));
+    			
     		Responsable responsable = (Responsable)getUsuarioSesion(request);
     		incidencia.setResponsable(responsable);
     		CriteriosBusqueda criteriosBusquedaSede = new CriteriosBusqueda();
@@ -151,8 +176,13 @@ public class IncidenciasController extends JesmonController {
 		    		"<li>Usuario alta: <b>" + incidencia.getResponsable().getNombre() + "</b>.</li>" +
 		    		"<li>Fecha alta: <b>" + UtilDate.dateToStringCompleto(incidencia.getFechaAlta()) + "</b>.</li>" +
 		    		"<li>Sede: <b>" + incidencia.getSede().getDenominacion() + "</b>.</li>" +
-		    		"<li>Empresa: <b>" + incidencia.getSede().getEmpresa().getDenominacion() + "</b>.</li>" +
-	    			"</ul>";
+		    		"<li>Empresa: <b>" + incidencia.getSede().getEmpresa().getDenominacion() + "</b>.</li>";
+    			if(incidencia.getPrioridadIncidencia() != null)
+    				body += "<li>Prioridad: <b>" + incidencia.getPrioridadIncidencia().getDenominacion() + "</b>.</li>";
+    			
+    			if(incidencia.getTipoIncidencia() != null)
+    				body += "<li>Tipo incidencia: <b>" + incidencia.getTipoIncidencia().getDenominacion() + "</b>.</li>";
+    			body += "</ul>";
     			enlace = "<a href='" + enlace + "' style='font-weight: bold;'>TRAMITAR</a></div>";
 	    		
 	    		String email = "";
@@ -203,6 +233,10 @@ public class IncidenciasController extends JesmonController {
 			criteriosBusqueda.agregarAlias("responsable", "responsable", AliasBean.INNER_JOIN);
 			criteriosBusqueda.agregarAlias("estadoActual", "estadoActual", AliasBean.INNER_JOIN);
 			criteriosBusqueda.addCriterio("sede.idSede", usuarioSesion.getListaIdsSedes().toArray(), CriteriosBusqueda.IN);
+			criteriosBusqueda.agregarAlias("tipoIncidencia", "tipoIncidencia", AliasBean.LEFT_JOIN);
+			criteriosBusqueda.agregarAlias("prioridadIncidencia", "prioridadIncidencia", AliasBean.LEFT_JOIN);
+			
+			
 			Integer idIncidencia = new Integer(new String(Base64.getDecoder().decode(estadoForm.getIdIncidenciaB64())));
 			
 			Incidencia incidencia = (Incidencia)jesmonService.buscarByPK(Incidencia.class, "idIncidencia", idIncidencia, criteriosBusqueda);
@@ -250,7 +284,7 @@ public class IncidenciasController extends JesmonController {
 		    				email += tramitadorTmp.getEmail() + ",";
 		    		}
 		    		
-		    		mailSender.sendMail(email, subject, body + enlace);		    		
+		    		mailSender.sendMail(email, subject, body + enlace);
 		    		email = incidencia.getResponsable().getEmail();
 		    		enlace = StringUtils.replace(enlace, "/tramitador/", "/cliente/");
 		    		mailSender.sendMail(email, subject, body + enlace);
@@ -304,6 +338,8 @@ public class IncidenciasController extends JesmonController {
 			criteriosBusqueda.agregarAlias("responsable", "responsable", AliasBean.INNER_JOIN);
 			criteriosBusqueda.agregarAlias("estadoActual", "estadoActual", AliasBean.INNER_JOIN);
 			//criteriosBusqueda.agregarAlias("estadoIncidencia.estado", "estado", AliasBean.INNER_JOIN);
+			criteriosBusqueda.agregarAlias("tipoIncidencia", "tipoIncidencia", AliasBean.LEFT_JOIN);
+			criteriosBusqueda.agregarAlias("prioridadIncidencia", "prioridadIncidencia", AliasBean.LEFT_JOIN);
 			criteriosBusqueda.addCriterio("sede.idSede", usuarioSesion.getListaIdsSedes().toArray(), CriteriosBusqueda.IN);
 			
 			criteriosBusqueda.setNumPaginacion(evalPage + 1);
@@ -322,6 +358,12 @@ public class IncidenciasController extends JesmonController {
 			if(buscadorIncidenciasForm.getIdEstado() != null)
 				criteriosBusqueda.addCriterio("estadoActual", new Estado(buscadorIncidenciasForm.getIdEstado()));
 
+			if(buscadorIncidenciasForm.getIdTipoIncidencia() != null)
+				criteriosBusqueda.addCriterio("tipoIncidencia", new TipoIncidencia(buscadorIncidenciasForm.getIdTipoIncidencia()));
+			
+			if(buscadorIncidenciasForm.getIdPrioridadIncidencia() != null)
+				criteriosBusqueda.addCriterio("prioridadIncidencia", new PrioridadIncidencia(buscadorIncidenciasForm.getIdPrioridadIncidencia()));
+			
 			Date fechaAltaDesde = UtilDate.stringToDate(buscadorIncidenciasForm.getFechaAltaDesde());
 			if(fechaAltaDesde != null)
 				criteriosBusqueda.addCriterio("fechaAlta", fechaAltaDesde, CriteriosBusqueda.MAYOR_IGUAL);
@@ -365,6 +407,9 @@ public class IncidenciasController extends JesmonController {
 			model.put("pager", pager);
 			model.put("totalPages", totalPages);
 			model.put("currentPage", evalPage);
+			
+			model.put("listaPrioridadesIncidencia", incidenciasService.getListaPrioridadesIncidencia());
+			model.put("listaTiposIncidencia", incidenciasService.getListaTiposIncidencia());
 			
 			request.getSession().setAttribute("buscadorIncidenciasFormSesion", buscadorIncidenciasForm);
 			return procesarViewResolver("incidencias", request);
