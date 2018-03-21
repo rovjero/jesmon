@@ -3,9 +3,12 @@ package es.jesmon.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -192,6 +195,20 @@ public class Incidencia implements java.io.Serializable {
 
 	public void setPrioridadIncidencia(PrioridadIncidencia prioridadIncidencia) {
 		this.prioridadIncidencia = prioridadIncidencia;
+	}
+	
+	@Transient
+	public List<Mensaje> getListaMensajes (){
+		List<Mensaje> listaMensajes = new ArrayList<Mensaje>(mensajes);
+		listaMensajes.sort(Comparator.comparing(Mensaje::getFecha).reversed());
+		return listaMensajes;
+	}
+ 	
+	@Transient
+	public List<EstadoIncidencia> getListaEstados (){
+		List<EstadoIncidencia> listaEstados = new ArrayList<EstadoIncidencia>(estadosIncidencia);
+		listaEstados.sort(Comparator.comparing(EstadoIncidencia::getFechaEstado).reversed());
+		return listaEstados;
 	}
 	
 }

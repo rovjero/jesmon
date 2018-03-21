@@ -38,7 +38,7 @@
 				</div>
 				<div class="row">
 					<div class="form-group col-12">
-						<label for="asunto">Asunto</label> <input type="text" class="form-control"
+						<label for="asunto">Asunto</label> <input type="text" class="form-control form-control-sm"
 							name="asunto" id="asunto" placeholder="Asunto incidencia" required="true"
 							th:autofocus="${session.USUAIO_SESION.listaSedes.size() == 1 ? 'true' : 'false'}"/>
 						 <div th:if="${#fields.hasErrors('asunto')}" th:errors="*{asunto}">Asunto Error</div>

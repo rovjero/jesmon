@@ -197,7 +197,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr th:each="estado : ${incidencia.estadosIncidencia}">
+									<tr th:each="estado : ${incidencia.listaEstados}">
 										<td th:text="${#dates.format(estado.fechaEstado, 'dd/MM/yyyy HH:mm:ss')}"></td>
 										<td th:text="${estado.nombreUsrAlta}">Text ...</td>
 										<td th:text="${estado.estado.descripcion}">Text ...</td>
@@ -224,7 +224,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr th:each="mensaje : ${incidencia.mensajes}" th:if="${mensaje.lgInterno == null || mensaje.lgInterno == 0 || session.USUAIO_SESION.esTramitador}">
+									<tr th:each="mensaje : ${incidencia.listaMensajes}" th:if="${mensaje.lgInterno == null || mensaje.lgInterno == 0 || session.USUAIO_SESION.esTramitador}">
 										<td th:text="${#dates.format(mensaje.fecha, 'dd/MM/yyyy HH:mm:ss')}"></td>
 										<td th:text="${mensaje.nombreUsuAlta}">Text ...</td>
 										<td th:text="${mensaje.textoCorto}" class="textoMensaje"

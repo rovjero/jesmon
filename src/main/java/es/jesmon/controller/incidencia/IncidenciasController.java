@@ -108,10 +108,10 @@ public class IncidenciasController extends JesmonController {
 			if(incidencia == null) {
 				return procesarViewResolver("error", request);
 			}
-			
+			/*
 			if(StringUtils.isNotBlank(request.getParameter("mensaje")))
 				request.setAttribute("mensaje", request.getParameter("mensaje"));
-			
+			*/
 			model.put("incidencia", incidencia);
 			return procesarViewResolver("consultarIncidencia", request);
 		}
@@ -490,7 +490,8 @@ public class IncidenciasController extends JesmonController {
 			}
     	
     		*/
-    		return "redirect:/cliente/consultarIncidencia.html?idIncidencia=" + Base64.getEncoder().encodeToString(mensajeForm.getIdIncidencia().toString().getBytes()) + "&resultado=Mensaje insertardo de forma correcta&";
+    		request.setAttribute("mensaje", "Mensaje insertardo de forma correcta");
+    		return "redirect:/cliente/consultarIncidencia.html?idIncidencia=" + Base64.getEncoder().encodeToString(mensajeForm.getIdIncidencia().toString().getBytes()) + "&mensaje=Mensaje insertardo de forma correcta&";
     	}
     	catch (Exception e) {
     		e.printStackTrace();

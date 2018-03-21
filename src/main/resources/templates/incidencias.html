@@ -105,7 +105,7 @@
 				<div class="row">
 					<div class="form-group col-4">
 						<label for="idEstado">Estado</label> <select name="idEstado"
-							id="idEstado" class="form-control">
+							id="idEstado" class="form-control form-control-sm">
 							<option></option>
 							<option th:each="estado : ${listaEstados}"
 								th:value="${estado.idEstado}" th:text="${estado.descripcion}"
@@ -115,12 +115,12 @@
 					<div class="form-group col-4">
 						<label for="idIncidencia">Id incidencia</label>
 						<input type="text"
-							name="idIncidencia" id="idIncidencia" class="form-control text-right w-25" placeholder="Id incidencia"
+							name="idIncidencia" id="idIncidencia" class="form-control text-right w-25 form-control-sm" placeholder="Id incidencia"
 							th:value="${buscadorIncidenciasForm.idIncidencia}" />
 					</div>
 					<div class="form-group col-4" sec:authorize="hasRole('ROLE_TRAMITADOR')">
 						<label for="idEmpresa">Empresa</label> <select name="idEmpresa"
-							id="idEmpresa" onchange="FnBuscarSedes();FnBuscarResponsables()" class="form-control">
+							id="idEmpresa" onchange="FnBuscarSedes();FnBuscarResponsables()" class="form-control form-control-sm">
 							<option></option>
 							<option th:each="empresa : ${listaEmpresas}"
 								th:value="${empresa.idEmpresa}"
@@ -129,7 +129,7 @@
 						</select>
 					</div>
 					<div class="form-group col-4" th:style="${listaSedes == null || listaSedes.size() == 0 ? 'display: none' : ''}" id="celdaSede">
-						<label for="idSede">Sede</label> <select name="idSede" id="idSede" class="form-control">
+						<label for="idSede">Sede</label> <select name="idSede" id="idSede" class="form-control form-control-sm">
 							<option></option>
 							<option th:each="sede : ${listaSedes}" th:value="${sede.idSede}"
 								th:text="${sede.denominacion}"
@@ -140,7 +140,7 @@
 				<div class="row">
 					<div class="form-group col-4">
 						<label for="idResponsable">Resposable</label> <select
-							name="idResponsable" id="idResponsable" class="form-control">
+							name="idResponsable" id="idResponsable" class="form-control form-control-sm">
 							<option></option>
 							<option th:each="responsable : ${listaResponsables}"
 								th:value="${responsable.idResponsable}"
@@ -150,12 +150,12 @@
 					</div>
 					<div class="form-group col-4">
 						<label for="fechaAltaDesde">Fecha desde</label> <input type="text"
-							name="fechaAltaDesde" id="fechaAltaDesde" class="fecha form-control"
+							name="fechaAltaDesde" id="fechaAltaDesde" class="fecha form-control form-control-sm"
 							th:value="${buscadorIncidenciasForm.fechaAltaDesde}" />
 					</div>
 					<div class="form-group col-4">
 						<label for="fechaAltaHasta">Fecha hasta</label> <input type="text"
-							name="fechaAltaHasta" id="fechaAltaHasta" class="fecha form-control"
+							name="fechaAltaHasta" id="fechaAltaHasta" class="fecha form-control form-control-sm"
 							th:value="${buscadorIncidenciasForm.fechaAltaHasta}" />
 					</div>
 				</div>
