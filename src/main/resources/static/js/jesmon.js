@@ -43,30 +43,25 @@ var loginFormRules = {
 	};
 */
 var solicitarCambioPasswordFormRules = {
-	rules: {
-	    email: {
-	      required: true,
-	      email: true
-	    },
-		repeatEmail: {
-	  		equalTo: "#email"
-	     }
-	  }
+    email: {
+      required: true,
+      email: true
+    },
+	repeatEmail: {
+  		equalTo: "#email"
+     }
 };
 
 var loginFormRules = {
-	rules: {
 		username: {
 			required: true
 		},
 		password: {
 			required: true
 		}
-	}
 };
 
 var insertarIncidenciaFormRules = {
-	rules: {
 		idSede: {
 			required: true
 		},
@@ -76,34 +71,28 @@ var insertarIncidenciaFormRules = {
 		texto: {
 			required: true
 		}
-	}
 };
 
 
 var estadoFormRules = {
-	rules: {
 		idEstado: {
 			required: true
 		},
 		idIncidenciaEstado: {
 			required: true
 		}
-	}
 };
 
 var mensajeFormRules = {
-	rules: {
 		idIncidenciaMensaje: {
 			required: true
 		},
 		texto: {
 			required: true
 		}
-	}
 };
 
 var cambiarPasswordFomRules = {
-	rules: {
 		passwordActual: {
 	      required: true,
 	      minlength: 6
@@ -117,7 +106,6 @@ var cambiarPasswordFomRules = {
 	    	minlength: 6,
 	  		equalTo: "#nuevoPassword"
 	    }
-	  }
 };
 
 if (!String.prototype.startsWith) {

@@ -13,7 +13,9 @@
 	<div th:replace="fragments/header.html :: nav-vacio" />
 	<br />
 	<div class="container">
-		<div class="alert alert-danger">Error en la aplicación</div>
+		<div class="alert alert-danger" th:inline="text">Error en la aplicación. Fecha del error: [[${#dates.format(#dates.createNow(), 'dd/MM/yyyy HH:mm:ss')}]]</div>
+		<br />
+		<button type="button" class="btn btn-primary" onclick="history.go(-1)">Volver</button>
 	</div>
 	
 	

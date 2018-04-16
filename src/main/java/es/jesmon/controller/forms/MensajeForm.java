@@ -35,6 +35,8 @@ public class MensajeForm {
 	}
 	
 	public Integer getIdIncidencia() {
+		if(idIncidenciaB64 == null)
+			return null;
 		return new Integer(new String(Base64.getDecoder().decode(idIncidenciaB64.toString())));
 	}
 }

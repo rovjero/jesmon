@@ -182,10 +182,10 @@
 									onclick="FnCambiarEstado('Reabrir')" />
 								 <input sec:authorize="hasRole('ROLE_TRAMITADOR')" type="button" class="btn btn-info" th:if="${incidencia.estadoActual.idEstado == 1}"
 									value="Tramitar Incidencia"
-									onclick="FnTramitar('Tramitar')" />
+									onclick="FnCambiarEstado('Tramitar')" />
 								<input sec:authorize="hasRole('ROLE_TRAMITADOR')" type="button" class="btn btn-success" th:if="${incidencia.estadoActual.idEstado == 2}"
 									value="Resolver Incidencia"
-									onclick="FnResolver('Resolver')" />
+									onclick="FnCambiarEstado('Resolver')" />
 							</h5>
 							<table class="table table-striped">
 								<thead>
@@ -251,7 +251,6 @@
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
-	
 						<div class="modal-body">
 							<div class="container">
 								<div class="row">
@@ -286,62 +285,60 @@
 			</form>
 	</div>
 	
-	<div class="modal fade" id="mensajeModal" tabindex="-1" role="dialog"
-			aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<form method="post" th:action="@{insertarMensaje}" id="formMensaje">
-				<div class="modal-dialog" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title text-primary" id="labelMensaje">Nuevo mensaje</h5>
-							<button type="button" class="close" data-dismiss="modal"
-								aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-	
-						<div class="modal-body">
-							<div class="container">
-								 <div class="row">
-    								<div class="col-12">
-										<div class="form-group">
-											<label for="texto">Mensaje</label>
-											<textarea
-												class="form-control" id="texto" name="texto"
-												placeholder="Mensaje" required="required"></textarea>
-										</div>
+	<div class="modal fade" id="mensajeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<form method="post" th:action="@{insertarMensaje}" id="formMensaje">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title text-primary" id="labelMensaje">Nuevo mensaje</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="container">
+							 <div class="row">
+	  								<div class="col-12">
+									<div class="form-group">
+										<label for="texto">Mensaje</label>
+										<textarea
+											class="form-control" id="texto" name="texto"
+											placeholder="Mensaje" required="required"></textarea>
 									</div>
 								</div>
-								<div class="row" sec:authorize="hasRole('ROLE_TRAMITADOR')">
-    								<div class="col-12">
-										<div class="form-group">
-											 <input class="form-check-input" type="checkbox" id="lgInterno" name="lgInterno" value="1"/>
-									        <label class="form-check-label" for="lgInterno">
-									         Mensaje interno
-									        </label>
-										</div>
+							</div>
+							<div class="row" sec:authorize="hasRole('ROLE_TRAMITADOR')">
+	  								<div class="col-12">
+									<div class="form-group">
+										 <input class="form-check-input" type="checkbox" id="lgInterno" name="lgInterno" value="1"/>
+								        <label class="form-check-label" for="lgInterno">
+								         Mensaje interno
+								        </label>
 									</div>
 								</div>
-								<div class="row">
-    								<div class="col-12">
-										<div class="form-group">
-											 <input class="form-check-input" type="checkbox" id="lgEnviarCorreo" name="lgEnviarCorreo"/>
-									        <label class="form-check-label" for="lgEnviarCorreo">
-									         Enviar email de aviso
-									        </label>
-										</div>
+							</div>
+							<div class="row">
+	  								<div class="col-12">
+									<div class="form-group">
+										<input class="form-check-input" type="checkbox" id="lgEnviarCorreo" name="lgEnviarCorreo" checked="checked" value="1"/>
+								        <label class="form-check-label" for="lgEnviarCorreo">
+											Enviar email de aviso
+								        </label>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary"
-								data-dismiss="modal">Cancelar</button>
-							<button type="submit" class="btn btn-primary" id="botonEstado">Confirmar</button>
-						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Cancelar</button>
+						<button type="submit" class="btn btn-primary" id="botonEstado">Confirmar</button>
 					</div>
 				</div>
-				<input type="hidden" name="idIncidenciaB64" id="idIncidenciaMensaje" th:value="${incidencia.idIncidenciaB64}" />
-			</form>
+			</div>
+			<input type="hidden" name="idIncidenciaB64" id="idIncidenciaMensaje" th:value="${incidencia.idIncidenciaB64}" />
+		</form>
 	</div>
 
 	<div class="modal fade" id="alertModal" tabindex="-1" role="dialog"
@@ -355,7 +352,6 @@
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
-	
 						<div class="modal-body">
 							<div class="container">
 								 <div class="row">
@@ -375,7 +371,6 @@
 				</div>
 		</div>
 	</div>	
-
 
 	<div th:replace="fragments/footer.html :: footer" />
 

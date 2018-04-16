@@ -21,7 +21,7 @@
         	else
         		$("#mensajeBloqMayusculas").hide();
         });
-		
+        /*
 		$("#formCambioPassword").validate({
 		  rules: {
 		    email: {
@@ -33,7 +33,6 @@
 		     }
 		  }
 		});
-		/*
 		$("#formLogin").validate({
 			rules: {
 				username: {
@@ -46,7 +45,7 @@
 		});
 		*/
 		$('#formLogin').validate(getValidationObject(loginFormRules));
-		//$('#formCambioPassword').validate(getValidationObject(solicitarCambioPasswordFormRules));
+		$('#formCambioPassword').validate(getValidationObject(solicitarCambioPasswordFormRules));
 	});
 	/*]]>*/
 </script>
@@ -132,14 +131,14 @@
 					<div class="modal-body">
 						<div class="container">
 							<div class="form-group">
-								<label for="email">Email</label> <input type="text"
+								<label for="email">Email</label> <input type="text" required="required"
 									class="form-control" id="email" name="email"
-									aria-describedby="emailHelp" placeholder="Enter email" />
+									aria-describedby="emailHelp" placeholder="Email" />
 							</div>
 							<div class="form-group">
-								<label for="repeatEmail">Repita email</label> <input type="text"
+								<label for="repeatEmail">Repita email</label> <input type="text" required="required"
 									class="form-control" id="repeatEmail" name="repeatEmail"
-									aria-describedby="emailHelp" placeholder="Enter email" />
+									aria-describedby="emailHelp" placeholder="Repita email" />
 							</div>
 						</div>
 					</div>

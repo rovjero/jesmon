@@ -201,7 +201,7 @@ public class IncidenciasController extends JesmonController {
 				logger.error(e.getMessage(), e);
 			}
     		
-    		return "redirect:/cliente/incidencias.html?resultado=Incidencia insertarda de forma correcta&";
+    		return "redirect:/cliente/incidencias.html?mensaje=Creada la incidencia " + incidencia.getIdIncidencia() + " de forma correcta&";
     	}
     	catch (Exception e) {
     		e.printStackTrace();
@@ -210,7 +210,7 @@ public class IncidenciasController extends JesmonController {
 		}
     }
 	
-	@RequestMapping(value = "/*/cambiarEstadoIncidencia")
+	@RequestMapping(value = "/*/cambiarEstadoIncidencia", method = RequestMethod.POST)
 	public String consultarIncidencia(Map<String, Object> model,
 			EstadoForm estadoForm, HttpServletRequest request) {
 		try {
@@ -264,7 +264,7 @@ public class IncidenciasController extends JesmonController {
 			if(estadoForm.getLgEmailAviso() != null && estadoForm.getLgEmailAviso().equals(1L)) {
 				try {
 	    			String enlace = getUrlAplicacion(request) + "/tramitador/consultarIncidencia?idIncidencia=" + incidencia.getIdIncidencia();
-	    			String subject = "Cambio de estado incidencia " + incidencia.getIdIncidencia() + ". ";
+	    			String subject = "Cambio de estado incidencia " + incidencia.getIdIncidencia() + ". Nuevo estado " + estado.getDescripcion();
 	    			String body = "<div>Cambio de estado incidencia <b>" + incidencia.getIdIncidencia() + "</b>. Nuevo estado <b>" + estado.getDescripcion() + "</b>.<br />" + 
 	    				"Datos de la incidencia: <br />" +
 	    				"<ul>" +
@@ -275,7 +275,7 @@ public class IncidenciasController extends JesmonController {
 			    		"<li>Sede: <b>" + incidencia.getSede().getDenominacion() + "</b>.</li>" +
 			    		"<li>Empresa: <b>" + incidencia.getSede().getEmpresa().getDenominacion() + "</b>.</li>" +
 		    			"</ul>";
-	    			enlace = "<a hrel='" + enlace + "' style='font-weight: bold;'>CONSULTAR</a></div>";
+	    			enlace = "<a href='" + enlace + "' style='font-weight: bold;'>CONSULTAR</a></div>";
 		    		
 		    		String email = "";
 		    		if(responsable != null) {
@@ -420,7 +420,6 @@ public class IncidenciasController extends JesmonController {
 		}
 	}
 
-
 	@RequestMapping(value = "/*/listaSedes")
 	public @ResponseBody
 	List<Sede> getListaSedes(@RequestParam("idEmpresa") Integer idEmpresa) {  
@@ -445,20 +444,26 @@ public class IncidenciasController extends JesmonController {
 		}
 	}
 	
-	@PostMapping("/*/insertarMensaje")
-    public String postMappingInsertarMensaje(MensajeForm mensajeForm,
-    		HttpServletRequest request) {
+	@RequestMapping(value = "/*/insertarMensaje", method = RequestMethod.POST)
+    public String postMappingInsertarMensaje(MensajeForm mensajeForm, HttpServletRequest request) {
     	try {
+    		/*MensajeForm mensajeForm = new MensajeForm();
+    		mensajeForm.setTexto(request.getParameter("texto"));
+    		mensajeForm.setIdIncidenciaB64(request.getParameter("idIncidenciaB64"));
+    		*/
     		Mensaje mensaje = new Mensaje();
     		mensaje.setTexto(mensajeForm.getTexto());
     		mensaje.setFecha(new Date());
     		mensaje.setIncidencia(new Incidencia(mensajeForm.getIdIncidencia()));
     		mensaje.setLgInterno(mensajeForm.getLgInterno());
     		JesmonEntity usuarioSesion = getUsuarioSesion(request);
+    		String urlParcial = "tramitador";
     		if(usuarioSesion instanceof Tramitador)
     			mensaje.setTramitador((Tramitador)usuarioSesion);
-    		else
+    		else {
     			mensaje.setResponsable((Responsable)usuarioSesion);
+    			urlParcial = "cliente";
+    		}
     		jesmonService.insertar(mensaje);
     		/*	
     		CriteriosBusqueda criteriosBusquedaSede = new CriteriosBusqueda();
@@ -477,7 +482,7 @@ public class IncidenciasController extends JesmonController {
 		    		"Fecha alta: <b>" + UtilDate.dateToStringCompleto(incidencia.getFechaAlta()) + "</b>.</li>" +
 		    		"Sede: <b>" + incidencia.getSede().getDenominacion() + "</b>.</li>" +
 		    		"Empresa: <b>" + incidencia.getSede().getEmpresa().getDenominacion() + "</b>.</li>" +
-	    			"</ul><a hrel='" + enlace + "' style='font-weight: bold;'>TRAMITAR</a></div>";
+	    			"</ul><a href='" + enlace + "' style='font-weight: bold;'>TRAMITAR</a></div>";
 	    		
 	    		String email = "";
 	    		for(Tramitador tramitador : listaTramitadores)
@@ -491,7 +496,7 @@ public class IncidenciasController extends JesmonController {
     	
     		*/
     		request.setAttribute("mensaje", "Mensaje insertardo de forma correcta");
-    		return "redirect:/cliente/consultarIncidencia.html?idIncidencia=" + Base64.getEncoder().encodeToString(mensajeForm.getIdIncidencia().toString().getBytes()) + "&mensaje=Mensaje insertardo de forma correcta&";
+    		return "redirect:/" + urlParcial + "/consultarIncidencia.html?idIncidencia=" + Base64.getEncoder().encodeToString(mensajeForm.getIdIncidencia().toString().getBytes()) + "&mensaje=Mensaje insertardo de forma correcta&";
     	}
     	catch (Exception e) {
     		e.printStackTrace();
