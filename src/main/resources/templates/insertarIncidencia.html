@@ -19,20 +19,37 @@
 	<div th:replace="fragments/header.html :: navegacionCliente" />
 
 	<br />
-	<form action="insertarIncidencia" th:action="@{/cliente/insertarIncidencia}" th:object="${incidenciaForm}" method="post" modelAttribute="incidenciaForm" id="incidenciaForm">
+	<form action="insertarIncidencia" th:action="@{/cliente/insertarIncidencia}" th:object="${incidenciaForm}" 
+		method="post" modelAttribute="incidenciaForm" id="incidenciaForm" enctype="multipart/form-data">
 		<div class="container">
 			<div class="bd-example-row">
 				<div class="row">
-					<h2 class="col-12 text-primary" style="font-weight: bold">Nueva
-						incidencias</h2>
+					<h2 class="col-12 text-primary" style="font-weight: bold">Nueva incidencia</h2>
+				</div>
+				<div sec:authorize="hasRole('ROLE_ADMIN')" class="row">
+					<div class="form-group col-12">
+						<label for="idEmpresa">Empresa</label>
+						<select name="idEmpresa" id="idEmpresa" required="true" class="form-control form-control-sm">
+							<option th:each="empresa : ${session.USUAIO_SESION.listaEmpresas}"
+								th:value="${empresa.idEmpresa}" th:text="${empresa.denominacion}" />
+						</select>
+					</div>
 				</div>
 				<div class="row">
 					<div class="form-group col-12">
-						<label for="idSede">Sede</label> <select name="idSede" id="idSede" required="true" class="form-control form-control-sm"
+						<label for="idSede">Sede</label>
+						<select name="idSede" id="idSede" required="true" class="form-control form-control-sm"
 							th:autofocus="${session.USUAIO_SESION.listaSedes.size() > 1 ? 'true' : 'false'}">
 							<option th:if="${session.USUAIO_SESION.listaSedes.size() > 1}"></option>
 							<option th:each="sede : ${session.USUAIO_SESION.listaSedes}"
 								th:value="${sede.idSede}" th:text="${sede.denominacion}" />
+						</select>
+					</div>
+				</div>
+				<div sec:authorize="hasRole('ROLE_ADMIN')">
+					<div class="form-group col-12">
+						<label for="idResponsable">Usuario</label>
+						<select name="idResponsable" id="idResponsable" required="true" class="form-control form-control-sm">
 						</select>
 					</div>
 				</div>
@@ -53,21 +70,43 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="form-group col-12">
+					<div class="form-group col-6">
 						<label for="idTipoIncidencia">Tipo incidencia</label> <select name="idTipoIncidencia" id="idTipoIncidencia" class="form-control form-control-sm">
 							<option></option>
 							<option th:each="tipoIncidencia : ${listaTiposIncidencia}"
 								th:value="${tipoIncidencia.idTipoIncidencia}" th:text="${tipoIncidencia.denominacion}" />
 						</select>
 					</div>
-				</div>
-				<div class="row">
-					<div class="form-group col-12">
+					<div class="form-group col-6">
 						<label for="idPrioridadIncidencia">Prioridad</label> <select name="idPrioridadIncidencia" id="idPrioridadIncidencia" class="form-control form-control-sm">
 							<option></option>
 							<option th:each="prioridadIncidencia : ${listaPrioridadesIncidencia}"
 								th:value="${prioridadIncidencia.idPrioridadIncidencia}" th:text="${prioridadIncidencia.denominacion}" />
 						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-12">
+						<label for="fichero1">Fichero 1</label>
+						<input type="file"
+							class="form-control" id="fichero1" name="fichero1"
+							placeholder="fichero1"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-12">
+						<label for="fichero2">Fichero 2</label>
+						<input type="file"
+							class="form-control" id="fichero2" name="fichero2"
+							placeholder="fichero2"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-12">
+						<label for="fichero3">Fichero 3</label>
+						<input type="file"
+							class="form-control" id="fichero3" name="fichero3"
+							placeholder="fichero3"/>
 					</div>
 				</div>
 				

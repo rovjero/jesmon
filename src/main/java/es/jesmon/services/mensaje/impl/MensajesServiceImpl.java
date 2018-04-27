@@ -1,4 +1,4 @@
-package es.jesmon.services.estadoIncidencia.impl;
+package es.jesmon.services.mensaje.impl;
 
 import java.util.List;
 
@@ -7,29 +7,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.jesmon.entities.EstadoIncidencia;
 import es.jesmon.entities.Fichero;
-import es.jesmon.repository.EstadoIncidenciaRepository;
+import es.jesmon.entities.Mensaje;
 import es.jesmon.repository.JesmonRepository;
-import es.jesmon.services.estadoIncidencia.EstadoIncidenciaService;
 import es.jesmon.services.exception.ServicesExpception;
+import es.jesmon.services.mensaje.MensajesService;
 
 @Service
-public class EstadoIncidenciaServiceImpl implements EstadoIncidenciaService{
+public class MensajesServiceImpl implements MensajesService {
 
-	@Autowired
-	EstadoIncidenciaRepository estadoIncidenciaRepository;
-	
 	@Autowired
 	JesmonRepository jesmonRepository;
 	
+	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = ServicesExpception.class)
-	public void insertarEstadoIncidencia(EstadoIncidencia estadoIncidencia, List<Fichero> listaFicheros) throws ServicesExpception {
+	public void insertar(Mensaje mensaje, List<Fichero> listaFicheros) throws ServicesExpception {
 		try {
-			estadoIncidenciaRepository.save(estadoIncidencia);
+			jesmonRepository.insertar(mensaje);
 			if(listaFicheros != null) {
 				for(Fichero fichero : listaFicheros){
-					fichero.getEstadoIncidencias().add(estadoIncidencia);
+					fichero.getMensajes().add(mensaje);
 					jesmonRepository.insertar(fichero);
 				}
 			}
@@ -39,4 +36,5 @@ public class EstadoIncidenciaServiceImpl implements EstadoIncidenciaService{
 			throw new ServicesExpception(e);
 		}
 	}
+
 }

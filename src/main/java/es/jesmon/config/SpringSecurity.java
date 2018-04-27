@@ -20,7 +20,6 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
 	 @Value("${spring.datasource.url}")
 	 private String dataSourceUrl;
 	 
-	 
 	 @Value("${spring.datasource.username}")
 	 private String datasourceUsername;
 	 
@@ -49,7 +48,7 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
 					.antMatchers("/admin/**").hasAnyRole("ADMIN")
 					.antMatchers("/tramitador/**").hasAnyRole("TRAMITADOR")
 					.antMatchers("/cliente/**").hasAnyRole("CLIENTE")
-					.antMatchers("/*/*Incidencia").hasAnyRole("CLIENTE", "TRAMITADOR")
+					.antMatchers("/*/*Incidencia").hasAnyRole("CLIENTE", "TRAMITADOR", "ADMIN")
 					.anyRequest().authenticated()
                 .and().addFilterAfter(afterLoginFilter, BasicAuthenticationFilter.class)
                 .formLogin()
@@ -66,10 +65,10 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     	
-    	final String findUserQuery = "select NIF,password,activo "
-				+ "from usuarios where NIF = ?";
-		final String findRoles = "select NIF, role from usuarios "
-				+ "where NIF = ?";
+    	final String findUserQuery = "select login,password,activo "
+				+ "from usuarios where login = ?";
+		final String findRoles = "select login, role from usuarios "
+				+ "where login = ?";
 		
     	auth.jdbcAuthentication().passwordEncoder(passwordEncoder()).dataSource(dataSource()).usersByUsernameQuery(findUserQuery).authoritiesByUsernameQuery(findRoles);
     	

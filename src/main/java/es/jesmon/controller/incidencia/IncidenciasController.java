@@ -1,5 +1,6 @@
 package es.jesmon.controller.incidencia;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -7,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import es.jesmon.controller.JesmonController;
 import es.jesmon.controller.forms.BuscadorIncidenciasForm;
@@ -35,6 +39,7 @@ import es.jesmon.controller.forms.MensajeForm;
 import es.jesmon.entities.Empresa;
 import es.jesmon.entities.Estado;
 import es.jesmon.entities.EstadoIncidencia;
+import es.jesmon.entities.Fichero;
 import es.jesmon.entities.Incidencia;
 import es.jesmon.entities.JesmonEntity;
 import es.jesmon.entities.Mensaje;
@@ -51,6 +56,7 @@ import es.jesmon.services.estadoIncidencia.EstadoIncidenciaService;
 import es.jesmon.services.estados.EstadosService;
 import es.jesmon.services.incidencias.IncidenciasService;
 import es.jesmon.services.mail.MailSender;
+import es.jesmon.services.mensaje.MensajesService;
 import es.jesmon.services.responsable.ResponsableServices;
 import es.jesmon.services.sedes.SedesServices;
 import es.jesmon.services.tramitador.TramitadorServices;
@@ -84,12 +90,15 @@ public class IncidenciasController extends JesmonController {
 	ResponsableServices responsableServices;
 	
 	@Autowired
+	MensajesService mensajesService;
+	
+	@Autowired
     @Qualifier("javasampleapproachMailSender")
 	public MailSender mailSender;
-	
+
 	@RequestMapping(value = "/*/consultarIncidencia", method = RequestMethod.GET)
 	public String consultarIncidencia(Map<String, Object> model,
-			@RequestParam("idIncidencia") String idIndicenciaStr, HttpServletRequest request) {
+			@RequestParam(value = "idIncidencia", required = true) String idIndicenciaStr, HttpServletRequest request) {
 		try {
 			JesmonEntity usuarioSesion = (JesmonEntity)getUsuarioSesion(request);
 			CriteriosBusqueda criteriosBusqueda = new CriteriosBusqueda();
@@ -98,7 +107,10 @@ public class IncidenciasController extends JesmonController {
 			criteriosBusqueda.agregarAlias("sede.empresa", "empresa", AliasBean.INNER_JOIN);
 			criteriosBusqueda.agregarAlias("responsable", "responsable", AliasBean.INNER_JOIN);
 			criteriosBusqueda.agregarAlias("estadoActual", "estado", AliasBean.INNER_JOIN);
+			criteriosBusqueda.agregarAlias("estadosIncidencia", "estadosIncidencia", AliasBean.INNER_JOIN);
+			criteriosBusqueda.agregarAlias("estadosIncidencia.ficheros", "ficheros", AliasBean.LEFT_JOIN);
 			criteriosBusqueda.agregarAlias("tipoIncidencia", "tipoIncidencia", AliasBean.LEFT_JOIN);
+			criteriosBusqueda.agregarAlias("prioridadIncidencia", "prioridadIncidencia", AliasBean.LEFT_JOIN);
 			criteriosBusqueda.agregarAlias("prioridadIncidencia", "prioridadIncidencia", AliasBean.LEFT_JOIN);
 			
 			criteriosBusqueda.addCriterio("sede.idSede", usuarioSesion.getListaIdsSedes().toArray(), CriteriosBusqueda.IN);
@@ -122,7 +134,7 @@ public class IncidenciasController extends JesmonController {
 		}
 	}
 
-	@GetMapping("/cliente/insertarIncidencia")
+	@GetMapping(value={"/cliente/insertarIncidencia", "/admin/insertarIncidencia"})
     public String getMappingInsertarIncidencia(HttpServletRequest request, 
     		Model model,
     		IncidenciaForm incidenciaForm
@@ -145,10 +157,13 @@ public class IncidenciasController extends JesmonController {
 	
 	@PostMapping("/cliente/insertarIncidencia")
     public String postMappingInsertarIncidencia(@Valid IncidenciaForm incidenciaForm,
-    		HttpServletRequest request, BindingResult bindingResult) {
+    		HttpServletRequest request, BindingResult bindingResult, @RequestParam(value = "fichero1", required = false) MultipartFile fichero1,
+    		@RequestParam(value = "fichero2", required = false) MultipartFile fichero2,
+    		@RequestParam(value = "fichero3", required = false) MultipartFile fichero3) {
     	try {
 			if (bindingResult.hasErrors()) 
 				procesarViewResolver("insertarIncidencia", request);
+			
     		Incidencia incidencia = new Incidencia();
     		incidencia.setAsunto(incidenciaForm.getAsunto());
     		incidencia.setTexto(incidenciaForm.getTexto());
@@ -158,13 +173,19 @@ public class IncidenciasController extends JesmonController {
     		
     		if(incidenciaForm.getIdTipoIncidencia() != null)
     			incidencia.setTipoIncidencia((TipoIncidencia)jesmonService.buscarByPK(TipoIncidencia.class, "idTipoIncidencia",incidenciaForm.getIdTipoIncidencia()));
-    			
+    		
+    		List<Fichero> listaFicheros = new ArrayList<Fichero>();
+    		addFichero(fichero1, listaFicheros);
+    		addFichero(fichero2, listaFicheros);
+    		addFichero(fichero3, listaFicheros);
+    		
     		Responsable responsable = (Responsable)getUsuarioSesion(request);
     		incidencia.setResponsable(responsable);
     		CriteriosBusqueda criteriosBusquedaSede = new CriteriosBusqueda();
     		criteriosBusquedaSede.agregarAlias("empresa", "empresa", AliasBean.INNER_JOIN);
     		incidencia.setSede((Sede)jesmonService.buscarByPK(Sede.class, "idSede", incidenciaForm.getIdSede(), criteriosBusquedaSede));
-    		incidenciasService.insertar(incidencia);
+    		incidenciasService.insertar(incidencia, listaFicheros);
+    		
     		try {
     			List<Tramitador> listaTramitadores = tramitadorServices.getListaTramitadoresSede(incidenciaForm.getIdSede());
     			String enlace = getUrlAplicacion(request) + "/tramitador/consultarIncidencia?idIncidencia=" + incidencia.getIdIncidencia();
@@ -212,7 +233,10 @@ public class IncidenciasController extends JesmonController {
 	
 	@RequestMapping(value = "/*/cambiarEstadoIncidencia", method = RequestMethod.POST)
 	public String consultarIncidencia(Map<String, Object> model,
-			EstadoForm estadoForm, HttpServletRequest request) {
+			EstadoForm estadoForm, HttpServletRequest request,
+			@RequestParam(value = "fichero1", required = false) MultipartFile fichero1,
+    		@RequestParam(value = "fichero2", required = false) MultipartFile fichero2,
+    		@RequestParam(value = "fichero3", required = false) MultipartFile fichero3) {
 		try {
 			
 			System.out.println("observaciones: " + estadoForm.getObservaciones() + " | " + request.getParameter("observaciones"));
@@ -233,9 +257,10 @@ public class IncidenciasController extends JesmonController {
 			criteriosBusqueda.agregarAlias("responsable", "responsable", AliasBean.INNER_JOIN);
 			criteriosBusqueda.agregarAlias("estadoActual", "estadoActual", AliasBean.INNER_JOIN);
 			criteriosBusqueda.addCriterio("sede.idSede", usuarioSesion.getListaIdsSedes().toArray(), CriteriosBusqueda.IN);
+			criteriosBusqueda.agregarAlias("estadosIncidencia", "estadosIncidencia", AliasBean.INNER_JOIN);
+			criteriosBusqueda.agregarAlias("estadosIncidencia.ficheros", "ficheros", AliasBean.LEFT_JOIN);
 			criteriosBusqueda.agregarAlias("tipoIncidencia", "tipoIncidencia", AliasBean.LEFT_JOIN);
 			criteriosBusqueda.agregarAlias("prioridadIncidencia", "prioridadIncidencia", AliasBean.LEFT_JOIN);
-			
 			
 			Integer idIncidencia = new Integer(new String(Base64.getDecoder().decode(estadoForm.getIdIncidenciaB64())));
 			
@@ -258,7 +283,12 @@ public class IncidenciasController extends JesmonController {
 			else
 				estadoIncidencia.setResponsable(responsable);
 			
-			estadoIncidenciaService.insertarEstadoIncidencia(estadoIncidencia);
+			List<Fichero> listaFicheros = new ArrayList<Fichero>();
+    		addFichero(fichero1, listaFicheros);
+    		addFichero(fichero2, listaFicheros);
+    		addFichero(fichero3, listaFicheros);
+    		
+			estadoIncidenciaService.insertarEstadoIncidencia(estadoIncidencia, listaFicheros);
 			incidencia.getEstadosIncidencia().add(estadoIncidencia);
 			
 			if(estadoForm.getLgEmailAviso() != null && estadoForm.getLgEmailAviso().equals(1L)) {
@@ -292,7 +322,7 @@ public class IncidenciasController extends JesmonController {
 	    		catch (Exception e) {
 					e.printStackTrace();
 					logger.error(e.getMessage(), e);
-				}				
+				}			
 			}
 			
 			model.put("incidencia", incidencia);
@@ -445,7 +475,11 @@ public class IncidenciasController extends JesmonController {
 	}
 	
 	@RequestMapping(value = "/*/insertarMensaje", method = RequestMethod.POST)
-    public String postMappingInsertarMensaje(MensajeForm mensajeForm, HttpServletRequest request) {
+    public String postMappingInsertarMensaje(MensajeForm mensajeForm, HttpServletRequest request,
+    		@RequestParam(value = "fichero1", required = false) MultipartFile fichero1,
+    		@RequestParam(value = "fichero2", required = false) MultipartFile fichero2,
+    		@RequestParam(value = "fichero3", required = false) MultipartFile fichero3
+    		) {
     	try {
     		/*MensajeForm mensajeForm = new MensajeForm();
     		mensajeForm.setTexto(request.getParameter("texto"));
@@ -454,8 +488,18 @@ public class IncidenciasController extends JesmonController {
     		Mensaje mensaje = new Mensaje();
     		mensaje.setTexto(mensajeForm.getTexto());
     		mensaje.setFecha(new Date());
+    		CriteriosBusqueda criteriosBusquedaIncidencia = new CriteriosBusqueda();
+    		criteriosBusquedaIncidencia.agregarAlias("sede", "sede", AliasBean.INNER_JOIN);
+    		criteriosBusquedaIncidencia.agregarAlias("sede.empresa", "empresa", AliasBean.INNER_JOIN);
+    		criteriosBusquedaIncidencia.agregarAlias("responsable", "responsable", AliasBean.INNER_JOIN);
+    		Incidencia incidencia = (Incidencia) jesmonService.buscarByPK(Incidencia.class, "idIncidencia", mensajeForm.getIdIncidencia(), criteriosBusquedaIncidencia);
     		mensaje.setIncidencia(new Incidencia(mensajeForm.getIdIncidencia()));
     		mensaje.setLgInterno(mensajeForm.getLgInterno());
+    		List<Fichero> listaFicheros = new ArrayList<Fichero>();
+    		addFichero(fichero1, listaFicheros);
+    		addFichero(fichero2, listaFicheros);
+    		addFichero(fichero3, listaFicheros);
+    		
     		JesmonEntity usuarioSesion = getUsuarioSesion(request);
     		String urlParcial = "tramitador";
     		if(usuarioSesion instanceof Tramitador)
@@ -464,43 +508,77 @@ public class IncidenciasController extends JesmonController {
     			mensaje.setResponsable((Responsable)usuarioSesion);
     			urlParcial = "cliente";
     		}
-    		jesmonService.insertar(mensaje);
-    		/*	
-    		CriteriosBusqueda criteriosBusquedaSede = new CriteriosBusqueda();
-    		criteriosBusquedaSede.agregarAlias("empresa", "empresa", AliasBean.INNER_JOIN);
-    		incidencia.setSede((Sede)jesmonService.buscarByPK(Sede.class, "idSede", incidenciaForm.getIdSede(), criteriosBusquedaSede));
-    		incidenciasService.insertar(incidencia);
-    		try {
-    			List<Tramitador> listaTramitadores = tramitadorServices.getListaTramitadoresSede(incidenciaForm.getIdSede());
-    			String enlace = getUrlAplicacion(request) + "/tramitador/consultarIncidencia?idIncidencia=" + incidencia.getIdIncidencia();
-    			String subject = "Nueva incidencia " + incidencia.getIdIncidencia() + ": " + incidencia.getAsunto();
-    			String body = "<div>Nueva incidencia <b>" + incidencia.getIdIncidencia() + "</b>.<br />" + 
-    				"<ul>" + 
-	    			"<li>Asunto: <b>" + incidencia.getAsunto() + "</b>.</li>" +
-		    		"Descipción: <b>" + incidencia.getTexto() + "</b>.</li>" +
-		    		"Usuario alta: <b>" + incidencia.getResponsable().getNombre() + "</b>.</li>" +
-		    		"Fecha alta: <b>" + UtilDate.dateToStringCompleto(incidencia.getFechaAlta()) + "</b>.</li>" +
-		    		"Sede: <b>" + incidencia.getSede().getDenominacion() + "</b>.</li>" +
-		    		"Empresa: <b>" + incidencia.getSede().getEmpresa().getDenominacion() + "</b>.</li>" +
-	    			"</ul><a href='" + enlace + "' style='font-weight: bold;'>TRAMITAR</a></div>";
-	    		
-	    		String email = "";
-	    		for(Tramitador tramitador : listaTramitadores)
-	    			email += tramitador.getEmail() + ",";
-	    			
-	    		mailSender.sendMail(email, subject, body);
-    		}
-    		catch (Exception e) {
-				e.printStackTrace();
-			}
+    		mensajesService.insertar(mensaje, listaFicheros);
+    		if(mensajeForm.getLgEnviarCorreo() != null && mensajeForm.getLgEnviarCorreo().equals(1)) 
+    			try {
+	    			String enlace = getUrlAplicacion(request) + "/tramitador/consultarIncidencia?idIncidencia=" + mensajeForm.getIdIncidencia();
+	    			String subject = "Nuevo mensaje incidencia " + mensajeForm.getIdIncidencia();
+	    			String body = "<div>Cambio de estado incidencia <b>" + mensajeForm.getIdIncidencia() + "</b>.<br />" + 
+	    				"Datos del mensaje: <br />" +
+	    				"<ul>" +
+	    				"<li>Asunto incidencia: <b>" + incidencia.getAsunto() + "</b>.</li>" +
+		    			"<li>Testo: <b>" + mensaje.getTexto() + "</b>.</li>" +
+			    		"<li>Usuario alta: <b>" + usuarioSesion.getNombreCompleto() + "</b>.</li>" +
+			    		"<li>Fecha alta: <b>" + UtilDate.dateToStringCompleto(mensaje.getFecha()) + "</b>.</li>" +
+			    		"<li>Sede: <b>" + incidencia.getSede().getDenominacion() + "</b>.</li>" +
+			    		"<li>Empresa: <b>" + incidencia.getSede().getEmpresa().getDenominacion() + "</b>.</li>" +
+		    			"</ul>";
+	    			enlace = "<a href='" + enlace + "' style='font-weight: bold;'>CONSULTAR</a></div>";
+		    		
+		    		String email = "";
+		    		if(usuarioSesion instanceof Responsable) {
+		    			List<Tramitador> listaTramitadores = tramitadorServices.getListaTramitadoresSede(incidencia.getSede().getIdSede());
+		    			for(Tramitador tramitadorTmp : listaTramitadores)
+		    				email += tramitadorTmp.getEmail() + ",";
+		    		}
+		    		
+		    		mailSender.sendMail(email, subject, body + enlace);
+		    		email = incidencia.getResponsable().getEmail();
+		    		enlace = StringUtils.replace(enlace, "/tramitador/", "/cliente/");
+		    		mailSender.sendMail(email, subject, body + enlace);
+	    		}
+	    		catch (Exception e) {
+					e.printStackTrace();
+					logger.error(e.getMessage(), e);
+				}
+    		
     	
-    		*/
     		request.setAttribute("mensaje", "Mensaje insertardo de forma correcta");
     		return "redirect:/" + urlParcial + "/consultarIncidencia.html?idIncidencia=" + Base64.getEncoder().encodeToString(mensajeForm.getIdIncidencia().toString().getBytes()) + "&mensaje=Mensaje insertardo de forma correcta&";
     	}
     	catch (Exception e) {
     		e.printStackTrace();
+    		logger.error(e.getMessage(), e);
 			return procesarViewResolver("error", request);
 		}
     }
+	
+	@RequestMapping(value = "/*/consultarFichero", method = RequestMethod.GET)
+	public void consultarFichero(Map<String, Object> model,
+			@RequestParam(value = "idFichero", required = true) String idFicheroStr, HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Integer idFichero = new Integer(new String(Base64.getDecoder().decode(idFicheroStr)));
+			Fichero fichero = (Fichero)jesmonService.buscarByPK(Fichero.class, "idFichero", idFichero);
+			response.setContentLength(fichero.getContenidoFichero().length);
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + fichero.getNombreFichero() + "\"");
+			response.setContentType("application/x-document");
+			ServletOutputStream servletOutputStream = response.getOutputStream();
+			servletOutputStream.write(fichero.getContenidoFichero());
+			servletOutputStream.flush();
+			servletOutputStream.close();
+		}
+    	catch (Exception e) {
+    		e.printStackTrace();
+    		logger.error(e.getMessage(), e);
+		}
+    }
+	
+	private void addFichero(MultipartFile ficheroForm, List<Fichero> listaFicheros) throws IOException {
+		if(ficheroForm != null && ficheroForm.getBytes() != null && StringUtils.isNotBlank(ficheroForm.getOriginalFilename())) {
+			Fichero fichero = new Fichero();
+			fichero.setContenidoFichero(ficheroForm.getBytes());
+			fichero.setNombreFichero(ficheroForm.getOriginalFilename());
+			listaFicheros.add(fichero);
+		}
+	}
 }

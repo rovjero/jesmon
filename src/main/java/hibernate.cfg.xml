@@ -4,24 +4,28 @@
     <session-factory>
         <property name="hibernate.bytecode.use_reflection_optimizer">false</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.password">roberto80</property>
+        <property name="hibernate.connection.password">1234</property>
         <property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/jesmon</property>
-        <property name="hibernate.connection.username">jesmon</property>
+        <property name="hibernate.connection.username">root</property>
         <property name="hibernate.default_schema">jesmon</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.search.autoregister_listeners">true</property>
         <property name="hibernate.validator.apply_to_ddl">false</property>
-        <mapping class="es.jesmon.entities.EstadoIncidencia"/>
-        <mapping class="es.jesmon.entities.Direccion"/>
-        <mapping class="es.jesmon.entities.Tramitador"/>
-        <mapping class="es.jesmon.entities.Responsable"/>
-        <mapping class="es.jesmon.entities.UserRoles"/>
-        <mapping class="es.jesmon.entities.Empresa"/>
-        <mapping class="es.jesmon.entities.Estado"/>
-        <mapping class="es.jesmon.entities.Incidencia"/>
-        <mapping class="es.jesmon.entities.Users"/>
-        <mapping class="es.jesmon.entities.Sede"/>
-        <mapping class="es.jesmon.entities.Mensaje"/>
-        <mapping class="es.jesmon.entities.Provincia"/>
+        <mapping class="es.jesmon.entities2.Users"/>
+        <mapping class="es.jesmon.entities2.PrioridadIncidencia"/>
+        <mapping class="es.jesmon.entities2.Empresa"/>
+        <mapping class="es.jesmon.entities2.Usuarios"/>
+        <mapping class="es.jesmon.entities2.TipoIncidencia"/>
+        <mapping class="es.jesmon.entities2.EstadoIncidencia"/>
+        <mapping class="es.jesmon.entities2.Fichero"/>
+        <mapping class="es.jesmon.entities2.Mensaje"/>
+        <mapping class="es.jesmon.entities2.Responsable"/>
+        <mapping class="es.jesmon.entities2.Estado"/>
+        <mapping class="es.jesmon.entities2.Sede"/>
+        <mapping class="es.jesmon.entities2.UserRoles"/>
+        <mapping class="es.jesmon.entities2.Direccion"/>
+        <mapping class="es.jesmon.entities2.Incidencia"/>
+        <mapping class="es.jesmon.entities2.Provincia"/>
+        <mapping class="es.jesmon.entities2.Tramitador"/>
     </session-factory>
 </hibernate-configuration>

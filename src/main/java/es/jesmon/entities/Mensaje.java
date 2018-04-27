@@ -1,15 +1,21 @@
 package es.jesmon.entities;
 // Generated 29-ene-2018 22:17:55 by Hibernate Tools 5.2.6.Final
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -33,6 +39,7 @@ public class Mensaje implements java.io.Serializable {
 	private Date fecha;
 	private String texto;
 	private Integer lgInterno;
+	private Set<FicheroBasico> ficheros = new HashSet<FicheroBasico>(0);
 
 	public Mensaje() {
 	}
@@ -154,6 +161,18 @@ public class Mensaje implements java.io.Serializable {
 			return "NO";
 		else
 			return "SI";
+	}
+	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "rel_fichero_mensaje", catalog = "jesmon", joinColumns = {
+			@JoinColumn(name = "id_mensaje", nullable = false, updatable = false) }, inverseJoinColumns = {
+					@JoinColumn(name = "id_fichero", nullable = false, updatable = false) })
+	public Set<FicheroBasico> getFicheros() {
+		return this.ficheros;
+	}
+
+	public void setFicheros(Set<FicheroBasico> ficheros) {
+		this.ficheros = ficheros;
 	}
 
 }

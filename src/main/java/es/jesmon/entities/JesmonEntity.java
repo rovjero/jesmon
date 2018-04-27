@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Transient;
 
 public abstract class JesmonEntity implements Serializable {
@@ -11,6 +12,7 @@ public abstract class JesmonEntity implements Serializable {
 	private static final long serialVersionUID = -7564427953829680489L;
 	private List<Sede> listaSedes = new ArrayList<Sede>(0);
 	private List<Integer> listaIdsSedes = new ArrayList<Integer>(0);
+	private List<Empresa> listaEmpresas = null;
 	
 	@Transient
 	public List<Sede> getListaSedes() {
@@ -30,10 +32,12 @@ public abstract class JesmonEntity implements Serializable {
 	
 	@Transient
 	public List<Empresa> getListaEmpresas(){
-		List<Empresa> listaEmpresas = new ArrayList<Empresa>();
-		for (Sede sede : listaSedes)
-			if(!listaEmpresas.contains(sede.getEmpresa()))
-				listaEmpresas.add(sede.getEmpresa());
+		if(listaEmpresas == null) {
+			listaEmpresas = new ArrayList<Empresa>();
+			for (Sede sede : listaSedes)
+				if(!listaEmpresas.contains(sede.getEmpresa()))
+					listaEmpresas.add(sede.getEmpresa());
+		}
 		return listaEmpresas;
 	}
 	
@@ -59,5 +63,11 @@ public abstract class JesmonEntity implements Serializable {
 		return this.getClass().equals(Responsable.class);
 	}
 	
+	@Transient
+	public abstract String getNombreCompleto();
+	
+	public void setListaEmpresas(List<Empresa> listaEmpresas) {
+		this.listaEmpresas = listaEmpresas;
+	}
 	
 }

@@ -19,6 +19,7 @@ public interface JesmonServices {
 	public void refresh(Object o) throws ServicesExpception;
 	
 	public void modificar(Object o) throws ServicesExpception;
+	public void modificarLista(List<Object> lista) throws ServicesExpception;
 	public void eliminar(Object o) throws ServicesExpception;
 	public void insertar(Object o) throws ServicesExpception;
 	

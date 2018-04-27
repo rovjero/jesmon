@@ -54,6 +54,19 @@ public class JesmonServicesImpl implements JesmonServices{
 	}
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = ServicesExpception.class)
+	public void modificarLista(List<Object> lista) throws ServicesExpception{
+		try {
+			if(lista != null)
+				for (Object o : lista)
+					jesmonRepository.modificar(o);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			throw new ServicesExpception(e);
+		}
+	}
+	
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = ServicesExpception.class)
 	public void insertar(Object o) throws ServicesExpception{
 		try {
 			jesmonRepository.insertar(o);

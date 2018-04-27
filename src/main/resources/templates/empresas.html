@@ -1,0 +1,296 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Jesmon Seguridad</title>
+<link rel="icon" href="../img/logo_small.png"/>
+<div th:replace="fragments/header.html :: header-css" />
+
+<script type="text/javascript">
+
+	jQuery(document).ready( function() {
+		jQuery("#idEmpresa").bind('change', function() {
+			document.getElementById("formEmpresas").submit();
+		});
+	});
+
+	function FnNuevaEmpresa(){
+		$("#empresaModal h5").html("Nueva empresa");
+		$("#empresaModal form").attr("action", "insertarEmpresa");
+		$("#empresaModal").modal();
+	}
+
+	function FnModificarEmpresa(){
+		$("#empresaModal h5").html("Modificar empresa");
+		$("#empresaModal #denominacionEmpresa").val($("#denominacionEmpresaH3").html().replace('&nbsp;', ''));
+		$("#empresaModal #emailEmpresa").val($("#emailEmpresaP").html().replace('&nbsp;', ''));
+		$("#empresaModal #telefonoEmpresa").val($("#telefonoEmpresaP").html().replace('&nbsp;', ''));
+		$("#empresaModal #nifEmpresa").val($("#nifEmpresaP").html().replace('&nbsp;', ''));
+		$("#empresaModal form").attr("action", "modificarEmpresa");
+		$("#idEmpresaModal").val($("#idEmpresa").val());
+		$("#empresaModal").modal();
+	}
+	
+	function FnNuevaSede(){
+
+	}
+
+	function FnModificarSede(){
+
+	}			
+
+	function FnNuevaSede(){
+
+	}
+
+	function FnNuevoUsuario(){
+
+	}
+
+	function FnModificarUsuario(){
+		
+	}
+
+</script>
+
+
+</head>
+<body>
+	<div th:replace="fragments/header.html :: navegacionAdmin" />
+
+	<br />
+	<div th:if="${param.mensaje != null}">
+		<div class="alert alert-info" th:text="${(param.mensaje + '')}" />
+	</div>
+	
+	<div th:if="${mensaje != null}">
+		<div class="alert alert-info" th:text="${(mensaje)}" />
+	</div>
+	
+	<form action="empresas" th:action="@{/admin/empresas}" method="post" id="formEmpresas">
+		<div class="container">
+			<div class="bd-example-row">
+				<div class="row">
+					<h2 class="col-12 text-primary" style="font-weight: bold">Empresas
+						<input type="button" class="btn btn-sm btn-success"
+									value="Nueva empresa"
+									onclick="FnNuevaEmpresa()" />
+					</h2>
+				</div>
+				<div class="form-group col-12 row">
+					<label for="idEmpresa">Empresa</label>
+					<select name="idEmpresa" id="idEmpresa" required="true" class="form-control form-control-sm" style="width: 80%;margin-left: 10px">
+						<option></option>
+						<option th:each="empresaTmp : ${session.USUAIO_SESION.listaEmpresas}" th:selected="${empresa != null &amp;&amp; empresaTmp.idEmpresa == empresa.idEmpresa}"
+							th:value="${empresaTmp.idEmpresa}" th:text="${empresaTmp.denominacion}" />
+					</select>
+				</div>
+			</div>
+		</div>
+	</form>
+	
+	<div class="container" th:if="${empresa != null}">
+		<div class="card">
+			<div class="card-header row">
+				<h3 class="card-title text-primary" th:text="${empresa.denominacion}" id="denominacionEmpresaH3"></h3>
+				&nbsp;&nbsp;
+				<input type="button" class="btn btn-sm btn-success" style="height: 30px"
+								value="Modificar empresa"
+								onclick="FnModificarEmpresa()" />
+			</div>
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item">
+					<div class="card-body">
+						<h5 class="card-title">Datos de la empresa</h5>
+					</div>
+					<div class="row">
+					  <div class="col-sm-4">
+					    <div class="card">
+					      <div class="card-body">
+					        <h5 class="card-title">NIF</h5>
+					        <p class="card-text" th:text="${#strings.defaultString(empresa.nif,'&nbsp;')}" id="nifEmpresaP"></p>
+					      </div>
+					    </div>
+					  </div>
+					  <div class="col-sm-4">
+					    <div class="card">
+					      <div class="card-body">
+					        <h5 class="card-title">Email</h5>
+					        <p class="card-text" th:text="${#strings.defaultString(empresa.nif, '&nbsp;')}" id="emailEmpresaP"></p>
+					      </div>
+					    </div>
+					  </div>
+					  <div class="col-sm-4">
+					    <div class="card">
+					      <div class="card-body">
+					        <h5 class="card-title">Teléfono</h5>
+					        <p class="card-text" th:text="${#strings.defaultString(empresa.telefono, '&nbsp;')}" id="telefonoEmpresaP"></p>
+					      </div>
+					    </div>
+					  </div>
+					</div>
+				</li>
+				<li class="list-group-item">				
+					<div class="card-body">
+						<h5 class="card-title">Sedes
+							<input type="button" class="btn btn-sm btn-success"
+								value="Nueva sede"
+								onclick="FnNuevaSede()" />
+						</h5>
+					</div>
+					<div class="row col-sm-12">
+						<table class="table table-striped" style="font-size: 12px;">
+							<thead>
+								<tr>
+									<th>Denominación</th>
+									<th>Teléfono</th>
+									<th>Dirección</th>
+									<th>Sede Central</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="sede : ${empresa.sedes}">
+									<td th:text="${sede.denominacion}">Text ...</td>
+									<td th:text="${sede.telefono}"></td>
+									<td th:text="${sede.direccion.direccionStr}"></td>
+									<td align="center">
+										<input type="radio" name="sedeCentral" />
+									</td>
+									<td>
+										<input type="button" class="btn btn-sm btn-primary"
+											value="Modificar" />
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</li>
+				<li class="list-group-item">				
+					<div class="card-body">
+						<h5 class="card-title">Usuarios
+							<input type="button" class="btn btn-sm btn-success"
+								value="Nuevo usuairo"
+								onclick="FnNuevoUsuario()" />
+						</h5>
+					</div>
+					<div class="row col-sm-12">
+						<form action="modificarSedesResponsables" method="post">
+							<input type="hidden" name="idEmpresa" th:value="${empresa.idEmpresa}" id="idEmpresaMod" /> 
+							<table class="table table-striped" style="font-size: 12px;">
+								<thead>
+									<tr>
+										<th>Login</th>
+										<th>Nombre</th>
+										<th>NIF</th>
+										<th>Teléfono</th>
+										<th>Email</th>
+										<th>Cargo</th>
+										<th>Sedes autorizdas</th>
+										<th>Borrado</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="responsable : ${empresa.responsables}">
+										<td th:text="${responsable.login}">Text ...</td>
+										<td th:text="${responsable.nombreCompleto}">Text ...</td>
+										<td th:text="${responsable.nif}">Text ...</td>
+										<td th:text="${responsable.telefono}">Text ...</td>
+										<td th:text="${responsable.email}">Text ...</td>
+										<td th:text="${responsable.cargo}">Text ...</td>
+										<td>
+											<ul style="padding-left: 5px;">
+												<li th:each="sede : ${empresa.sedes}" style="list-style-type: none;">
+													<input type="checkbox" th:name="${'sedes_responsable_' + responsable.idResponsable}"
+														th:id="${'sede' + sede.idSede + '_responsable' + responsable.idResponsable}"
+														th:checked="${#lists.contains(responsable.sedes, sede)}" th:value="${sede.idSede}"/>
+													<label th:text="${sede.denominacion}" th:for="${'sede' + sede.idSede + '_responsable' + responsable.idResponsable}"></label> 
+												</li>
+											</ul>
+										</td>
+										<td>
+											<input type="button" class="btn btn-sm btn-primary" value="Modificar" onclick="FnModificarUsuario()"/>
+										</td>
+									</tr>
+								</tbody>
+								<tfoot>
+									<tr>
+										<td colspan="6"></td>
+										<td><input type="submit" class="btn btn-sm btn-primary" value="Modificar Sedes" /></td>
+									</tr>
+								</tfoot>
+							</table>
+						</form>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="empresaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<form method="post" id="formEmpresa" action="" >
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title text-primary" id="labelMensaje">Nueva empresa</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="container">
+							 <div class="row">
+  								<div class="col-12">
+									<div class="form-group">
+										<label for="denominacionEmpresa">Mombre empresa</label>
+										<input type="text" class="form-control form-control-sm"
+											name="denominacion" id="denominacionEmpresa" placeholder="Nombre empresa" required="true"
+											autofocus="true" maxlength="500"/>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+  								<div class="col-4">
+									<div class="form-group">
+										<label for="nifEmpresa">NIF</label>
+										<input type="text" class="form-control form-control-sm"
+											name="nif" id="nifEmpresa" placeholder="NIF"
+											maxlength="9" style="width: 75%" />
+									</div>
+								</div>
+								<div class="col-4">
+									<div class="form-group">
+										<label for="telefonoEmpresa">Teléfono</label>
+										<input type="text" class="form-control form-control-sm"
+											name="telefono" id="telefonoEmpresa" placeholder="Teléfono"
+											maxlength="9" style="width: 75%" />
+									</div>
+								</div>
+								<div class="col-4">
+									<div class="form-group">
+										<label for="emailEmpresa">Email</label>
+										<input type="text" class="form-control form-control-sm"
+											name="email" id="emailEmpresa" placeholder="Email"
+											/>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Cancelar</button>
+						<button type="submit" class="btn btn-primary" >Confirmar</button>
+					</div>
+				</div>
+			</div>
+			<input type="hidden" name="idEmpresa" id="idEmpresaModal"/>
+		</form>
+	</div>
+	
+
+	<div th:replace="fragments/footer.html :: footer" />
+
+</body>
+</html>

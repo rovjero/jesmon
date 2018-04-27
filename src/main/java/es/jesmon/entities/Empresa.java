@@ -26,6 +26,7 @@ public class Empresa implements java.io.Serializable {
 	private Responsable responsable;
 	private Sede sede;
 	private String nif;
+	private String telefono;
 	private String denominacion;
 	private String email;
 	private Set<Responsable> responsables = new HashSet<Responsable>(0);
@@ -133,4 +134,13 @@ public class Empresa implements java.io.Serializable {
 		return idEmpresa.equals(empresa.getIdEmpresa());
 	}
 
+	@Column(name = "telefono", length = 9)
+	public String getTelefono() {
+		return this.telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+	
 }

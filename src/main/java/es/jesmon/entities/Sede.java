@@ -145,5 +145,13 @@ public class Sede implements java.io.Serializable {
 	public void setEmpresas(Set<Empresa> empresas) {
 		this.empresas = empresas;
 	}
+	
+	public boolean equals(Object o) {
+		if(o == null || !o.getClass().equals(Sede.class))
+			return false;
+
+		Sede sede = (Sede)o;
+		return idSede.equals(sede.getIdSede());
+	}
 
 }

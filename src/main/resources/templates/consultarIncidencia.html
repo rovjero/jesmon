@@ -126,7 +126,7 @@
 						  <div class="col-sm-6">
 						    <div class="card">
 						      <div class="card-body">
-						        <h5 class="card-title">Estado</h5>
+						        <h5 class="card-title">Estado actual</h5>
 						        <p class="card-text" th:text="${incidencia.estadoActual.descripcion}"></p>
 						      </div>
 						    </div>
@@ -194,6 +194,7 @@
 										<th>Usuario Alta</th>
 										<th>Estado</th>
 										<th>Observaciones</th>
+										<th>Ficheros</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -203,6 +204,13 @@
 										<td th:text="${estado.estado.descripcion}">Text ...</td>
 										<td th:text="${estado.observacionesCorto}" class="observacionesEstado"
 											th:id="${estado.observacionesB64}">Text ...</td>
+										<td>
+											<ul>
+												<li th:each="fichero : ${estado.ficheros}">
+													<a th:text="${fichero.nombreFichero}" th:href="@{'consultarFichero?idFichero=' + ${fichero.idFicheroB64}}" ></a>
+												</li>
+											</ul>
+										</td>
 									</tr>
 								</tbody>
 							</table>
@@ -220,6 +228,7 @@
 										<th>Fecha</th>
 										<th>Usuario Alta</th>
 										<th>Texto</th>
+										<th>Ficheros</th>
 										<th sec:authorize="hasRole('ROLE_TRAMITADOR')">Interno</th>
 									</tr>
 								</thead>
@@ -229,7 +238,14 @@
 										<td th:text="${mensaje.nombreUsuAlta}">Text ...</td>
 										<td th:text="${mensaje.textoCorto}" class="textoMensaje"
 											th:id="${mensaje.textoB64}">Text ...</td>
-										<th sec:authorize="hasRole('ROLE_TRAMITADOR')">Interno</th>
+										<td>
+											<ul>
+												<li th:each="fichero : ${mensaje.ficheros}">
+													<a th:text="${fichero.nombreFichero}" th:href="@{'consultarFichero?idFichero=' + ${fichero.idFicheroB64}}" ></a>
+												</li>
+											</ul>
+										</td>
+										<td sec:authorize="hasRole('ROLE_TRAMITADOR')" th:test="${fichero.lgInternoStr}">Interno</td>
 									</tr>
 								</tbody>
 							</table>
@@ -241,7 +257,7 @@
 		
 		<div class="modal fade" id="estadoModal" tabindex="-1" role="dialog"
 			aria-labelledby="estadoModalLabel" aria-hidden="true" >
-			<form method="post" th:action="@{cambiarEstadoIncidencia}" id="formEstado">
+			<form method="post" th:action="@{cambiarEstadoIncidencia}" id="formEstado" enctype="multipart/form-data">
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -259,6 +275,30 @@
 										<textarea
 											class="form-control" id="observaciones" name="observaciones"
 											placeholder="Observaciones"></textarea>
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group col-12">
+										<label for="fichero1Estado">Fichero 1</label>
+										<input type="file"
+											class="form-control" id="fichero1Estado" name="fichero1"
+											placeholder="fichero1"/>
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group col-12">
+										<label for="fichero2Estado">Fichero 2</label>
+										<input type="file"
+											class="form-control" id="fichero2Estado" name="fichero2"
+											placeholder="fichero2"/>
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group col-12">
+										<label for="fichero3">Fichero 3</label>
+										<input type="file"
+											class="form-control" id="fichero3Estado" name="fichero3"
+											placeholder="fichero3Estado"/>
 									</div>
 								</div>
 								<div class="row">
@@ -286,7 +326,7 @@
 	</div>
 	
 	<div class="modal fade" id="mensajeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<form method="post" th:action="@{insertarMensaje}" id="formMensaje">
+		<form method="post" th:action="@{insertarMensaje}" id="formMensaje" enctype="multipart/form-data">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -316,6 +356,30 @@
 								         Mensaje interno
 								        </label>
 									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group col-12">
+									<label for="fichero1Mensaje">Fichero 1</label>
+									<input type="file"
+										class="form-control" id="fichero1Mensaje" name="fichero1"
+										placeholder="fichero1"/>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group col-12">
+									<label for="fichero2Mensaje">Fichero 2</label>
+									<input type="file"
+										class="form-control" id="fichero2Mensaje" name="fichero2"
+										placeholder="fichero2"/>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group col-12">
+									<label for="fichero3Mensaje">Fichero 3</label>
+									<input type="file"
+										class="form-control" id="fichero3Mensaje" name="fichero3"
+										placeholder="fichero3"/>
 								</div>
 							</div>
 							<div class="row">
@@ -360,8 +424,8 @@
 											<textarea disabled="disabled"
 												class="form-control" id="textoAlert" name="textoAlert"></textarea>
 										</div>
-									</div>
 								</div>
+							</div>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary"

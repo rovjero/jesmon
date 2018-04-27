@@ -137,3 +137,10 @@ if (!String.prototype.endsWith) {
       return lastIndex !== -1 && lastIndex === position;
   };
 }
+
+function validarEmail(valor) {
+	if ( /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(valor))
+		return true;
+	else
+		return false;
+}

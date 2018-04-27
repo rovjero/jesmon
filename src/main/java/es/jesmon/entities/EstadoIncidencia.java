@@ -5,6 +5,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +14,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -35,6 +39,7 @@ public class EstadoIncidencia implements java.io.Serializable {
 	private String observaciones;
 	private Date fechaEstado;
 	private Incidencia incidencia;
+	private Set<FicheroBasico> ficheros = new HashSet<FicheroBasico>(0);
 
 	public EstadoIncidencia() {
 	}
@@ -149,4 +154,17 @@ public class EstadoIncidencia implements java.io.Serializable {
 			return "";
 		return Base64.getEncoder().encodeToString(observaciones.getBytes());
 	}
+	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "rel_fichero_estado_incidecia", catalog = "jesmon", joinColumns = {
+			@JoinColumn(name = "id_estado", nullable = false, updatable = false) }, inverseJoinColumns = {
+					@JoinColumn(name = "id_fichero", nullable = false, updatable = false) })
+	public Set<FicheroBasico> getFicheros() {
+		return this.ficheros;
+	}
+
+	public void setFicheros(Set<FicheroBasico> ficheros) {
+		this.ficheros = ficheros;
+	}
+
 }

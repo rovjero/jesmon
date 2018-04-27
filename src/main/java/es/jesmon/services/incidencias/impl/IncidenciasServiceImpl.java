@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.jesmon.entities.Estado;
 import es.jesmon.entities.EstadoIncidencia;
+import es.jesmon.entities.Fichero;
+import es.jesmon.entities.FicheroBasico;
 import es.jesmon.entities.Incidencia;
 import es.jesmon.entities.PrioridadIncidencia;
 import es.jesmon.entities.TipoIncidencia;
@@ -37,7 +39,7 @@ public class IncidenciasServiceImpl implements IncidenciasService {
 	
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = ServicesExpception.class)
-	public void insertar(Incidencia incidencia) throws ServicesExpception {
+	public void insertar(Incidencia incidencia, List<Fichero> listaFicheros) throws ServicesExpception {
 		try {
 			incidencia = incidenciaRepository.save(incidencia);
 			EstadoIncidencia estadoIncidencia = new EstadoIncidencia();
@@ -46,6 +48,12 @@ public class IncidenciasServiceImpl implements IncidenciasService {
 			estadoIncidencia.setIncidencia(incidencia);
 			estadoIncidencia.setResponsable(incidencia.getResponsable());
 			estadoIncidenciaRepository.save(estadoIncidencia);
+			if(listaFicheros != null) {
+				for(Fichero fichero : listaFicheros){
+					fichero.getEstadoIncidencias().add(estadoIncidencia);
+					jesmonRepository.insertar(fichero);
+				}
+			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();

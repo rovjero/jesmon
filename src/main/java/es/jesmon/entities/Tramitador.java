@@ -35,6 +35,7 @@ public class Tramitador extends JesmonEntity implements java.io.Serializable {
 	private String telefono;
 	private Integer activo;
 	private byte[] password;
+	private String login;
 	private Set<Mensaje> mensajes = new HashSet<Mensaje>(0);
 	private Set<Incidencia> incidencias = new HashSet<Incidencia>(0);
 	private Set<EstadoIncidencia> estadoIncidencias = new HashSet<EstadoIncidencia>(0);
@@ -205,5 +206,21 @@ public class Tramitador extends JesmonEntity implements java.io.Serializable {
 	@Transient
 	public String getNombreCampoId() {
 		return "idTramitador";
+	}
+	
+	@Column(name = "login", length = 50)
+	public String getLogin() {
+		return login;
+	}
+	public void setLogin(String login) {
+		this.login = login;
+	}
+	
+	public boolean equals(Object o) {
+		if(o == null || !o.getClass().equals(Tramitador.class))
+			return false;
+
+		Tramitador tramitador = (Tramitador)o;
+		return idTramitador.equals(tramitador.getIdTramitador());
 	}
 }

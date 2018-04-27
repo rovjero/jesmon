@@ -45,6 +45,7 @@ public class Responsable extends JesmonEntity implements java.io.Serializable {
 	private String cargo;
 	private Integer activo;
 	private byte[] password;
+	private String login;
 	private Set<Empresa> empresas = new HashSet<Empresa>(0);
 	private Set<Mensaje> mensajes = new HashSet<Mensaje>(0);
 	private Set<Incidencia> incidencias = new HashSet<Incidencia>(0);
@@ -252,4 +253,12 @@ public class Responsable extends JesmonEntity implements java.io.Serializable {
 		return "idResponsable";
 	}
 
+	@Column(name = "login", length = 50)
+	public String getLogin() {
+		return login;
+	}
+	public void setLogin(String login) {
+		this.login = login;
+	}
+	
 }

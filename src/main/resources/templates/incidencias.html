@@ -85,6 +85,9 @@
 	<div sec:authorize="hasRole('ROLE_TRAMITADOR')">
 		<div th:replace="fragments/header.html :: navegacionTramitador" />
 	</div>
+	<div sec:authorize="hasRole('ROLE_ADMIN')">
+		<div th:replace="fragments/header.html :: navegacionAdmin" />
+	</div>
 	<br />
 	<form action="incidencias" method="post"
 		th:object="${buscadorIncidenciasForm}">
@@ -115,7 +118,7 @@
 					<div class="form-group col-4">
 						<label for="idIncidencia">Id incidencia</label>
 						<input type="text"
-							name="idIncidencia" id="idIncidencia" class="form-control text-right w-25 form-control-sm" placeholder="Id incidencia"
+							name="idIncidencia" id="idIncidencia" class="form-control text-right w-50 form-control-sm" placeholder="Id incidencia"
 							th:value="${buscadorIncidenciasForm.idIncidencia}" />
 					</div>
 					<div class="form-group col-4" sec:authorize="hasRole('ROLE_TRAMITADOR')">
@@ -177,7 +180,7 @@
 				</div>
 				
 				<input type="submit" class="btn btn-sm btn-primary" value="Buscar" />
-				<input type="button" sec:authorize="hasRole('ROLE_CLIENTE')" class="btn btn-sm btn-secondary"
+				<input type="button" sec:authorize="hasRole('ROLE_CLIENTE')" class="btn btn-sm btn-success"
 					value="Nueva incidencia"
 					onclick="window.location.href='insertarIncidencia'" />
 			</div>
@@ -187,7 +190,7 @@
 		<div class="starter-template">
 			<hr />
 			<h2 class="text-primary">Listado Incidencias</h2>
-			<table class="table table-striped">
+			<table class="table table-striped" style="font-size: 12px;">
 				<thead>
 					<tr>
 						<th>ID <a th:href="@{../tramitador/incidencias(orden=${orden == 'idIncidencia;desc'} ? 'fechaAlta;asc' : 'idIncidencia;desc')}"><i class="fa fa-fw fa-sort"></i></a></th>
@@ -216,7 +219,7 @@
 						<td>
 							<input type="button" class="btn btn-sm btn-primary"
 								value="Consultar"
-								th:onclick="'window.location.href=\''+ @{consultarIncidencia(idIncidencia=${incidencia.IdIncidenciaB64})} + '\''" />
+								th:onclick="'window.location.href=\''+ @{consultarIncidencia(idIncidencia=${incidencia.idIncidenciaB64})} + '\''" />
 						</td>
 					</tr>
 				</tbody>

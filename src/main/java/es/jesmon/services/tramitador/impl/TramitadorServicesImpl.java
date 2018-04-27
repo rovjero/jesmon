@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.jesmon.entities.Empresa;
-import es.jesmon.entities.Sede;
 import es.jesmon.entities.Tramitador;
 import es.jesmon.repository.JesmonRepository;
 import es.jesmon.repository.util.AliasBean;

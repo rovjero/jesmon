@@ -70,6 +70,30 @@
 		</nav>
 	</div>
 
+	<div th:fragment="navegacionAdmin">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+			<a class="navbar-brand" href="#">Jesmon Seguridad</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarColor02" aria-controls="navbarColor02"
+				aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarColor02">
+				<ul class="navbar-nav mr-auto">
+					<li th:class="${#httpServletRequest.getRequestURI().contains('ncidencia')? 'nav-item active': 'nav-item'}">
+						<a class="nav-link" href="incidencias">Incidencias</a>
+					</li>
+					<li th:class="${#httpServletRequest.getRequestURI().contains('mpresa')? 'nav-item active': 'nav-item'}">
+						<a class="nav-link" href="empresas">Empresas</a>
+					</li>
+					<li th:class="${#httpServletRequest.getRequestURI().contains('ramitador')? 'nav-item active': 'nav-item'}">
+						<a class="nav-link" href="tramitadores">Tramitadores</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	</div>
+
 
 	<div th:fragment="nav-vacio">
 		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">

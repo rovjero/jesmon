@@ -59,6 +59,8 @@ public class DefaultController extends JesmonController{
     		return "redirect:/tramitador/incidencias.html";
     	else if(request.isUserInRole(JesmonConstantes.ROLE_CLIENTE))
     		return "redirect:/cliente/incidencias.html";
+    	else if(request.isUserInRole(JesmonConstantes.ROLE_ADMIN))
+    		return "redirect:/admin/incidencias.html";
     	return "redirect:/login/login.html";
     }
     
