@@ -20,9 +20,13 @@ public class SingletonJesmon {
 	
 	public static String LISTA_ESTADOS = "listaEstados";
 	
+	public static String LISTA_PROVINCIAS = "listaProvincias";
+	
 	public static String LISTA_TIPOS_INCIDENCIA = "listaTiposIncidencia";
 	
 	public static String LISTA_PRIORIDADES_INCIDENCIA = "listaPrioridadesIncidencia";
+	
+	public static String HASH_MAP_PROVINCIAS = "hashMapProvincias";
 	
 	public static void putHashMap(String nombreHashMap, Object nombreObjeto, Object objeto){
 		if(listaHashMap == null){

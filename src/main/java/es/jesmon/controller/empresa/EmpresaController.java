@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import es.jesmon.controller.JesmonController;
 import es.jesmon.controller.forms.EmpresaForm;
+import es.jesmon.controller.forms.SedeForm;
 import es.jesmon.controller.incidencia.IncidenciasController;
+import es.jesmon.entities.Direccion;
 import es.jesmon.entities.Empresa;
+import es.jesmon.entities.Provincia;
 import es.jesmon.entities.Responsable;
 import es.jesmon.entities.Sede;
 import es.jesmon.repository.util.AliasBean;
@@ -30,6 +33,7 @@ import es.jesmon.services.estados.EstadosService;
 import es.jesmon.services.incidencias.IncidenciasService;
 import es.jesmon.services.mail.MailSender;
 import es.jesmon.services.mensaje.MensajesService;
+import es.jesmon.services.provincia.ProvinciaService;
 import es.jesmon.services.responsable.ResponsableServices;
 import es.jesmon.services.sedes.SedesServices;
 import es.jesmon.services.tramitador.TramitadorServices;
@@ -65,6 +69,9 @@ public class EmpresaController extends JesmonController {
 	
 	@Autowired
 	EmpresaService empresaServices;
+	
+	@Autowired
+	ProvinciaService provinciaService;
 	
 	@Autowired
     @Qualifier("javasampleapproachMailSender")
@@ -158,15 +165,15 @@ public class EmpresaController extends JesmonController {
     }
 	
 	@PostMapping("/admin/modificarEmpresa")
-	public String modificarEmpresa(@RequestParam(value = "idEmpresa", required = true) String idEmpresaStr,
+	public String modificarEmpresa(@RequestParam(value = "idEmpresa", required = true) Integer idEmpresa,
 			HttpServletRequest request, Model model, EmpresaForm empresaForm) {
 		try {
-			Empresa empresa = (Empresa)jesmonService.buscarByPK(Empresa.class, "idEmpressa", new Long(idEmpresaStr));
+			Empresa empresa = (Empresa)jesmonService.buscarByPK(Empresa.class, "idEmpressa", idEmpresa);
 			empresa.setDenominacion(empresaForm.getDenominacion());
 			empresa.setEmail(empresaForm.getEmail());
 			empresa.setTelefono(empresaForm.getTelefono());
 			empresa.setNif(empresaForm.getNif());
-			jesmonService.insertar(empresa);
+			jesmonService.modificar(empresa);
 			empresaServices.setEmpresasUsuario(getUsuarioSesion(request));
 			request.setAttribute("mesnaje", "Empresa modificada de forma correcta");
 	    	return postEmpresa(request, model, empresa.getIdEmpresa().toString());
@@ -178,5 +185,65 @@ public class EmpresaController extends JesmonController {
 			// TODO: handle exception
 		}
     }
-				
+	
+	@PostMapping("/admin/insertarSede")
+	public String insertarSede(HttpServletRequest request, Model model, SedeForm sedeForm) {
+		try {
+			Sede sede = new Sede();
+			sede.setDenominacion(sedeForm.getDenominacion());
+			sede.setEmpresa(new Empresa(sedeForm.getIdEmpresa()));
+			sede.setTelefono(sedeForm.getTelefono());
+			if(StringUtils.isNotBlank(sedeForm.getDireccion())) {
+				Direccion direccion = new Direccion();
+				direccion.setDireccion(sedeForm.getDireccion());
+				direccion.setCodigoPostal(sedeForm.getCodigoPostal());
+				direccion.setMunicipio(sedeForm.getMunicipio());
+				if(StringUtils.isNotBlank(sedeForm.getCdProvincia()))
+					direccion.setProvincia(provinciaService.getProvincia(sedeForm.getCdProvincia()));
+				sede.setDireccion(direccion);
+			}
+			
+			jesmonService.insertar(sede);
+			empresaServices.setEmpresasUsuario(getUsuarioSesion(request));
+			request.setAttribute("mesnaje", "Sede insertada de forma correcta");
+	    	return postEmpresa(request, model, sedeForm.getIdEmpresa().toString());
+	    }
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return procesarViewResolver("error", request);
+			// TODO: handle exception
+		}
+    }
+	
+	@PostMapping("/admin/modificarSede")
+	public String modificarSede(@RequestParam(value = "idSede", required = true) Integer idSede,
+			HttpServletRequest request, Model model, SedeForm sedeForm) {
+		try {
+			Sede sede = (Sede)jesmonService.buscarByPK(Sede.class, "idSede", idSede);
+			sede.setDenominacion(sedeForm.getDenominacion());
+			sede.setEmpresa(new Empresa(sedeForm.getIdEmpresa()));
+			sede.setTelefono(sedeForm.getTelefono());
+			if(StringUtils.isNotBlank(sedeForm.getDireccion())) {
+				Direccion direccion = new Direccion();
+				direccion.setDireccion(sedeForm.getDireccion());
+				direccion.setCodigoPostal(sedeForm.getCodigoPostal());
+				direccion.setMunicipio(sedeForm.getMunicipio());
+				if(StringUtils.isNotBlank(sedeForm.getCdProvincia()))
+					direccion.setProvincia(provinciaService.getProvincia(sedeForm.getCdProvincia()));
+				sede.setDireccion(direccion);
+			}
+			jesmonService.modificar(sede);
+			empresaServices.setEmpresasUsuario(getUsuarioSesion(request));
+			request.setAttribute("mesnaje", "Sede modificada de forma correcta");
+	    	return postEmpresa(request, model, sedeForm.getIdEmpresa().toString());
+	    }
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return procesarViewResolver("error", request);
+			// TODO: handle exception
+		}
+    }
+	
 }
