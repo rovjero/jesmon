@@ -11,6 +11,14 @@
 		jQuery("#idEmpresa").bind('change', function() {
 			document.getElementById("formEmpresas").submit();
 		});
+
+		jQuery(document).ready( function() {
+			$('#formEmpresa').validate(getValidationObject(empresaFomRules));
+		});
+
+		jQuery(document).ready( function() {
+			$('#formSede').validate(getValidationObject(sedeFomRules));
+		});
 	});
 
 	function FnNuevaEmpresa(){
@@ -31,23 +39,33 @@
 	}
 	
 	function FnNuevaSede(){
-
+		$("#sedeModal h5").html("Nueva sede");
+		$("#sedeModal form").attr("action", "insertarSede");
+		$("#sedeModal").modal();
 	}
 
-	function FnModificarSede(){
-
-	}			
-
-	function FnNuevaSede(){
-
+	function FnModificarSede(idSede){
+		$("#sedeModal h5").html("Modificar sede");
+		$("#sedeModal form").attr("action", "modificarSede");
+		$("#sedeModal #denominacionSede").val(jQuery("#denominacionSede" + idSede).html());
+		$("#sedeModal #telefonoSede").val(jQuery("#telefonoSede" + idSede).html());
+		$("#sedeModal #direccionSede").val(jQuery("#direccionSede" + idSede).val());
+		$("#sedeModal #municipioSede").val(jQuery("#municipioSede" + idSede).val());
+		$("#sedeModal #codigoPostalSede").val(jQuery("#codigoPostalSede" + idSede).val());
+		$("#sedeModal #provinciaSede").val(jQuery("#cdProvinciaSede" + idSede).val());
+		$("#sedeModal").modal();
 	}
 
 	function FnNuevoUsuario(){
-
+		$("#usuarioModal h5").html("Nuevo usuario");
+		$("#usuarioModal form").attr("action", "insertarResponsable");
+		$("#usuarioModal").modal();
 	}
 
 	function FnModificarUsuario(){
-		
+		$("#usuarioModal h5").html("Modificar usuario");
+		$("#usuarioModal form").attr("action", "modificarResponsable");
+		$("#usuarioModal").modal();
 	}
 
 </script>
@@ -90,7 +108,7 @@
 	
 	<div class="container" th:if="${empresa != null}">
 		<div class="card">
-			<div class="card-header row">
+			<div class="card-header row" style="margin-left: 0px;margin-right:0px;">
 				<h3 class="card-title text-primary" th:text="${empresa.denominacion}" id="denominacionEmpresaH3"></h3>
 				&nbsp;&nbsp;
 				<input type="button" class="btn btn-sm btn-success" style="height: 30px"
@@ -115,7 +133,7 @@
 					    <div class="card">
 					      <div class="card-body">
 					        <h5 class="card-title">Email</h5>
-					        <p class="card-text" th:text="${#strings.defaultString(empresa.nif, '&nbsp;')}" id="emailEmpresaP"></p>
+					        <p class="card-text" th:text="${#strings.defaultString(empresa.email, '&nbsp;')}" id="emailEmpresaP"></p>
 					      </div>
 					    </div>
 					  </div>
@@ -150,15 +168,19 @@
 							</thead>
 							<tbody>
 								<tr th:each="sede : ${empresa.sedes}">
-									<td th:text="${sede.denominacion}">Text ...</td>
-									<td th:text="${sede.telefono}"></td>
+									<td th:text="${sede.denominacion}" th:id="${'denominacionSede' + sede.idSede}">Text ...</td>
+									<td th:text="${sede.telefono}" th:id="${'telefonoSede' + sede.idSede}"></td>
 									<td th:text="${sede.direccion.direccionStr}"></td>
 									<td align="center">
-										<input type="radio" name="sedeCentral" />
+										<input type="radio" name="sedeCentral" th:value="${sede.idSede}"/>
 									</td>
 									<td>
+										<input type="hidden" th:id="${'direccionSede' + sede.idSede}" th:value="${sede.direccion == null || sede.direccion.direccion == null ? '' : sede.direccion.direccion}" />
+										<input type="hidden" th:id="${'municipioSede' + sede.idSede}" th:value="${sede.direccion == null || sede.direccion.municipio == null ? '' : sede.direccion.municipio}" />
+										<input type="hidden" th:id="${'codigoPostalSede' + sede.idSede}" th:value="${sede.direccion == null || sede.direccion.codigoPostal == null ? '' : sede.direccion.codigoPostal}" />
+										<input type="hidden" th:id="${'cdProvinciaSede' + sede.idSede}" th:value="${sede.direccion == null || sede.direccion.provincia == null ? '' : sede.direccion.provincia.cdProvincia}" />
 										<input type="button" class="btn btn-sm btn-primary"
-											value="Modificar" />
+											value="Modificar sede" th:onclick="${'FnModificarSede(' + sede.idSede + ')'}"/>
 									</td>
 								</tr>
 							</tbody>
@@ -243,7 +265,7 @@
 							 <div class="row">
   								<div class="col-12">
 									<div class="form-group">
-										<label for="denominacionEmpresa">Mombre empresa</label>
+										<label for="denominacionEmpresa">Nombre empresa</label>
 										<input type="text" class="form-control form-control-sm"
 											name="denominacion" id="denominacionEmpresa" placeholder="Nombre empresa" required="true"
 											autofocus="true" maxlength="500"/>
@@ -288,7 +310,146 @@
 			<input type="hidden" name="idEmpresa" id="idEmpresaModal"/>
 		</form>
 	</div>
-	
+
+	<div class="modal fade" id="sedeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<form method="post" id="formSede" action="" >
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title text-primary" id="labelMensaje">Nueva sede</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="container">
+							 <div class="row">
+  								<div class="col-12">
+									<div class="form-group">
+										<label for="denominacionSede">Nombre sede</label>
+										<input type="text" class="form-control form-control-sm"
+											name="denominacion" id="denominacionSede" placeholder="Nombre sede" required="true"
+											autofocus="true" maxlength="500"/>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-4">
+									<div class="form-group">
+										<label for="telefonoSede">Teléfono</label>
+										<input type="text" class="form-control form-control-sm"
+											name="telefono" id="telefonoSede" placeholder="Teléfono"
+											maxlength="9" style="width: 75%" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-12">
+									<div class="form-group">
+										<hr />
+										<h6>Dirección</h6>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-12">
+									<div class="form-group">
+										<label for="direccionSede">Calle</label>
+										<input type="text" class="form-control form-control-sm"
+											name="direccion" id="direccionSede" placeholder="Calle"/>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-6">
+									<div class="form-group">
+										<label for="municipioSede">Municipio</label>
+										<input type="text" class="form-control form-control-sm"
+											name="municipio" id="municipioSede" placeholder="Municipio"/>
+									</div>
+								</div>
+								<div class="col-6">
+									<div class="form-group">
+										<label for="provinciaSede">Provincia</label>
+										<select name="provincia" id="provinciaSede" class="form-control form-control-sm">
+											<option></option>
+											<option th:each="provincia : ${listaProvincias}" 
+												th:value="${provincia.cdProvincia}" th:text="${provincia.denominacion}" />
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-6">
+									<div class="form-group">
+										<label for="codigoPostalSede">Código postal</label>
+										<input type="text" class="form-control form-control-sm" maxlength="5" style="width: 30%"
+											name="codigoPostal" id="codigoPostalSede" placeholder="C.P."/>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Cancelar</button>
+						<button type="submit" class="btn btn-primary" >Confirmar</button>
+					</div>
+				</div>
+			</div>
+			<input type="hidden" name="idSede" id="idSedeModal"/>
+		</form>
+	</div>
+	<div class="modal fade" id="usuarioModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<form method="post" id="formSede" action="" >
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title text-primary" id="labelMensaje">Nueva usuario</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="container">
+							 <div class="row">
+  								<div class="col-12">
+									<div class="form-group">
+										<label for="loginUsuariod">Login usuario</label>
+										<input type="text" class="form-control form-control-sm"
+											name="login" id="loginUsuario" placeholder="Login usuario" required="true"
+											autofocus="true" maxlength="50"/>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group col-6">
+									<label for="passwordResponsable">Contraseña</label>
+									<input type="password"
+										class="form-control password" id="passwordResponsable"
+										aria-describedby="nuevoPasswordHelp" placeholder="Contraseña" />
+									<div class="input-group-append">
+									    <span class="input-group-text" id="passwordHelp">6 carácteres mínimo</span>
+									</div>
+								</div>
+								<div class="form-group col-6">
+									<label for="repitaPasswordResponsable">Repita contraseña</label>
+									<input type="password"
+										class="form-control password" id="repitaPasswordResponsable"
+										aria-describedby="nuevoPasswordHelp" placeholder="Repita contraseña" />
+									<div class="input-group-append">
+									    <span class="input-group-text" id="repitaPasswordHelp">6 carácteres mínimo</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
 
 	<div th:replace="fragments/footer.html :: footer" />
 

@@ -21,7 +21,6 @@ import es.jesmon.controller.forms.SedeForm;
 import es.jesmon.controller.incidencia.IncidenciasController;
 import es.jesmon.entities.Direccion;
 import es.jesmon.entities.Empresa;
-import es.jesmon.entities.Provincia;
 import es.jesmon.entities.Responsable;
 import es.jesmon.entities.Sede;
 import es.jesmon.repository.util.AliasBean;
@@ -102,6 +101,7 @@ public class EmpresaController extends JesmonController {
 				criteriosBusqueda.addCriterio("sedes", "sedes", AliasBean.LEFT_JOIN);
 				criteriosBusqueda.addCriterio("responsables", "responsables", AliasBean.LEFT_JOIN);
 				Empresa empresa = (Empresa)jesmonService.buscarByPK(Empresa.class, "idEmpresa", idEmpresa, criteriosBusqueda);
+				model.addAttribute("listaProvincias", provinciaService.getListaProvincias());
 				model.addAttribute("empresa", empresa);
 			}
 	    	return procesarViewResolver("empresas", request);
@@ -153,7 +153,7 @@ public class EmpresaController extends JesmonController {
 			empresa.setNif(empresaForm.getNif());
 			jesmonService.insertar(empresa);
 			empresaServices.setEmpresasUsuario(getUsuarioSesion(request));
-			request.setAttribute("mesnaje", "Empresa insertada de forma correcta");
+			request.setAttribute("mensaje", "Empresa insertada de forma correcta");
 	    	return postEmpresa(request, model, empresa.getIdEmpresa().toString());
 	    }
 		catch (Exception e) {
@@ -168,14 +168,14 @@ public class EmpresaController extends JesmonController {
 	public String modificarEmpresa(@RequestParam(value = "idEmpresa", required = true) Integer idEmpresa,
 			HttpServletRequest request, Model model, EmpresaForm empresaForm) {
 		try {
-			Empresa empresa = (Empresa)jesmonService.buscarByPK(Empresa.class, "idEmpressa", idEmpresa);
+			Empresa empresa = (Empresa)jesmonService.buscarByPK(Empresa.class, "idEmpresa", idEmpresa);
 			empresa.setDenominacion(empresaForm.getDenominacion());
 			empresa.setEmail(empresaForm.getEmail());
 			empresa.setTelefono(empresaForm.getTelefono());
 			empresa.setNif(empresaForm.getNif());
 			jesmonService.modificar(empresa);
 			empresaServices.setEmpresasUsuario(getUsuarioSesion(request));
-			request.setAttribute("mesnaje", "Empresa modificada de forma correcta");
+			request.setAttribute("mensaje", "Empresa modificada de forma correcta");
 	    	return postEmpresa(request, model, empresa.getIdEmpresa().toString());
 	    }
 		catch (Exception e) {
@@ -205,7 +205,7 @@ public class EmpresaController extends JesmonController {
 			
 			jesmonService.insertar(sede);
 			empresaServices.setEmpresasUsuario(getUsuarioSesion(request));
-			request.setAttribute("mesnaje", "Sede insertada de forma correcta");
+			request.setAttribute("mensaje", "Sede insertada de forma correcta");
 	    	return postEmpresa(request, model, sedeForm.getIdEmpresa().toString());
 	    }
 		catch (Exception e) {
@@ -235,7 +235,7 @@ public class EmpresaController extends JesmonController {
 			}
 			jesmonService.modificar(sede);
 			empresaServices.setEmpresasUsuario(getUsuarioSesion(request));
-			request.setAttribute("mesnaje", "Sede modificada de forma correcta");
+			request.setAttribute("mensaje", "Sede modificada de forma correcta");
 	    	return postEmpresa(request, model, sedeForm.getIdEmpresa().toString());
 	    }
 		catch (Exception e) {

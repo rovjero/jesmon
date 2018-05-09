@@ -53,60 +53,86 @@ var solicitarCambioPasswordFormRules = {
 };
 
 var loginFormRules = {
-		username: {
-			required: true
-		},
-		password: {
-			required: true
-		}
+	username: {
+		required: true
+	},
+	password: {
+		required: true
+	}
 };
 
 var insertarIncidenciaFormRules = {
-		idSede: {
-			required: true
-		},
-		asunto: {
-			required: true
-		},
-		texto: {
-			required: true
-		}
+	idSede: {
+		required: true
+	},
+	asunto: {
+		required: true
+	},
+	texto: {
+		required: true
+	}
 };
 
 
 var estadoFormRules = {
-		idEstado: {
-			required: true
-		},
-		idIncidenciaEstado: {
-			required: true
-		}
+	idEstado: {
+		required: true
+	},
+	idIncidenciaEstado: {
+		required: true
+	}
 };
 
 var mensajeFormRules = {
-		idIncidenciaMensaje: {
-			required: true
-		},
-		texto: {
-			required: true
-		}
+	idIncidenciaMensaje: {
+		required: true
+	},
+	texto: {
+		required: true
+	}
 };
 
 var cambiarPasswordFomRules = {
-		passwordActual: {
-	      required: true,
-	      minlength: 6
-	    },
-	    nuevoPassword: {
-	      required: true,
-	      minlength: 6
-	    },
-	    repitaNuevoPassword: {
-	    	required: true,
-	    	minlength: 6,
-	  		equalTo: "#nuevoPassword"
-	    }
+	passwordActual: {
+      required: true,
+      minlength: 6
+    },
+    nuevoPassword: {
+      required: true,
+      minlength: 6
+    },
+    repitaNuevoPassword: {
+    	required: true,
+    	minlength: 6,
+  		equalTo: "#nuevoPassword"
+    }
 };
+
+
+var empresaFomRules = {
+	denominacionEmpresa: {
+		required: true
+	},
+	nifEmpresa: {
+      required: false,
+      minlength: 9
+    },
+    telefonoEmpresa: {
+      required: false,
+      minlength: 9
+    },
+    emailEmpresa: {
+      required: false,
+      email: true
+    }
+};
+
+var sedeFomRules = {
+	denominacionSede: {
+		required: true
+	}
+};
+
 
 if (!String.prototype.startsWith) {
 	  String.prototype.startsWith = function(stringBuscada, posicion) {
