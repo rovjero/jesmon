@@ -24,6 +24,8 @@
 	function FnNuevaEmpresa(){
 		$("#empresaModal h5").html("Nueva empresa");
 		$("#empresaModal form").attr("action", "insertarEmpresa");
+		$("#empresaModal :text").val("");
+		$("#empresaModal select").val("");
 		$("#empresaModal").modal();
 	}
 
@@ -41,6 +43,8 @@
 	function FnNuevaSede(){
 		$("#sedeModal h5").html("Nueva sede");
 		$("#sedeModal form").attr("action", "insertarSede");
+		$("#sedeModal :text").val("");
+		$("#sedeModal select").val("");
 		$("#sedeModal").modal();
 	}
 
@@ -70,6 +74,12 @@
 
 </script>
 
+<style type="text/css">
+
+.table-striped td {
+	padding: 4px;
+}
+</style>
 
 </head>
 <body>
@@ -121,33 +131,33 @@
 						<h5 class="card-title">Datos de la empresa</h5>
 					</div>
 					<div class="row">
-					  <div class="col-sm-4">
-					    <div class="card">
-					      <div class="card-body">
-					        <h5 class="card-title">NIF</h5>
-					        <p class="card-text" th:text="${#strings.defaultString(empresa.nif,'&nbsp;')}" id="nifEmpresaP"></p>
-					      </div>
-					    </div>
-					  </div>
-					  <div class="col-sm-4">
-					    <div class="card">
-					      <div class="card-body">
-					        <h5 class="card-title">Email</h5>
-					        <p class="card-text" th:text="${#strings.defaultString(empresa.email, '&nbsp;')}" id="emailEmpresaP"></p>
-					      </div>
-					    </div>
-					  </div>
-					  <div class="col-sm-4">
-					    <div class="card">
-					      <div class="card-body">
-					        <h5 class="card-title">Teléfono</h5>
-					        <p class="card-text" th:text="${#strings.defaultString(empresa.telefono, '&nbsp;')}" id="telefonoEmpresaP"></p>
-					      </div>
-					    </div>
-					  </div>
+						<div class="col-sm-4">
+						<div class="card">
+							<div class="card-body">
+							<h5 class="card-title">NIF</h5>
+							<p class="card-text" th:text="${#strings.defaultString(empresa.nif,'&nbsp;')}" id="nifEmpresaP"></p>
+							</div>
+						</div>
+						</div>
+						<div class="col-sm-4">
+						<div class="card">
+							<div class="card-body">
+							<h5 class="card-title">Email</h5>
+							<p class="card-text" th:text="${#strings.defaultString(empresa.email, '&nbsp;')}" id="emailEmpresaP"></p>
+							</div>
+						</div>
+						</div>
+						<div class="col-sm-4">
+						<div class="card">
+							<div class="card-body">
+							<h5 class="card-title">Teléfono</h5>
+							<p class="card-text" th:text="${#strings.defaultString(empresa.telefono, '&nbsp;')}" id="telefonoEmpresaP"></p>
+							</div>
+						</div>
+						</div>
 					</div>
 				</li>
-				<li class="list-group-item">				
+				<li class="list-group-item">
 					<div class="card-body">
 						<h5 class="card-title">Sedes
 							<input type="button" class="btn btn-sm btn-success"
@@ -156,38 +166,48 @@
 						</h5>
 					</div>
 					<div class="row col-sm-12">
-						<table class="table table-striped" style="font-size: 12px;">
-							<thead>
-								<tr>
-									<th>Denominación</th>
-									<th>Teléfono</th>
-									<th>Dirección</th>
-									<th>Sede Central</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr th:each="sede : ${empresa.sedes}">
-									<td th:text="${sede.denominacion}" th:id="${'denominacionSede' + sede.idSede}">Text ...</td>
-									<td th:text="${sede.telefono}" th:id="${'telefonoSede' + sede.idSede}"></td>
-									<td th:text="${sede.direccion.direccionStr}"></td>
-									<td align="center">
-										<input type="radio" name="sedeCentral" th:value="${sede.idSede}"/>
-									</td>
-									<td>
-										<input type="hidden" th:id="${'direccionSede' + sede.idSede}" th:value="${sede.direccion == null || sede.direccion.direccion == null ? '' : sede.direccion.direccion}" />
-										<input type="hidden" th:id="${'municipioSede' + sede.idSede}" th:value="${sede.direccion == null || sede.direccion.municipio == null ? '' : sede.direccion.municipio}" />
-										<input type="hidden" th:id="${'codigoPostalSede' + sede.idSede}" th:value="${sede.direccion == null || sede.direccion.codigoPostal == null ? '' : sede.direccion.codigoPostal}" />
-										<input type="hidden" th:id="${'cdProvinciaSede' + sede.idSede}" th:value="${sede.direccion == null || sede.direccion.provincia == null ? '' : sede.direccion.provincia.cdProvincia}" />
-										<input type="button" class="btn btn-sm btn-primary"
-											value="Modificar sede" th:onclick="${'FnModificarSede(' + sede.idSede + ')'}"/>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+						<form action="asignarSedeCentral" method="post">
+							<table class="table table-striped" style="font-size: 12px;">
+								<thead>
+									<tr>
+										<th>Denominación</th>
+										<th>Teléfono</th>
+										<th>Dirección</th>
+										<th>Sede Central</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="sede : ${empresa.sedes}">
+										<td th:text="${sede.denominacion}" th:id="${'denominacionSede' + sede.idSede}">Text ...</td>
+										<td th:text="${sede.telefono}" th:id="${'telefonoSede' + sede.idSede}"></td>
+										<td th:text="${sede.direccion == null ? '' : sede.direccion.direccionStr}"></td>
+										<td align="center">
+											<input type="radio" name="idSedeCentral" th:value="${sede.idSede}" th:checked="${sede == empresa.sede}" />
+										</td>
+										<td>
+											<input type="hidden" th:id="${'direccionSede' + sede.idSede}" th:value="${sede.direccion == null || sede.direccion.direccion == null ? '' : sede.direccion.direccion}" />
+											<input type="hidden" th:id="${'municipioSede' + sede.idSede}" th:value="${sede.direccion == null || sede.direccion.municipio == null ? '' : sede.direccion.municipio}" />
+											<input type="hidden" th:id="${'codigoPostalSede' + sede.idSede}" th:value="${sede.direccion == null || sede.direccion.codigoPostal == null ? '' : sede.direccion.codigoPostal}" />
+											<input type="hidden" th:id="${'cdProvinciaSede' + sede.idSede}" th:value="${sede.direccion == null || sede.direccion.provincia == null ? '' : sede.direccion.provincia.cdProvincia}" />
+											<input type="button" class="btn btn-sm btn-primary"
+												value="Modificar sede" th:onclick="${'FnModificarSede(' + sede.idSede + ')'}"/>
+										</td>
+									</tr>
+								</tbody>
+								<tfoot>
+									<tr>
+										<td colspan="3"></td>
+										<td><input type="submit" class="btn btn-sm btn-primary" value="Asignar sede central" /></td>									
+										<td/>
+									</tr>
+								</tfoot>
+							</table>
+							<input type="hidden" name="idEmpresa" th:value="${empresa.idEmpresa}" id="idEmpresaSedes" />
+						</form>
 					</div>
 				</li>
-				<li class="list-group-item">				
+				<li class="list-group-item">
 					<div class="card-body">
 						<h5 class="card-title">Usuarios
 							<input type="button" class="btn btn-sm btn-success"
@@ -213,7 +233,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr th:each="responsable : ${empresa.responsables}">
+									<tr th:each="responsable : ${empresa.responsables}" th:if="${responsable.activo == 0 ? '' : 'class=text-danger'}" >
 										<td th:text="${responsable.login}">Text ...</td>
 										<td th:text="${responsable.nombreCompleto}">Text ...</td>
 										<td th:text="${responsable.nif}">Text ...</td>
@@ -230,15 +250,21 @@
 												</li>
 											</ul>
 										</td>
+										<td align="center">
+											<input type="checkbox" th:checked="${responsable.activo == 0}" th:name="${'activo_responsable_' + responsable.idResponsable}"
+												th:id="${'activo_responsable_' + responsable.idResponsable}" value="1" />
+										</td>
 										<td>
-											<input type="button" class="btn btn-sm btn-primary" value="Modificar" onclick="FnModificarUsuario()"/>
+											<input type="button" class="btn btn-sm btn-primary" value="Modificar usuario" onclick="FnModificarUsuario()"/>
 										</td>
 									</tr>
 								</tbody>
 								<tfoot>
 									<tr>
 										<td colspan="6"></td>
-										<td><input type="submit" class="btn btn-sm btn-primary" value="Modificar Sedes" /></td>
+										<td><input type="submit" class="btn btn-sm btn-primary" value="Asignar sedes" /></td>
+										<td><input type="submit" class="btn btn-sm btn-primary" value="Activar/Desact" /></td>
+										<td/>
 									</tr>
 								</tfoot>
 							</table>
@@ -399,10 +425,11 @@
 				</div>
 			</div>
 			<input type="hidden" name="idSede" id="idSedeModal"/>
+			<input type="hidden" name="idEmpresa" id="idEmpresaSede" th:value="${empresa == null ? '' : empresa.idEmpresa}" />
 		</form>
 	</div>
 	<div class="modal fade" id="usuarioModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<form method="post" id="formSede" action="" >
+		<form method="post" id="formResponsable" action="" >
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -428,26 +455,69 @@
 								<div class="form-group col-6">
 									<label for="passwordResponsable">Contraseña</label>
 									<input type="password"
-										class="form-control password" id="passwordResponsable"
+										class="form-control form-control-sm" id="passwordResponsable" name="password"
 										aria-describedby="nuevoPasswordHelp" placeholder="Contraseña" />
 									<div class="input-group-append">
-									    <span class="input-group-text" id="passwordHelp">6 carácteres mínimo</span>
+									    <span class="input-group-text" id="passwordHelp" style="font-size: 14px;">6 carácteres mínimo</span>
 									</div>
 								</div>
 								<div class="form-group col-6">
-									<label for="repitaPasswordResponsable">Repita contraseña</label>
+									<label for="repitaPasswordResponsable">Repita Contraseña</label>
 									<input type="password"
-										class="form-control password" id="repitaPasswordResponsable"
+										class="form-control form-control-sm" id="repitaPasswordResponsable" name="repitaPassword"
 										aria-describedby="nuevoPasswordHelp" placeholder="Repita contraseña" />
 									<div class="input-group-append">
-									    <span class="input-group-text" id="repitaPasswordHelp">6 carácteres mínimo</span>
+									    <span class="input-group-text" id="repitaPasswordHelp" style="font-size: 14px;">6 carácteres mínimo</span>
 									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group col-sm-12 col-md-6">
+									<label for="nombreResponsable">Nombre</label>
+									<input type="text" name="nombre"
+										class="form-control form-control-sm" id="nombreResponsable" maxlength="150" placeholder="Nombre" />						
+								</div>
+								<div class="form-group col-sm-12 col-md-6">
+									<label for="apellido1Responsable">1º Apellido</label>
+									<input type="text" name="apellido1"
+										class="form-control form-control-sm" id="apellido1Responsable" maxlength="150" placeholder="1º apellido" />
+								</div>								
+							</div>
+							<div class="row">								
+								<div class="form-group col-sm-12 col-md-6">
+									<label for="apellido2Responsable">2º Apellido</label>
+									<input type="text" name="apellido2"
+										class="form-control form-control-sm" id="apellido2Responsable" maxlength="150" placeholder="2ª apellido" />
+								</div>
+								<div class="form-group col-sm-12 col-md-6">
+									<label for="NIFResponsable">NIF</label>
+									<input type="text" name="NIF"
+										class="form-control w-50 form-control-sm" id="NIFResponsable" maxlength="9" placeholder="NIF" />
+								</div>
+							</div>
+							<div class="row">								
+								<div class="form-group col-sm-12 col-md-6">
+									<label for="apellido2Responsable">Email</label>
+									<input type="text" name="email" required="required"
+										class="form-control form-control-sm" id="emailResponsable" maxlength="50" placeholder="Email" />
+								</div>
+								<div class="form-group col-sm-12 col-md-6">
+									<label for="cargoResponsable">Cargo</label>
+									<input type="text" name="cargo"
+										class="form-control form-control-sm" id="cargoResponsable" maxlength="45" placeholder="Cargo" />
 								</div>
 							</div>
 						</div>
 					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Cancelar</button>
+						<button type="submit" class="btn btn-primary" >Confirmar</button>
+					</div>
 				</div>
 			</div>
+			<input type="hidden" name="idEmpresa" id="idEmpresaResponsable" th:value="${empresa == null ? '' : empresa.idEmpresa}" />
+			<input type="hidden" name="idResponsable" id="idResponsable" />
 		</form>
 	</div>
 

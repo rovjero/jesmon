@@ -3,6 +3,7 @@ package es.jesmon.controller.forms;
 public class ResponsableForm {
 
 	private Integer idEmpresa;
+	private Integer idResponsable;
 	private String nif;
 	private String nombre;
 	private String apellido1;
@@ -10,6 +11,8 @@ public class ResponsableForm {
 	private String email;
 	private String telefono;
 	private String cargo;
+	private String password;
+	private String repitaPassword;
 	
 	public Integer getIdEmpresa() {
 		return idEmpresa;
@@ -58,5 +61,23 @@ public class ResponsableForm {
 	}
 	public void setCargo(String cargo) {
 		this.cargo = cargo;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public String getRepitaPassword() {
+		return repitaPassword;
+	}
+	public void setRepitaPassword(String repitaPassword) {
+		this.repitaPassword = repitaPassword;
+	}
+	public Integer getIdResponsable() {
+		return idResponsable;
+	}
+	public void setIdResponsable(Integer idResponsable) {
+		this.idResponsable = idResponsable;
 	}
 }

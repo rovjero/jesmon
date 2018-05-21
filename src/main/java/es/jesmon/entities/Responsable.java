@@ -129,7 +129,7 @@ public class Responsable extends JesmonEntity implements java.io.Serializable {
 		this.apellido1 = apellido1;
 	}
 
-	@Column(name = "apellido2", length = 45)
+	@Column(name = "apellido2", length = 150)
 	public String getApellido2() {
 		return this.apellido2;
 	}

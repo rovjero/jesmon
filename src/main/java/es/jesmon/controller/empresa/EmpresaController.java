@@ -1,5 +1,6 @@
 package es.jesmon.controller.empresa;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import es.jesmon.controller.JesmonController;
 import es.jesmon.controller.forms.EmpresaForm;
+import es.jesmon.controller.forms.ResponsableForm;
 import es.jesmon.controller.forms.SedeForm;
 import es.jesmon.controller.incidencia.IncidenciasController;
 import es.jesmon.entities.Direccion;
@@ -245,5 +248,80 @@ public class EmpresaController extends JesmonController {
 			// TODO: handle exception
 		}
     }
+	
+	@PostMapping("/admin/insertarResponsable")
+	public String insertarResponsable(HttpServletRequest request, Model model, ResponsableForm responsableForm) {
+		try {
+			Responsable responsable = new Responsable(responsableForm.getIdEmpresa());
+			responsable.setActivo(1);
+			responsable.setNif(responsableForm.getNif());
+			responsable.setNombre(responsableForm.getNombre());
+			responsable.setApellido1(responsableForm.getApellido1());
+			responsable.setApellido2(responsableForm.getApellido2());
+			responsable.setEmail(responsableForm.getEmail());
+			responsable.setTelefono(responsableForm.getTelefono());
+			responsable.setCargo(responsableForm.getCargo());
+			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+			responsable.setPassword(passwordEncoder.encode(responsableForm.getPassword()).getBytes(StandardCharsets.UTF_8));
+			jesmonService.insertar(responsable);
+			request.setAttribute("mensaje", "Usuario insertado de forma correcta");
+	    	return postEmpresa(request, model, responsableForm.getIdEmpresa().toString());
+	    }
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return procesarViewResolver("error", request);
+			// TODO: handle exception
+		}
+    }
+	
+	@PostMapping("/admin/modificarResponsable")
+	public String modificarResponsable(HttpServletRequest request, Model model, ResponsableForm responsableForm) {
+		try {
+			Responsable responsable = (Responsable)jesmonService.buscarByPK(Responsable.class, "idResponsable", responsableForm.getIdResponsable());
+			responsable.setNif(responsableForm.getNif());
+			responsable.setNombre(responsableForm.getNombre());
+			responsable.setApellido1(responsableForm.getApellido1());
+			responsable.setApellido2(responsableForm.getApellido2());
+			responsable.setEmail(responsableForm.getEmail());
+			responsable.setTelefono(responsableForm.getTelefono());
+			responsable.setCargo(responsableForm.getCargo());
+			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+			responsable.setPassword(passwordEncoder.encode(responsableForm.getPassword()).getBytes(StandardCharsets.UTF_8));
+			jesmonService.modificar(responsable);
+			request.setAttribute("mensaje", "Usuario modificado de forma correcta");
+	    	return postEmpresa(request, model, responsableForm.getIdEmpresa().toString());
+	    }
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return procesarViewResolver("error", request);
+			// TODO: handle exception
+		}
+    }
+	
+	@PostMapping("/admin/asignarSedeCentral")
+	public String asignarSedeCentral(HttpServletRequest request, Model model, @RequestParam(value = "idEmpresa", required = true) Integer idEmpresa,
+			@RequestParam(value = "idSedeCentral", required = false) Integer idSedeCentral) {
+		try {
+			Empresa empresa = (Empresa)jesmonService.buscarByPK(Empresa.class, "idEmpresa", idEmpresa);
+			if(idSedeCentral == null)
+				empresa.setSede(null);
+			else
+				empresa.setSede(new Sede(idSedeCentral));
+			jesmonService.modificar(empresa);
+			request.setAttribute("mensaje", "Sede central asignada de forma correcta");
+	    	return postEmpresa(request, model, idEmpresa.toString());
+	    }
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return procesarViewResolver("error", request);
+			// TODO: handle exception
+		}
+    }
+	
+	
+	
 	
 }
