@@ -21,11 +21,14 @@
         <mapping class="es.jesmon.entities2.Mensaje"/>
         <mapping class="es.jesmon.entities2.Responsable"/>
         <mapping class="es.jesmon.entities2.Estado"/>
+        <mapping class="es.jesmon.entities2.EquipoIncendios"/>
         <mapping class="es.jesmon.entities2.Sede"/>
         <mapping class="es.jesmon.entities2.UserRoles"/>
         <mapping class="es.jesmon.entities2.Direccion"/>
         <mapping class="es.jesmon.entities2.Incidencia"/>
+        <mapping class="es.jesmon.entities2.ContratoSistemaSeguridad"/>
         <mapping class="es.jesmon.entities2.Provincia"/>
         <mapping class="es.jesmon.entities2.Tramitador"/>
+        <mapping class="es.jesmon.entities2.ContratoIncencidios"/>
     </session-factory>
 </hibernate-configuration>

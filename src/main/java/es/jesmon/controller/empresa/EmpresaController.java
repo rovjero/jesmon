@@ -103,6 +103,9 @@ public class EmpresaController extends JesmonController {
 				criteriosBusqueda.addCriterio("idEmpresa", idEmpresa);
 				criteriosBusqueda.addCriterio("sedes", "sedes", AliasBean.LEFT_JOIN);
 				criteriosBusqueda.addCriterio("responsables", "responsables", AliasBean.LEFT_JOIN);
+				criteriosBusqueda.addCriterio("contratosSistemaSeguridad", "contratosSistemaSeguridad", AliasBean.LEFT_JOIN);
+				criteriosBusqueda.addCriterio("contratosIncencidios", "contratosIncencidios", AliasBean.LEFT_JOIN);
+				
 				Empresa empresa = (Empresa)jesmonService.buscarByPK(Empresa.class, "idEmpresa", idEmpresa, criteriosBusqueda);
 				model.addAttribute("listaProvincias", provinciaService.getListaProvincias());
 				model.addAttribute("empresa", empresa);
