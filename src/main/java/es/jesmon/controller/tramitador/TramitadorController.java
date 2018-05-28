@@ -1,5 +1,10 @@
 package es.jesmon.controller.tramitador;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -15,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import es.jesmon.controller.JesmonController;
 import es.jesmon.entities.Empresa;
+import es.jesmon.entities.Sede;
 import es.jesmon.entities.Tramitador;
 import es.jesmon.repository.util.AliasBean;
 import es.jesmon.repository.util.CriteriosBusqueda;
+import es.jesmon.repository.util.ParBean;
 import es.jesmon.services.JesmonServices;
 import es.jesmon.services.estadoIncidencia.EstadoIncidenciaService;
 import es.jesmon.services.estados.EstadosService;
@@ -62,9 +69,11 @@ public class TramitadorController extends JesmonController {
 	public MailSender mailSender;
 	
 	@GetMapping("/admin/tramitadores")
-    public String getTramitadores(HttpServletRequest request) {
+    public String getTramitadores(HttpServletRequest request, Model model) {
 		try {
 			//model.addAttribute("incidenciaForm", new IncidenciaForm());
+			List<Tramitador> listaTramitadores = tramitadorServices.getListaTramitadoresEmpresa(null);
+			model.addAttribute("listaTramitadores", listaTramitadores);
 	    	return procesarViewResolver("tramitadores", request);
 	    }
 		catch (Exception e) {
@@ -77,17 +86,26 @@ public class TramitadorController extends JesmonController {
 	
 	@PostMapping("/admin/tramitadores")
 	public String postTramitadores(HttpServletRequest request, Model model,
-		@RequestParam(value = "idTramitador", required = true) String idTramitadorStr) {
+		@RequestParam(value = "idTramitador", required = true) Long idTramitador) {
 		try {
-			if(StringUtils.isNotBlank(idTramitadorStr)) {
-				Integer idTramitador = new Integer(idTramitadorStr);
+			if(idTramitador != null) {
 				CriteriosBusqueda criteriosBusqueda = new CriteriosBusqueda();
 				criteriosBusqueda.addCriterio("idTramitador", idTramitador);
 				criteriosBusqueda.addCriterio("sedes", "sedes", AliasBean.LEFT_JOIN);
-				Tramitador tramitador = (Tramitador)jesmonService.buscarByPK(Empresa.class, "idTramitador", idTramitador, criteriosBusqueda);
+				Tramitador tramitador = (Tramitador)jesmonService.buscarByPK(Tramitador.class, "idTramitador", idTramitador, criteriosBusqueda);
 				model.addAttribute("tramitador", tramitador);
 			}
-	    	return procesarViewResolver("tramitadores", request);
+			List<Tramitador> listaTramitadores = tramitadorServices.getListaTramitadoresEmpresa(null);
+			model.addAttribute("listaTramitadores", listaTramitadores);
+	    	
+			CriteriosBusqueda criteriosBusquedaEmpresas = new CriteriosBusqueda();
+			criteriosBusquedaEmpresas.agregarAlias("sedes", "sedes", AliasBean.LEFT_JOIN);
+			List<ParBean> criteriosOrdenacionEmpresas = new ArrayList<ParBean>();
+			criteriosOrdenacionEmpresas.add(new ParBean("denominacion", CriteriosBusqueda.ASC));
+			List<Empresa> listaEmpresas = (List)jesmonService.getLista(criteriosBusquedaEmpresas, criteriosOrdenacionEmpresas, Empresa.class);
+			model.addAttribute("listaEmpresas", listaEmpresas);
+			
+			return procesarViewResolver("tramitadores", request);
 	    }
 		catch (Exception e) {
 			e.printStackTrace();
@@ -96,4 +114,28 @@ public class TramitadorController extends JesmonController {
 			// TODO: handle exception
 		}
     }
+	
+	
+	@PostMapping("/admin/asignarSedesTramitador")
+	public String asignarSedesTramitador(HttpServletRequest request, Model model,
+		@RequestParam(value = "idTramitador", required = true) Long idTramitador) {
+		try {
+			Tramitador tramitador = (Tramitador)jesmonService.buscarByPK(Tramitador.class, "idTramitador", idTramitador);
+	    	Set<Sede> sedes = new HashSet<Sede>();
+			tramitador.setSedes(sedes);
+			String[] sedesTramitador = request.getParameterValues("sedes_tramitador");
+			if(sedesTramitador != null)
+				for(String idSede : sedesTramitador)
+					sedes.add(new Sede(new Integer(idSede)));
+			
+			jesmonService.modificar(tramitador);
+			return postTramitadores(request, model, idTramitador);
+	    }
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return procesarViewResolver("error", request);
+			// TODO: handle exception
+		}
+	}
 }

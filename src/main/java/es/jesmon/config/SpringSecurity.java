@@ -34,7 +34,7 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     private AccessDeniedHandler accessDeniedHandler;
 
 	@Autowired
-	AfterLoginFilter afterLoginFilter;
+	private AfterLoginFilter afterLoginFilter;
 	
     // roles admin allow to access /admin/**
     // roles user allow to access /user/**

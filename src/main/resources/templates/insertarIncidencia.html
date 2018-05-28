@@ -29,7 +29,8 @@
 				<div sec:authorize="hasRole('ROLE_ADMIN')" class="row">
 					<div class="form-group col-12">
 						<label for="idEmpresa">Empresa</label>
-						<select name="idEmpresa" id="idEmpresa" required="true" class="form-control form-control-sm">
+						<select name="idEmpresa" id="idEmpresa" required="true" class="form-control form-control-sm" onchange="FnBuscarSedes();FnBuscarResponsables()">
+							<option></option>
 							<option th:each="empresa : ${session.USUAIO_SESION.listaEmpresas}"
 								th:value="${empresa.idEmpresa}" th:text="${empresa.denominacion}" />
 						</select>
@@ -46,7 +47,7 @@
 						</select>
 					</div>
 				</div>
-				<div sec:authorize="hasRole('ROLE_ADMIN')">
+				<div sec:authorize="hasRole('ROLE_ADMIN')" class="row">
 					<div class="form-group col-12">
 						<label for="idResponsable">Usuario</label>
 						<select name="idResponsable" id="idResponsable" required="true" class="form-control form-control-sm">

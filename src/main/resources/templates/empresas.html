@@ -12,15 +12,29 @@
 			document.getElementById("formEmpresas").submit();
 		});
 
-		jQuery(document).ready( function() {
-			$('#formEmpresa').validate(getValidationObject(empresaFomRules));
+		jQuery("#activarModificarPassword").bind('click', function() {
+			FnActivarModificarPassword(this);
 		});
+		
+		$('#formEmpresa').validate(getValidationObject(empresaFomRules));
+		
+		$('#formResponsable').validate(getValidationObject(usuarioFomRules));
 
-		jQuery(document).ready( function() {
-			$('#formSede').validate(getValidationObject(sedeFomRules));
-		});
+		$('#formSede').validate(getValidationObject(sedeFomRules));
+
 	});
 
+	function FnActivarModificarPassword(check) {
+		if(!check.checked){
+			$('#filaPassword').hide();
+			$('#filaPassword input').attr("disabled", true);
+		}
+		else {
+			$('#filaPassword').show();
+			$('#filaPassword input').attr("disabled", false);
+		}
+	}
+	
 	function FnNuevaEmpresa(){
 		$("#empresaModal h5").html("Nueva empresa");
 		$("#empresaModal form").attr("action", "insertarEmpresa");
@@ -63,13 +77,48 @@
 	function FnNuevoUsuario(){
 		$("#usuarioModal h5").html("Nuevo usuario");
 		$("#usuarioModal form").attr("action", "insertarResponsable");
+		$("#usuarioModal :text").val("");
+
+		$('#filaPassword').show();
+		$('#filaPassword input').attr("disabled", false);
+		$('#filaActivarModificarPassword').hide();
+		
 		$("#usuarioModal").modal();
 	}
 
-	function FnModificarUsuario(){
+	function FnModificarUsuario(idResponsable){
 		$("#usuarioModal h5").html("Modificar usuario");
 		$("#usuarioModal form").attr("action", "modificarResponsable");
+
+		$("#usuarioModal #loginUsuario").val($("#loginResponsable_" + idResponsable).html());
+		$("#usuarioModal #nombreResponsable").val($("#nombreResponsable_" + idResponsable).html());
+
+		$("#usuarioModal #nombreResponsable").val($("#nombreResponsable_" + idResponsable).val());
+		$("#usuarioModal #apellido1Responsable").val($("#apellido1Responsable_" + idResponsable).val());
+		$("#usuarioModal #apellido2Responsable").val($("#apellido2Responsable_" + idResponsable).val());
+
+		
+		$("#usuarioModal #NIFResponsable").val($("#nifResponsable_" + idResponsable).html());
+		$("#usuarioModal #telefonoResponsable").val($("#telefonoResponsable_" + idResponsable).html());
+		$("#usuarioModal #emailResponsable").val($("#emailResponsable_" + idResponsable).html());
+		$("#usuarioModal #cargoResponsable").val($("#cargoResponsable_" + idResponsable).html());
+		$("#usuarioModal #telefonoResponsable").val($("#telefonoResponsable_" + idResponsable).html());
+
+		$('#filaPassword').hide();
+		$('#filaPassword input').attr("disabled", true);
+		$('#filaActivarModificarPassword').show();
+		$('#activarModificarPassword').attr("checked", false);
+		
+		$("#idResponsable").val(idResponsable);
 		$("#usuarioModal").modal();
+	}
+
+	function FnActivarUsuarios() {
+		document.getElementById("formResponsables").action = "activarUsuariosEmpresas";
+	}
+
+	function FnAsignarRepreEmpresa() {
+		document.getElementById("formResponsables").action = "asignarRepreEmpresa";
 	}
 
 </script>
@@ -215,7 +264,7 @@
 						</h5>
 					</div>
 					<div class="row col-sm-12">
-						<form action="modificarSedesResponsables" method="post">
+						<form action="modificarSedesResponsables" method="post" id="formResponsables">
 							<input type="hidden" name="idEmpresa" th:value="${empresa.idEmpresa}" id="idEmpresaMod" /> 
 							<table class="table table-striped" style="font-size: 12px;">
 								<thead>
@@ -227,18 +276,19 @@
 										<th>Email</th>
 										<th>Cargo</th>
 										<th>Sedes autorizdas</th>
-										<th>Borrado</th>
+										<th>Representante</th>
+										<th>Activo</th>
 										<th></th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr th:each="responsable : ${empresa.responsables}" th:if="${responsable.activo == 0 ? '' : 'class=text-danger'}" >
-										<td th:text="${responsable.login}">Text ...</td>
+									<tr th:each="responsable : ${empresa.responsables}" th:class="${responsable.activo == 1 ? '' : 'text-danger'}">
+										<td th:text="${responsable.login}" th:id="${'loginResponsable_' + responsable.idResponsable}">Text ...</td>
 										<td th:text="${responsable.nombreCompleto}">Text ...</td>
-										<td th:text="${responsable.nif}">Text ...</td>
-										<td th:text="${responsable.telefono}">Text ...</td>
-										<td th:text="${responsable.email}">Text ...</td>
-										<td th:text="${responsable.cargo}">Text ...</td>
+										<td th:text="${responsable.nif}" th:id="${'nifResponsable_' + responsable.idResponsable}">Text ...</td>
+										<td th:text="${responsable.telefono}" th:id="${'telefonoResponsable_' + responsable.idResponsable}">Text ...</td>
+										<td th:text="${responsable.email}" th:id="${'emailResponsable_' + responsable.idResponsable}">Text ...</td>
+										<td th:text="${responsable.cargo}" th:id="${'cargoResponsable_' + responsable.idResponsable}">Text ...</td>
 										<td>
 											<ul style="padding-left: 5px;">
 												<li th:each="sede : ${empresa.sedes}" style="list-style-type: none;">
@@ -248,13 +298,20 @@
 													<label th:text="${sede.denominacion}" th:for="${'sede' + sede.idSede + '_responsable' + responsable.idResponsable}"></label> 
 												</li>
 											</ul>
+											<input type="hidden" th:id="${'nombreResponsable_' + responsable.idResponsable}" th:value="${responsable.nombre}"/>
+											<input type="hidden" th:id="${'apellido1Responsable_' + responsable.idResponsable}" th:value="${responsable.apellido1}"/>
+											<input type="hidden" th:id="${'apellido2Responsable_' + responsable.idResponsable}" th:value="${responsable.apellido2}"/>
+											
 										</td>
 										<td align="center">
-											<input type="checkbox" th:checked="${responsable.activo == 0}" th:name="${'activo_responsable_' + responsable.idResponsable}"
+											<input type="radio" name="idRepresentante" th:value="${responsable.idResponsable}" th:checked="${responsable == empresa.responsable}" />
+										</td>
+										<td align="center">
+											<input type="checkbox" th:checked="${responsable.activo == 1}" th:name="${'activo_responsable_' + responsable.idResponsable}"
 												th:id="${'activo_responsable_' + responsable.idResponsable}" value="1" />
 										</td>
 										<td>
-											<input type="button" class="btn btn-sm btn-primary" value="Modificar usuario" onclick="FnModificarUsuario()"/>
+											<input type="button" class="btn btn-sm btn-primary" value="Modificar usuario" th:onclick="${'FnModificarUsuario(' + responsable.idResponsable + ')'}"/>
 										</td>
 									</tr>
 								</tbody>
@@ -262,7 +319,8 @@
 									<tr>
 										<td colspan="6"></td>
 										<td><input type="submit" class="btn btn-sm btn-primary" value="Asignar sedes" /></td>
-										<td><input type="submit" class="btn btn-sm btn-primary" value="Activar/Desact" /></td>
+										<td><input type="submit" class="btn btn-sm btn-primary" value="Asignar repre" onclick="FnAsignarRepreEmpresa()" /></td>
+										<td><input type="submit" class="btn btn-sm btn-primary" value="Activar/Desact" onclick="FnActivarUsuarios()"/></td>
 										<td/>
 									</tr>
 								</tfoot>
@@ -297,7 +355,7 @@
 	</div>
 	
 	<div class="modal fade" id="empresaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<form method="post" id="formEmpresa" action="" >
+		<form method="post" id="formEmpresa" action="insertarEmpresa" >
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -314,7 +372,7 @@
 									<div class="form-group">
 										<label for="denominacionEmpresa">Nombre empresa</label>
 										<input type="text" class="form-control form-control-sm"
-											name="denominacion" id="denominacionEmpresa" placeholder="Nombre empresa" required="true"
+											name="denominacion" id="denominacionEmpresa" placeholder="Nombre empresa"
 											autofocus="true" maxlength="500"/>
 									</div>
 								</div>
@@ -465,14 +523,20 @@
 							 <div class="row">
   								<div class="col-12">
 									<div class="form-group">
-										<label for="loginUsuariod">Login usuario</label>
+										<label for="loginUsuario">Login usuario</label>
 										<input type="text" class="form-control form-control-sm"
 											name="login" id="loginUsuario" placeholder="Login usuario" required="true"
 											autofocus="true" maxlength="50"/>
 									</div>
 								</div>
 							</div>
-							<div class="row">
+							<div class="row" id="filaActivarModificarPassword">
+								<div class="form-group col-12">
+									<input type="checkbox" id="activarModificarPassword"/> <label for="activarModificarPassword">Modificar contraseña</label>
+								</div>
+							</div>
+							
+							<div class="row" id="filaPassword">
 								<div class="form-group col-6">
 									<label for="passwordResponsable">Contraseña</label>
 									<input type="password"
@@ -516,9 +580,9 @@
 										class="form-control w-50 form-control-sm" id="NIFResponsable" maxlength="9" placeholder="NIF" />
 								</div>
 							</div>
-							<div class="row">								
+							<div class="row">			
 								<div class="form-group col-sm-12 col-md-6">
-									<label for="apellido2Responsable">Email</label>
+									<label for="emailResponsable">Email</label>
 									<input type="text" name="email" required="required"
 										class="form-control form-control-sm" id="emailResponsable" maxlength="50" placeholder="Email" />
 								</div>
@@ -526,6 +590,13 @@
 									<label for="cargoResponsable">Cargo</label>
 									<input type="text" name="cargo"
 										class="form-control form-control-sm" id="cargoResponsable" maxlength="45" placeholder="Cargo" />
+								</div>
+							</div>
+							<div class="row">			
+								<div class="form-group col-sm-12 col-md-6">
+									<label for="telefonoResponsable">Teléfono</label>
+									<input type="text" name="telefono"
+										class="form-control form-control-sm  w-50" id="telefonoResponsable" maxlength="9" placeholder="Teléfono" />
 								</div>
 							</div>
 						</div>

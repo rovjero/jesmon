@@ -28,7 +28,7 @@ public class ContratoIncencidios implements java.io.Serializable {
 	private static final long serialVersionUID = 7085433959810781664L;
 	private int idContrato;
 	private Empresa empresa;
-	private Fichero fichero;
+	private FicheroBasico fichero;
 	private String numeroContrato;
 	private Integer unidadesSistemaDeteccion;
 	private Double precioUnitarioSistemaDeteccion;
@@ -54,7 +54,7 @@ public class ContratoIncencidios implements java.io.Serializable {
 		this.empresa = empresa;
 	}
 
-	public ContratoIncencidios(int idContrato, Empresa empresa, Fichero fichero, String numeroContrato,
+	public ContratoIncencidios(int idContrato, Empresa empresa, FicheroBasico fichero, String numeroContrato,
 			Integer unidadesSistemaDeteccion, Double precioUnitarioSistemaDeteccion, Integer unidadesBocaIncendio,
 			Double precioUnitarioBocaIncendio, Integer unidadesGrupoPresion, Double precioUnitarioGrupoPresion,
 			Integer unidadesRevisionExtintor, Double precioUnitarioRevisionExtintor,
@@ -104,11 +104,11 @@ public class ContratoIncencidios implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_fichero")
-	public Fichero getFichero() {
+	public FicheroBasico getFichero() {
 		return this.fichero;
 	}
 
-	public void setFichero(Fichero fichero) {
+	public void setFichero(FicheroBasico fichero) {
 		this.fichero = fichero;
 	}
 

@@ -13,6 +13,7 @@ public class ResponsableForm {
 	private String cargo;
 	private String password;
 	private String repitaPassword;
+	private String login;
 	
 	public Integer getIdEmpresa() {
 		return idEmpresa;
@@ -79,5 +80,11 @@ public class ResponsableForm {
 	}
 	public void setIdResponsable(Integer idResponsable) {
 		this.idResponsable = idResponsable;
+	}
+	public String getLogin() {
+		return login;
+	}
+	public void setLogin(String login) {
+		this.login = login;
 	}
 }

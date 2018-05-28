@@ -260,5 +260,13 @@ public class Responsable extends JesmonEntity implements java.io.Serializable {
 	public void setLogin(String login) {
 		this.login = login;
 	}
+
+	public boolean equals (Object o) {
+		if(o == null || ! (o instanceof Responsable))
+			return false;
+		Responsable responsable = (Responsable)o;
+		return idResponsable.equals(responsable.getIdResponsable());
+		
+	}
 	
 }

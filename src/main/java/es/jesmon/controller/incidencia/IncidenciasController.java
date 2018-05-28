@@ -330,6 +330,7 @@ public class IncidenciasController extends JesmonController {
 			return procesarViewResolver("consultarIncidencia", request);
 		}
 		catch (Exception e) {
+			logger.error(e.getMessage(), e);
 			e.printStackTrace();
 			return procesarViewResolver("error", request);
 		}
@@ -382,7 +383,7 @@ public class IncidenciasController extends JesmonController {
 				Empresa empresa = new Empresa(buscadorIncidenciasForm.getIdEmpresa());
 				criteriosBusqueda.addCriterio("sede.empresa", empresa);
 				model.put("listaSedes", sedesServices.getListaSedes(buscadorIncidenciasForm.getIdEmpresa()));
-				model.put("listaResponsables", responsableServices.getListaResponsables(buscadorIncidenciasForm.getIdEmpresa()));
+				model.put("listaResponsables", responsableServices.getListaResponsablesLigeros(buscadorIncidenciasForm.getIdEmpresa()));
 			}
 			
 			if(buscadorIncidenciasForm.getIdEstado() != null)
@@ -445,6 +446,7 @@ public class IncidenciasController extends JesmonController {
 			return procesarViewResolver("incidencias", request);
 		}
 		catch (Exception e) {
+			logger.error(e.getMessage(), e);
 			e.printStackTrace();
 			return procesarViewResolver("error", request);
 		}
@@ -457,6 +459,7 @@ public class IncidenciasController extends JesmonController {
 			return sedesServices.getListaSedes(idEmpresa);
 		}
 		catch (Exception e) {
+			logger.error(e.getMessage(), e);
 			e.printStackTrace();
 			return null;
 		}
@@ -466,10 +469,11 @@ public class IncidenciasController extends JesmonController {
 	public @ResponseBody  
 	List<Responsable> getListaResponsables(@RequestParam("idEmpresa") Integer idEmpresa) {  
 		try {
-			return responsableServices.getListaResponsables(idEmpresa);
+			return responsableServices.getListaResponsablesLigeros(idEmpresa);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			return null;
 		}
 	}

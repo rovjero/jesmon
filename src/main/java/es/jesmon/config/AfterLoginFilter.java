@@ -1,7 +1,6 @@
 package es.jesmon.config;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.FilterChain;
@@ -9,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +19,11 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-import es.jesmon.entities.Empresa;
 import es.jesmon.entities.Responsable;
 import es.jesmon.entities.Sede;
 import es.jesmon.entities.Tramitador;
 import es.jesmon.repository.util.AliasBean;
 import es.jesmon.repository.util.CriteriosBusqueda;
-import es.jesmon.repository.util.ParBean;
 import es.jesmon.services.JesmonServices;
 import es.jesmon.services.empresa.EmpresaService;
 
@@ -43,6 +41,7 @@ public class AfterLoginFilter extends GenericFilterBean {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest)request;
+		HttpServletResponse httpResponse = (HttpServletResponse)response;
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(auth != null) {
 			if(auth.isAuthenticated() && auth.getPrincipal() != null && auth.getPrincipal().getClass().equals(User.class) && httpRequest.getSession().getAttribute(JesmonConstantes.USUARIO_SESION) == null) {
@@ -69,6 +68,7 @@ public class AfterLoginFilter extends GenericFilterBean {
 						jesmonServices.limpiarObjetoSesion(tramitador);
 						httpRequest.getSession().setAttribute(JesmonConstantes.USUARIO_SESION, tramitador);
 						//request.getRequestDispatcher("/tramitador/incidencias").forward(request, response);
+						httpResponse.sendRedirect("/jesmon/tramitador/incidencias");
 					}
 					catch (Exception e) {
 						e.printStackTrace();
@@ -94,6 +94,7 @@ public class AfterLoginFilter extends GenericFilterBean {
 						jesmonServices.limpiarObjetoSesion(responsable);
 						httpRequest.getSession().setAttribute(JesmonConstantes.USUARIO_SESION, responsable);
 						//request.getRequestDispatcher("/cliente/incidencias").forward(request, response);
+						httpResponse.sendRedirect("/jesmon/cliente/incidencias");
 					}
 					catch (Exception e) {
 						e.printStackTrace();
@@ -113,6 +114,8 @@ public class AfterLoginFilter extends GenericFilterBean {
 						*/
 						empresaServices.setEmpresasUsuario(admin);
 						httpRequest.getSession().setAttribute(JesmonConstantes.USUARIO_SESION, admin);
+						//request.getRequestDispatcher("/admin/incidencias").forward(request, response);
+						httpResponse.sendRedirect("/jesmon/admin/incidencias");
 					}
 					catch (Exception e) {
 						e.printStackTrace();

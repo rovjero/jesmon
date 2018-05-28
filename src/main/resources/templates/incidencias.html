@@ -13,68 +13,7 @@
 		jQuery(".fecha").datepicker({changeYear:true});
 	});
 
-	function FnBuscarSedes(){
-		var idEmpresa = jQuery("#idEmpresa").val();
-		//alert(idEmpresa);
-		if(idEmpresa == ""){
-			document.getElementById("idSede").options.length = 0;
-			jQuery("#celdaSede").hide();
-		}
-		else {
-			var parametros = {};
-			parametros["idEmpresa"] = idEmpresa;
-			
-			jQuery.ajax({
-				url: "listaSedes",
-				dataType: "json",
-				data: parametros,
-				type: "post",
-				async: false,
-				success: function(data) {
-					jQuery("#celdaSede").show();
-					var selectSede = jQuery("#idSede")[0];
-					selectSede.options[0] = new Option ("", "");
-					jQuery(data).each(function(indice, sede){
-						selectSede.options[indice + 1] = new Option (sede.denominacion, sede.idSede);
-					});
-				},
-				error: function(data) {
-					alert("Error: no se ha podido cargar la lista de sedes.")
-				}				
-			});
-		}
-	}
-
-	function FnBuscarResponsables(){
-		var idEmpresa = jQuery("#idEmpresa").val();
-		//alert(idEmpresa);
-		if(idEmpresa == "")
-			document.getElementById("idResponsable").options.length = 0;
-		else {
-			var parametros = {};
-			parametros["idEmpresa"] = idEmpresa;
-			
-			jQuery.ajax({
-				url: "listaResponsables",
-				dataType: "json",
-				data: parametros,
-				type: "post",
-				async: false,
-				success: function(data) {
-					var select = jQuery("#idResponsable")[0];
-					select.options[0] = new Option ("", "");	
-					jQuery(data).each(function(indice, responsable){
-						select.options[indice + 1] = new Option (responsable.nombreCompleto, responsable.idResponsable);
-					});
-				},
-				error: function(data) {
-					alert("Error: no se ha podido cargar la lista de responsables.")
-				}				
-			});
-		}
-	}
-	
-</script>
+	</script>
 
 <style type="text/css">
 .table-striped td {
@@ -185,7 +124,7 @@
 				</div>
 				
 				<input type="submit" class="btn btn-sm btn-primary" value="Buscar" />
-				<input type="button" sec:authorize="hasRole('ROLE_CLIENTE')" class="btn btn-sm btn-success"
+				<input type="button" sec:authorize="hasRole('ROLE_CLIENTE') || hasRole('ROLE_ADMIN')" class="btn btn-sm btn-success"
 					value="Nueva incidencia"
 					onclick="window.location.href='insertarIncidencia'" />
 			</div>
@@ -239,28 +178,28 @@
 	            </select>
 	        </div>
 	        <div th:if="${totalPages != 1}" class="form-group col-md-11 pagination-centered">
-            <ul class="pagination">
-                <li th:class="${currentPage == 0} ? disabled">
-                    <a class="pageLink" th:href="@{../tramitador/incidencias(pageSize=${selectedPageSize}, page=1, orden=${orden})}">&laquo;</a>
-                </li>
-                <li th:class="${currentPage == 0} ? disabled">
-                    <a class="pageLink" th:href="@{../tramitador/incidencias(pageSize=${selectedPageSize}, page=${currentPage}, orden=${orden})}">&larr;</a>
-                </li>
-                <li th:class="${currentPage == (page - 1)} ? 'active pointer-disabled'"
-                    th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
-                    <a class="pageLink" th:href="@{../tramitador/incidencias(pageSize=${selectedPageSize}, page=${page}, orden=${orden})}"
-                       th:text="${page + ', '}"></a>
-                </li>
-                <li th:class="${currentPage + 1 == totalPages} ? disabled">
-                    <a class="pageLink"
-                       th:href="@{../tramitador/incidencias(pageSize=${selectedPageSize}, page=${currentPage + 2}, orden=${orden})}">&rarr;</a>
-                </li>
-                <li th:class="${currentPage + 1 == totalPages} ? disabled">
-                    <a class="pageLink"
-                       th:href="@{../tramitador/incidencias(pageSize=${selectedPageSize}, page=${totalPages}, orden=${orden})}">&raquo;</a>
-                </li>
-            </ul>
-        </div>
+	            <ul class="pagination">
+	                <li th:class="${currentPage == 0} ? disabled">
+	                    <a class="pageLink" th:href="@{../tramitador/incidencias(pageSize=${selectedPageSize}, page=1, orden=${orden})}">&laquo;</a>
+	                </li>
+	                <li th:class="${currentPage == 0} ? disabled">
+	                    <a class="pageLink" th:href="@{../tramitador/incidencias(pageSize=${selectedPageSize}, page=${currentPage}, orden=${orden})}">&larr;</a>
+	                </li>
+	                <li th:class="${currentPage == (page - 1)} ? 'active pointer-disabled'"
+	                    th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+	                    <a class="pageLink" th:href="@{../tramitador/incidencias(pageSize=${selectedPageSize}, page=${page}, orden=${orden})}"
+	                       th:text="${page + ', '}"></a>
+	                </li>
+	                <li th:class="${currentPage + 1 == totalPages} ? disabled">
+	                    <a class="pageLink"
+	                       th:href="@{../tramitador/incidencias(pageSize=${selectedPageSize}, page=${currentPage + 2}, orden=${orden})}">&rarr;</a>
+	                </li>
+	                <li th:class="${currentPage + 1 == totalPages} ? disabled">
+	                    <a class="pageLink"
+	                       th:href="@{../tramitador/incidencias(pageSize=${selectedPageSize}, page=${totalPages}, orden=${orden})}">&raquo;</a>
+	                </li>
+	            </ul>
+        	</div>
 	    </div>
 
 		</div>

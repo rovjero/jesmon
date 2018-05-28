@@ -35,7 +35,8 @@ public class TramitadorServicesImpl implements TramitadorServices {
 			criteriosBusqueda.addProyeccion("email");
 			
 			criteriosBusqueda.setClassResultTransformer(Tramitador.class);
-			criteriosBusqueda.addCriterio("empresa", new Empresa(idEmpresa));
+			if(idEmpresa != null)
+				criteriosBusqueda.addCriterio("empresa", new Empresa(idEmpresa));
 			criteriosBusqueda.addCriterio("activo", 1);
 			List<ParBean> criteriosOrdenacion = new ArrayList<ParBean>();
 			criteriosOrdenacion.add(new ParBean("nombre", CriteriosBusqueda.ASC));

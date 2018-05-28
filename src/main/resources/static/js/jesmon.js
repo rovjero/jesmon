@@ -1,3 +1,66 @@
+function FnBuscarSedes(){
+	var idEmpresa = jQuery("#idEmpresa").val();
+	//alert(idEmpresa);
+	if(idEmpresa == ""){
+		document.getElementById("idSede").options.length = 0;
+		jQuery("#celdaSede").hide();
+	}
+	else {
+		var parametros = {};
+		parametros["idEmpresa"] = idEmpresa;
+		
+		jQuery.ajax({
+			url: "listaSedes",
+			dataType: "json",
+			data: parametros,
+			type: "post",
+			async: false,
+			success: function(data) {
+				jQuery("#celdaSede").show();
+				var selectSede = jQuery("#idSede")[0];
+				selectSede.options[0] = new Option ("", "");
+				jQuery(data).each(function(indice, sede){
+					selectSede.options[indice + 1] = new Option (sede.denominacion, sede.idSede);
+				});
+			},
+			error: function(data) {
+				alert("Error: no se ha podido cargar la lista de sedes.")
+			}				
+		});
+	}
+}
+
+function FnBuscarResponsables(){
+	var idEmpresa = jQuery("#idEmpresa").val();
+	//alert(idEmpresa);
+	if(idEmpresa == "")
+		document.getElementById("idResponsable").options.length = 0;
+	else {
+		var parametros = {};
+		parametros["idEmpresa"] = idEmpresa;
+		
+		jQuery.ajax({
+			url: "listaResponsables",
+			dataType: "json",
+			data: parametros,
+			type: "post",
+			async: false,
+			success: function(data) {
+				var select = jQuery("#idResponsable")[0];
+				select.options[0] = new Option ("", "");	
+				jQuery(data).each(function(indice, responsable){
+					select.options[indice + 1] = new Option (responsable.nombreCompleto, responsable.idResponsable);
+				});
+			},
+			error: function(data) {
+				alert("Error: no se ha podido cargar la lista de responsables.")
+			}				
+		});
+	}
+}
+	
+
+
 function getValidationObject(rules, submitHandler) {
     var mySubmitHandler;
     
@@ -42,6 +105,8 @@ var loginFormRules = {
 	    }
 	};
 */
+
+
 var solicitarCambioPasswordFormRules = {
     email: {
       required: true,
@@ -108,30 +173,47 @@ var cambiarPasswordFomRules = {
     }
 };
 
-
 var empresaFomRules = {
-	denominacionEmpresa: {
-		required: true
+	denominacion: {
+		required: true,
+		minlength: 3
 	},
-	nifEmpresa: {
-      required: false,
+	nif: {
+      required: function(element){
+          return $("#nifEmpresa").val()!="";
+      },
       minlength: 9
     },
-    telefonoEmpresa: {
-      required: false,
+    telefono: {
+      required: function(element){
+          return $("#telefonoEmpresa").val()!="";
+      },
       minlength: 9
     },
-    emailEmpresa: {
-      required: false,
+    email: {
+      required: function(element){
+          return $("#emailEmpresa").val()!="";
+      },
       email: true
     }
 };
 
 var sedeFomRules = {
-	denominacionSede: {
+	denominacion: {
+		required: true,
+		minlength: 3
+	}
+};
+
+var usuarioFomRules = {
+	login: {
+		required: true
+	},
+	nombre: {
 		required: true
 	}
 };
+ 
 
 
 if (!String.prototype.startsWith) {

@@ -29,7 +29,7 @@ public class ContratoSistemaSeguridad implements java.io.Serializable {
 
 	private static final long serialVersionUID = -2527113018842488077L;
 	private Integer idContrato;
-	private Fichero fichero;
+	private FicheroBasico fichero;
 	private Empresa empresa;
 	private Date fechaCc;
 	private Date fechaCs;
@@ -45,7 +45,7 @@ public class ContratoSistemaSeguridad implements java.io.Serializable {
 		this.empresa = empresa;
 	}
 
-	public ContratoSistemaSeguridad(Fichero fichero, Empresa empresa, Date fechaCc, Date fechaCs, Byte lgInstalacion,
+	public ContratoSistemaSeguridad(FicheroBasico fichero, Empresa empresa, Date fechaCc, Date fechaCs, Byte lgInstalacion,
 			Byte lgMantenimiento, String formaPago) {
 		this.fichero = fichero;
 		this.empresa = empresa;
@@ -70,11 +70,11 @@ public class ContratoSistemaSeguridad implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_fichero")
-	public Fichero getFichero() {
+	public FicheroBasico getFichero() {
 		return this.fichero;
 	}
 
-	public void setFichero(Fichero fichero) {
+	public void setFichero(FicheroBasico fichero) {
 		this.fichero = fichero;
 	}
 

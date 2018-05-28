@@ -255,7 +255,8 @@ public class EmpresaController extends JesmonController {
 	@PostMapping("/admin/insertarResponsable")
 	public String insertarResponsable(HttpServletRequest request, Model model, ResponsableForm responsableForm) {
 		try {
-			Responsable responsable = new Responsable(responsableForm.getIdEmpresa());
+			Responsable responsable = new Responsable();
+			responsable.setLogin(responsableForm.getLogin());
 			responsable.setActivo(1);
 			responsable.setNif(responsableForm.getNif());
 			responsable.setNombre(responsableForm.getNombre());
@@ -264,6 +265,7 @@ public class EmpresaController extends JesmonController {
 			responsable.setEmail(responsableForm.getEmail());
 			responsable.setTelefono(responsableForm.getTelefono());
 			responsable.setCargo(responsableForm.getCargo());
+			responsable.setEmpresa(new Empresa(responsableForm.getIdEmpresa()));
 			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 			responsable.setPassword(passwordEncoder.encode(responsableForm.getPassword()).getBytes(StandardCharsets.UTF_8));
 			jesmonService.insertar(responsable);
@@ -282,6 +284,7 @@ public class EmpresaController extends JesmonController {
 	public String modificarResponsable(HttpServletRequest request, Model model, ResponsableForm responsableForm) {
 		try {
 			Responsable responsable = (Responsable)jesmonService.buscarByPK(Responsable.class, "idResponsable", responsableForm.getIdResponsable());
+			responsable.setLogin(responsableForm.getLogin());
 			responsable.setNif(responsableForm.getNif());
 			responsable.setNombre(responsableForm.getNombre());
 			responsable.setApellido1(responsableForm.getApellido1());
@@ -289,8 +292,10 @@ public class EmpresaController extends JesmonController {
 			responsable.setEmail(responsableForm.getEmail());
 			responsable.setTelefono(responsableForm.getTelefono());
 			responsable.setCargo(responsableForm.getCargo());
-			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-			responsable.setPassword(passwordEncoder.encode(responsableForm.getPassword()).getBytes(StandardCharsets.UTF_8));
+			if(StringUtils.isNotBlank(responsableForm.getPassword())) {
+				BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+				responsable.setPassword(passwordEncoder.encode(responsableForm.getPassword()).getBytes(StandardCharsets.UTF_8));
+			}
 			jesmonService.modificar(responsable);
 			request.setAttribute("mensaje", "Usuario modificado de forma correcta");
 	    	return postEmpresa(request, model, responsableForm.getIdEmpresa().toString());
@@ -324,7 +329,48 @@ public class EmpresaController extends JesmonController {
 		}
     }
 	
+	@PostMapping("/admin/asignarRepreEmpresa")
+	public String asignarRepreEmpresa(HttpServletRequest request, Model model, @RequestParam(value = "idEmpresa", required = true) Integer idEmpresa,
+			@RequestParam(value = "idRepresentante", required = false) Integer idRepresentante) {
+		try {
+			Empresa empresa = (Empresa)jesmonService.buscarByPK(Empresa.class, "idEmpresa", idEmpresa);
+			if(idRepresentante == null)
+				empresa.setResponsable(null);
+			else
+				empresa.setResponsable(new Responsable(idRepresentante));
+			jesmonService.modificar(empresa);
+			request.setAttribute("mensaje", "Representante de la empresa " + empresa.getDenominacion() + " modificada de forma correcta");
+	    	return postEmpresa(request, model, idEmpresa.toString());
+	    }
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return procesarViewResolver("error", request);
+			// TODO: handle exception
+		}
+    }
 	
-	
-	
+	@PostMapping("/admin/activarUsuariosEmpresas")
+	public String activarUsuariosEmpresas(HttpServletRequest request, Model model, @RequestParam(value = "idEmpresa", required = true) Integer idEmpresa) {
+		try {
+			List<Responsable> listaResponsables = responsableServices.getListaResponsables(idEmpresa);
+			for(Responsable responsable : listaResponsables) {
+				String activo = request.getParameter("activo_responsable_" + responsable.getIdResponsable());
+				if(StringUtils.equals(activo, "1"))
+					responsable.setActivo(1);
+				else
+					responsable.setActivo(0);
+			}
+			jesmonService.modificarLista((List)listaResponsables);
+			request.setAttribute("mensaje", "Usuarios modificados de forma correcta");
+	    	return postEmpresa(request, model, idEmpresa.toString());
+	    }
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return procesarViewResolver("error", request);
+			// TODO: handle exception
+		}
+    }
+
 }

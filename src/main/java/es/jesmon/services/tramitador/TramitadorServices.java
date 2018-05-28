@@ -10,4 +10,5 @@ public interface TramitadorServices {
 	public List<Tramitador> getListaTramitadoresEmpresa(Integer idEmpresa) throws ServicesExpception;
 	
 	public List<Tramitador> getListaTramitadoresSede(Integer idSede) throws ServicesExpception;
+	
 }

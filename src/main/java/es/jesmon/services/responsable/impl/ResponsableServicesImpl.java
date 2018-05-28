@@ -3,6 +3,8 @@ package es.jesmon.services.responsable.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -19,12 +21,14 @@ import es.jesmon.services.responsable.ResponsableServices;
 @Service
 public class ResponsableServicesImpl implements ResponsableServices{
 
+	private static Logger logger = LoggerFactory.getLogger(ResponsableServicesImpl.class);
+	
 	@Autowired
 	JesmonRepository jesmonRepository;
 
 	@Override
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRED, rollbackFor = ServicesExpception.class)
-	public List<Responsable> getListaResponsables(Integer idEmpresa) throws ServicesExpception {
+	public List<Responsable> getListaResponsablesLigeros(Integer idEmpresa) throws ServicesExpception {
 		try {
 			CriteriosBusqueda criteriosBusqueda = new CriteriosBusqueda();
 			criteriosBusqueda.addProyeccion("idResponsable");
@@ -32,6 +36,26 @@ public class ResponsableServicesImpl implements ResponsableServices{
 			criteriosBusqueda.addProyeccion("apellido1");
 			criteriosBusqueda.addProyeccion("apellido2");
 			criteriosBusqueda.setClassResultTransformer(Responsable.class);
+			criteriosBusqueda.addCriterio("empresa", new Empresa(idEmpresa));
+			List<ParBean> criteriosOrdenacion = new ArrayList<ParBean>();
+			criteriosOrdenacion.add(new ParBean("nombre", 	CriteriosBusqueda.ASC));
+			criteriosOrdenacion.add(new ParBean("apellido1", CriteriosBusqueda.ASC));
+			criteriosOrdenacion.add(new ParBean("apellido2", CriteriosBusqueda.ASC));
+			List<Responsable> listaResponsables = (List<Responsable>)(List) jesmonRepository.getLista(criteriosBusqueda, criteriosOrdenacion, Responsable.class);
+			return listaResponsables;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			throw new ServicesExpception(e);
+		}
+	}
+	
+	@Override
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRED, rollbackFor = ServicesExpception.class)
+	public List<Responsable> getListaResponsables(Integer idEmpresa) throws ServicesExpception {
+		try {
+			CriteriosBusqueda criteriosBusqueda = new CriteriosBusqueda();
 			criteriosBusqueda.addCriterio("empresa", new Empresa(idEmpresa));
 			List<ParBean> criteriosOrdenacion = new ArrayList<ParBean>();
 			criteriosOrdenacion.add(new ParBean("nombre", 	CriteriosBusqueda.ASC));
