@@ -3,6 +3,8 @@ package es.jesmon.services.empresa.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,12 +18,15 @@ import es.jesmon.repository.util.CriteriosBusqueda;
 import es.jesmon.repository.util.ParBean;
 import es.jesmon.services.empresa.EmpresaService;
 import es.jesmon.services.exception.ServicesExpception;
+import es.jesmon.services.mensaje.impl.MensajesServiceImpl;
 
 @Service
 public class EmpresaServiceImpl implements EmpresaService{
 
+	private static Logger logger = LoggerFactory.getLogger(EmpresaServiceImpl.class);
+	
 	@Autowired
-	JesmonRepository jesmonRepository;
+	private JesmonRepository jesmonRepository;
 	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRED, rollbackFor = ServicesExpception.class)
 	public void setEmpresasUsuario(JesmonEntity entity) throws ServicesExpception {
@@ -34,6 +39,7 @@ public class EmpresaServiceImpl implements EmpresaService{
 			entity.setListaEmpresas(listaEmpresas);
 		}
 		catch (Exception e) {
+			logger.error(e.getMessage(), e);
 			e.printStackTrace();
 			throw new ServicesExpception(e);
 		}
