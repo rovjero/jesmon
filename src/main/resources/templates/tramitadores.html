@@ -1,0 +1,248 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Jesmon Seguridad</title>
+<link rel="icon" href="../img/logo_small.png"/>
+<div th:replace="fragments/header.html :: header-css" />
+
+<script type="text/javascript">
+
+	jQuery(document).ready( function() {
+		jQuery("#idTramitador").bind('change', function() {
+			document.getElementById("formTramitadores").submit();
+		});
+
+		jQuery("#activarModificarPassword").bind('click', function() {
+			FnActivarModificarPassword(this);
+		});
+		
+		
+		jQuery(document).ready( function() {
+			$('#formEmpresa').validate(getValidationObject(empresaFomRules));
+		});
+
+		jQuery(document).ready( function() {
+			$('#formSede').validate(getValidationObject(sedeFomRules));
+		});
+	});
+
+	function FnActivarModificarPassword(check) {
+		if(!check.checked){
+			$('#filaPassword').hide();
+			$('#filaPassword input').attr("disabled", true);
+		}
+		else {
+			$('#filaPassword').show();
+			$('#filaPassword input').attr("disabled", false);
+		}
+	}
+	
+	function FnNuevaEmpresa(){
+		$("#empresaModal h5").html("Nueva empresa");
+		$("#empresaModal form").attr("action", "insertarEmpresa");
+		$("#empresaModal :text").val("");
+		$("#empresaModal select").val("");
+		$("#empresaModal").modal();
+	}
+
+	function FnModificarEmpresa(){
+		$("#empresaModal h5").html("Modificar empresa");
+		$("#empresaModal #denominacionEmpresa").val($("#denominacionEmpresaH3").html().replace('&nbsp;', ''));
+		$("#empresaModal #emailEmpresa").val($("#emailEmpresaP").html().replace('&nbsp;', ''));
+		$("#empresaModal #telefonoEmpresa").val($("#telefonoEmpresaP").html().replace('&nbsp;', ''));
+		$("#empresaModal #nifEmpresa").val($("#nifEmpresaP").html().replace('&nbsp;', ''));
+		$("#empresaModal form").attr("action", "modificarEmpresa");
+		$("#idEmpresaModal").val($("#idEmpresa").val());
+		$("#empresaModal").modal();
+	}
+	
+	function FnNuevaSede(){
+		$("#sedeModal h5").html("Nueva sede");
+		$("#sedeModal form").attr("action", "insertarSede");
+		$("#sedeModal :text").val("");
+		$("#sedeModal select").val("");
+		$("#sedeModal").modal();
+	}
+
+	function FnModificarSede(idSede){
+		$("#sedeModal h5").html("Modificar sede");
+		$("#sedeModal form").attr("action", "modificarSede");
+		$("#sedeModal #denominacionSede").val(jQuery("#denominacionSede" + idSede).html());
+		$("#sedeModal #telefonoSede").val(jQuery("#telefonoSede" + idSede).html());
+		$("#sedeModal #direccionSede").val(jQuery("#direccionSede" + idSede).val());
+		$("#sedeModal #municipioSede").val(jQuery("#municipioSede" + idSede).val());
+		$("#sedeModal #codigoPostalSede").val(jQuery("#codigoPostalSede" + idSede).val());
+		$("#sedeModal #provinciaSede").val(jQuery("#cdProvinciaSede" + idSede).val());
+		$("#sedeModal").modal();
+	}
+
+	function FnNuevoUsuario(){
+		$("#usuarioModal h5").html("Nuevo usuario");
+		$("#usuarioModal form").attr("action", "insertarResponsable");
+		$("#usuarioModal :text").val("");
+
+		$('#filaPassword').show();
+		$('#filaPassword input').attr("disabled", false);
+		$('#filaActivarModificarPassword').hide();
+		
+		$("#usuarioModal").modal();
+	}
+
+	function FnModificarUsuario(idResponsable){
+		$("#usuarioModal h5").html("Modificar usuario");
+		$("#usuarioModal form").attr("action", "modificarResponsable");
+
+		$("#usuarioModal #loginUsuario").val($("#loginResponsable_" + idResponsable).html());
+		$("#usuarioModal #nombreResponsable").val($("#nombreResponsable_" + idResponsable).html());
+
+		$("#usuarioModal #nombreResponsable").val($("#nombreResponsable_" + idResponsable).val());
+		$("#usuarioModal #apellido1Responsable").val($("#apellido1Responsable_" + idResponsable).val());
+		$("#usuarioModal #apellido2Responsable").val($("#apellido2Responsable_" + idResponsable).val());
+
+		
+		$("#usuarioModal #NIFResponsable").val($("#nifResponsable_" + idResponsable).html());
+		$("#usuarioModal #telefonoResponsable").val($("#telefonoResponsable_" + idResponsable).html());
+		$("#usuarioModal #emailResponsable").val($("#emailResponsable_" + idResponsable).html());
+		$("#usuarioModal #cargoResponsable").val($("#cargoResponsable_" + idResponsable).html());
+		$("#usuarioModal #telefonoResponsable").val($("#telefonoResponsable_" + idResponsable).html());
+
+		$('#filaPassword').hide();
+		$('#filaPassword input').attr("disabled", true);
+		$('#filaActivarModificarPassword').show();
+		$('#activarModificarPassword').attr("checked", false);
+		
+		$("#idResponsable").val(idResponsable);
+		$("#usuarioModal").modal();
+	}
+
+	function FnActivarUsuarios() {
+		document.getElementById("formResponsables").action = "activarUsuariosEmpresas";
+	}
+
+	function FnAsignarRepreEmpresa() {
+		document.getElementById("formResponsables").action = "asignarRepreEmpresa";
+	}
+
+</script>
+
+<style type="text/css">
+.table-striped td {
+	padding: 4px;
+}
+</style>
+
+</head>
+<body>
+	<div th:replace="fragments/header.html :: navegacionAdmin" />
+
+	<br />
+	<div th:if="${param.mensaje != null}">
+		<div class="alert alert-info" th:text="${(param.mensaje + '')}" />
+	</div>
+	
+	<div th:if="${mensaje != null}">
+		<div class="alert alert-info" th:text="${(mensaje)}" />
+	</div>
+	
+	<form action="tramitadores" method="post" id="formTramitadores">
+		<div class="container">
+			<div class="bd-example-row">
+				<div class="row">
+					<h2 class="col-12 text-primary" style="font-weight: bold">Tramitadores
+						<input type="button" class="btn btn-sm btn-success"
+									value="Nuevo tramitador"
+									onclick="FnNuevoTramitador()" />
+					</h2>
+				</div>
+				<div class="form-group col-12 row">
+					<label for="idTramitador">Tramitador</label>
+					<select name="idTramitador" id="idTramitador" required="true" class="form-control form-control-sm" style="width: 80%;margin-left: 10px">
+						<option></option>
+						<option th:each="tramitadorTmp : ${listaTramitadores}" th:selected="${tramitador != null &amp;&amp; tramitadorTmp.idTramitador == tramitador.idTramitador}"
+							th:value="${tramitadorTmp.idTramitador}" th:text="${tramitadorTmp.nombreCompleto}" />
+					</select>
+				</div>
+			</div>
+		</div>
+	</form>
+	
+	<div class="container" th:if="${tramitador != null}">
+		<div class="card">
+			<div class="card-header row" style="margin-left: 0px;margin-right:0px;">
+				<h3 class="card-title text-primary" th:text="${tramitador.nombreCompleto}" id="nombreCompletoTramitadorH3"></h3>
+				&nbsp;&nbsp;
+				<input type="button" class="btn btn-sm btn-success" style="height: 30px"
+								value="Modificar tramitador"
+								onclick="FnModificarTramitador()" />
+			</div>
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item">
+					<div class="card-body">
+						<h5 class="card-title">Datos del tramitador</h5>
+					</div>
+					<div class="row">
+						<div class="col-sm-4">
+							<div class="card">
+								<div class="card-body">
+									<h5 class="card-title">NIF</h5>
+									<p class="card-text" th:text="${#strings.defaultString(tramitador.nif,'&nbsp;')}" id="nifTramitadorP"></p>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="card">
+								<div class="card-body">
+									<h5 class="card-title">Email</h5>
+									<p class="card-text" th:text="${#strings.defaultString(tramitador.email, '&nbsp;')}" id="emailTramitadorP"></p>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="card">
+								<div class="card-body">
+									<h5 class="card-title">Teléfono</h5>
+									<p class="card-text" th:text="${#strings.defaultString(tramitador.telefono, '&nbsp;')}" id="telefonoTramitadorP"></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+				<li class="list-group-item">
+					<div class="card-body">
+						<h5 class="card-title">Permisos tramitador
+						</h5>
+					</div>
+					<div class="row col-sm-12">
+						<form action="asignarSedesTramitador" method="post">
+							<table class="table table-striped" style="font-size: 12px;" >
+								<thead>
+									<tr>
+										<th>Empresa</th>
+										<th>Sedes</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="empresa: ${listaEmpresas}">
+										<td th:text="${empresa.denominacion}" style="font-weight:bold"></td>
+										<td th:each="sede : ${empresa.sedes}">
+											<input type="checkbox" th:id="${'sedes_tramitador' + sede.idSede}" th:name="sedes_tramitador" value="${sede.idSede}"
+												th:checked="${#lists.contains(tramitador.sedes, sede)}"/>1
+											<label for="${'permiso_sede_' + sede.idSede}" th:text="${sede.denominacion}"></label>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<input type="submit" class="btn btn-sm btn-success" style="height: 30px"
+								value="Modificar permisos"/>
+							<input name="idTramitador" id="idTramitador" value="${tramitador.idTramitador}"/>
+						</form>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	
+	<div th:replace="fragments/footer.html :: footer" />
+
+</body>
+</html>
