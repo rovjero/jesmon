@@ -1,5 +1,6 @@
 package es.jesmon.controller.tramitador;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import es.jesmon.controller.JesmonController;
+import es.jesmon.controller.forms.TramitadorForm;
 import es.jesmon.entities.Empresa;
 import es.jesmon.entities.Sede;
 import es.jesmon.entities.Tramitador;
@@ -26,47 +28,18 @@ import es.jesmon.repository.util.AliasBean;
 import es.jesmon.repository.util.CriteriosBusqueda;
 import es.jesmon.repository.util.ParBean;
 import es.jesmon.services.JesmonServices;
-import es.jesmon.services.estadoIncidencia.EstadoIncidenciaService;
-import es.jesmon.services.estados.EstadosService;
-import es.jesmon.services.incidencias.IncidenciasService;
-import es.jesmon.services.mail.MailSender;
-import es.jesmon.services.mensaje.MensajesService;
-import es.jesmon.services.responsable.ResponsableServices;
-import es.jesmon.services.sedes.SedesServices;
 import es.jesmon.services.tramitador.TramitadorServices;
 
 @Controller
 public class TramitadorController extends JesmonController {
 	
 	private static Logger logger = LoggerFactory.getLogger(TramitadorController.class);
-
-	@Autowired
-	EstadoIncidenciaService estadoIncidenciaService;
-	
-	@Autowired
-	EstadosService estadosService;
 	
 	@Autowired
 	JesmonServices jesmonService;
 	
 	@Autowired
-	IncidenciasService incidenciasService;
-	
-	@Autowired
-	SedesServices sedesServices;
-	
-	@Autowired
 	TramitadorServices tramitadorServices;
-	
-	@Autowired
-	ResponsableServices responsableServices;
-	
-	@Autowired
-	MensajesService mensajesService;
-	
-	@Autowired
-    @Qualifier("javasampleapproachMailSender")
-	public MailSender mailSender;
 	
 	@GetMapping("/admin/tramitadores")
     public String getTramitadores(HttpServletRequest request, Model model) {
@@ -138,4 +111,58 @@ public class TramitadorController extends JesmonController {
 			// TODO: handle exception
 		}
 	}
+	
+	
+	@PostMapping("/admin/insertarTramitador")
+	public String insertarTramitador(HttpServletRequest request, Model model, TramitadorForm tramitadorForm) {
+		try {
+			Tramitador tramitador = new Tramitador();
+			tramitador.setLogin(tramitadorForm.getLogin());
+			tramitador.setActivo(1);
+			tramitador.setNif(tramitadorForm.getNif());
+			tramitador.setNombre(tramitadorForm.getNombre());
+			tramitador.setApellido1(tramitadorForm.getApellido1());
+			tramitador.setApellido2(tramitadorForm.getApellido2());
+			tramitador.setEmail(tramitadorForm.getEmail());
+			tramitador.setTelefono(tramitadorForm.getTelefono());
+			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+			tramitador.setPassword(passwordEncoder.encode(tramitadorForm.getPassword()).getBytes(StandardCharsets.UTF_8));
+			jesmonService.insertar(tramitador);
+			request.setAttribute("mensaje", "Tramitador insertado de forma correcta");
+	    	return postTramitadores(request, model, tramitador.getIdTramitador());
+	    }
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return procesarViewResolver("error", request);
+			// TODO: handle exception
+		}
+    }
+	
+	@PostMapping("/admin/modificarTramitador")
+	public String modificarTramitador(HttpServletRequest request, Model model, TramitadorForm tramitadorForm) {
+		try {
+			Tramitador tramitador = (Tramitador)jesmonService.buscarByPK(Tramitador.class, "idTramitador", tramitadorForm.getIdTramitador());
+			tramitador.setLogin(tramitadorForm.getLogin());
+			tramitador.setNif(tramitadorForm.getNif());
+			tramitador.setNombre(tramitadorForm.getNombre());
+			tramitador.setApellido1(tramitadorForm.getApellido1());
+			tramitador.setApellido2(tramitadorForm.getApellido2());
+			tramitador.setEmail(tramitadorForm.getEmail());
+			tramitador.setTelefono(tramitadorForm.getTelefono());
+			if(StringUtils.isNotBlank(tramitadorForm.getPassword())) {
+				BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+				tramitador.setPassword(passwordEncoder.encode(tramitadorForm.getPassword()).getBytes(StandardCharsets.UTF_8));
+			}
+			jesmonService.modificar(tramitador);
+			request.setAttribute("mensaje", "Tramitador modificado de forma correcta");
+	    	return postTramitadores(request, model, tramitadorForm.getIdTramitador());
+	    }
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return procesarViewResolver("error", request);
+			// TODO: handle exception
+		}
+    }
 }

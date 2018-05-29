@@ -213,7 +213,16 @@ var usuarioFomRules = {
 		required: true
 	}
 };
- 
+
+
+var tramitadorFomRules = {
+	login: {
+		required: true
+	},
+	nombre: {
+		required: true
+	}
+};
 
 
 if (!String.prototype.startsWith) {

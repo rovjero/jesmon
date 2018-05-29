@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class TramitadorForm implements Serializable {
 	
 	private static final long serialVersionUID = -3345912440715722860L;
+	private Integer idTramitador;
 	private String nif;
 	private String nombre;
 	private String apellido1;
@@ -12,7 +13,7 @@ public class TramitadorForm implements Serializable {
 	private String email;
 	private String telefono;
 	private Integer activo;
-	private byte[] password;
+	private String password;
 	private String login;
 	private String repitaPassword;
 	
@@ -58,10 +59,10 @@ public class TramitadorForm implements Serializable {
 	public void setActivo(Integer activo) {
 		this.activo = activo;
 	}
-	public byte[] getPassword() {
+	public String getPassword() {
 		return password;
 	}
-	public void setPassword(byte[] password) {
+	public void setPassword(String password) {
 		this.password = password;
 	}
 	public String getLogin() {
@@ -75,5 +76,11 @@ public class TramitadorForm implements Serializable {
 	}
 	public void setRepitaPassword(String repitaPassword) {
 		this.repitaPassword = repitaPassword;
+	}
+	public Integer getIdTramitador() {
+		return idTramitador;
+	}
+	public void setIdTramitador(Integer idTramitador) {
+		this.idTramitador = idTramitador;
 	}
 }
