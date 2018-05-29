@@ -86,7 +86,7 @@ public class TramitadorController extends JesmonController {
 	
 	@PostMapping("/admin/tramitadores")
 	public String postTramitadores(HttpServletRequest request, Model model,
-		@RequestParam(value = "idTramitador", required = true) Long idTramitador) {
+		@RequestParam(value = "idTramitador", required = true) Integer idTramitador) {
 		try {
 			if(idTramitador != null) {
 				CriteriosBusqueda criteriosBusqueda = new CriteriosBusqueda();
@@ -118,7 +118,7 @@ public class TramitadorController extends JesmonController {
 	
 	@PostMapping("/admin/asignarSedesTramitador")
 	public String asignarSedesTramitador(HttpServletRequest request, Model model,
-		@RequestParam(value = "idTramitador", required = true) Long idTramitador) {
+		@RequestParam(value = "idTramitador", required = true) Integer idTramitador) {
 		try {
 			Tramitador tramitador = (Tramitador)jesmonService.buscarByPK(Tramitador.class, "idTramitador", idTramitador);
 	    	Set<Sede> sedes = new HashSet<Sede>();

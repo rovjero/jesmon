@@ -15,15 +15,16 @@
 		jQuery("#activarModificarPassword").bind('click', function() {
 			FnActivarModificarPassword(this);
 		});
-		
+
+		jQuery(".marcar_sedes_empresas").bind('click', function() {
+			FnActivarModificarPassword(this);
+			jQuery(".sedes_empresas_" +  this.value).attr("checked", this.checked);
+		});
 		
 		jQuery(document).ready( function() {
 			$('#formEmpresa').validate(getValidationObject(empresaFomRules));
 		});
 
-		jQuery(document).ready( function() {
-			$('#formSede').validate(getValidationObject(sedeFomRules));
-		});
 	});
 
 	function FnActivarModificarPassword(check) {
@@ -37,90 +38,38 @@
 		}
 	}
 	
-	function FnNuevaEmpresa(){
-		$("#empresaModal h5").html("Nueva empresa");
-		$("#empresaModal form").attr("action", "insertarEmpresa");
-		$("#empresaModal :text").val("");
-		$("#empresaModal select").val("");
-		$("#empresaModal").modal();
-	}
-
-	function FnModificarEmpresa(){
-		$("#empresaModal h5").html("Modificar empresa");
-		$("#empresaModal #denominacionEmpresa").val($("#denominacionEmpresaH3").html().replace('&nbsp;', ''));
-		$("#empresaModal #emailEmpresa").val($("#emailEmpresaP").html().replace('&nbsp;', ''));
-		$("#empresaModal #telefonoEmpresa").val($("#telefonoEmpresaP").html().replace('&nbsp;', ''));
-		$("#empresaModal #nifEmpresa").val($("#nifEmpresaP").html().replace('&nbsp;', ''));
-		$("#empresaModal form").attr("action", "modificarEmpresa");
-		$("#idEmpresaModal").val($("#idEmpresa").val());
-		$("#empresaModal").modal();
-	}
-	
-	function FnNuevaSede(){
-		$("#sedeModal h5").html("Nueva sede");
-		$("#sedeModal form").attr("action", "insertarSede");
-		$("#sedeModal :text").val("");
-		$("#sedeModal select").val("");
-		$("#sedeModal").modal();
-	}
-
-	function FnModificarSede(idSede){
-		$("#sedeModal h5").html("Modificar sede");
-		$("#sedeModal form").attr("action", "modificarSede");
-		$("#sedeModal #denominacionSede").val(jQuery("#denominacionSede" + idSede).html());
-		$("#sedeModal #telefonoSede").val(jQuery("#telefonoSede" + idSede).html());
-		$("#sedeModal #direccionSede").val(jQuery("#direccionSede" + idSede).val());
-		$("#sedeModal #municipioSede").val(jQuery("#municipioSede" + idSede).val());
-		$("#sedeModal #codigoPostalSede").val(jQuery("#codigoPostalSede" + idSede).val());
-		$("#sedeModal #provinciaSede").val(jQuery("#cdProvinciaSede" + idSede).val());
-		$("#sedeModal").modal();
-	}
-
-	function FnNuevoUsuario(){
-		$("#usuarioModal h5").html("Nuevo usuario");
-		$("#usuarioModal form").attr("action", "insertarResponsable");
-		$("#usuarioModal :text").val("");
+	function FnNuevoTramitador(){
+		$("#tramitadorModal h5").html("Nuevo tramitador");
+		$("#tramitadorModal form").attr("action", "insertarTramitador");
+		$("#tramitadorModal :text").val("");
 
 		$('#filaPassword').show();
 		$('#filaPassword input').attr("disabled", false);
 		$('#filaActivarModificarPassword').hide();
 		
-		$("#usuarioModal").modal();
+		$("#tramitadorModal").modal();
 	}
 
-	function FnModificarUsuario(idResponsable){
-		$("#usuarioModal h5").html("Modificar usuario");
-		$("#usuarioModal form").attr("action", "modificarResponsable");
+	function FnModificarTramitador(){
+		$("#tramitadorModal h5").html("Modificar tramitador");
+		$("#tramitadorModal form").attr("action", "modificarTramitador");
 
-		$("#usuarioModal #loginUsuario").val($("#loginResponsable_" + idResponsable).html());
-		$("#usuarioModal #nombreResponsable").val($("#nombreResponsable_" + idResponsable).html());
-
-		$("#usuarioModal #nombreResponsable").val($("#nombreResponsable_" + idResponsable).val());
-		$("#usuarioModal #apellido1Responsable").val($("#apellido1Responsable_" + idResponsable).val());
-		$("#usuarioModal #apellido2Responsable").val($("#apellido2Responsable_" + idResponsable).val());
+		$("#tramitadorModal #loginTramitador").val($("#loginTramitadorP").html().replace('&nbsp;', ''));
+		$("#tramitadorModal #nombreTramitador").val($("#nombreTramitador").val());
+		$("#tramitadorModal #apellido1Tramitador").val($("#apellido1Tramitador").val());
+		$("#tramitadorModal #apellido2Tramitador").val($("#apellido2Tramitador").val());
 
 		
-		$("#usuarioModal #NIFResponsable").val($("#nifResponsable_" + idResponsable).html());
-		$("#usuarioModal #telefonoResponsable").val($("#telefonoResponsable_" + idResponsable).html());
-		$("#usuarioModal #emailResponsable").val($("#emailResponsable_" + idResponsable).html());
-		$("#usuarioModal #cargoResponsable").val($("#cargoResponsable_" + idResponsable).html());
-		$("#usuarioModal #telefonoResponsable").val($("#telefonoResponsable_" + idResponsable).html());
+		$("#tramitadorModal #NIFTramitador").val($("#nifTramitadorP").html().replace('&nbsp;', ''));
+		$("#tramitadorModal #telefonoTramitador").val($("#telefonoTramitadorP").html().replace('&nbsp;', ''));
+		$("#tramitadorModal #emailTramitador").val($("#emailTramitadorP").html().replace('&nbsp;', ''));
 
 		$('#filaPassword').hide();
 		$('#filaPassword input').attr("disabled", true);
 		$('#filaActivarModificarPassword').show();
 		$('#activarModificarPassword').attr("checked", false);
 		
-		$("#idResponsable").val(idResponsable);
-		$("#usuarioModal").modal();
-	}
-
-	function FnActivarUsuarios() {
-		document.getElementById("formResponsables").action = "activarUsuariosEmpresas";
-	}
-
-	function FnAsignarRepreEmpresa() {
-		document.getElementById("formResponsables").action = "asignarRepreEmpresa";
+		$("#tramitadorModal").modal();
 	}
 
 </script>
@@ -167,6 +116,10 @@
 	</form>
 	
 	<div class="container" th:if="${tramitador != null}">
+		<input type="hidden" id="nombreTramitador" th:value="${tramitador.nombre}" />
+		<input type="hidden" id="apellido1Tramitador" th:value="${tramitador.apellido1}" />
+		<input type="hidden" id="apellido2Tramitador" th:value="${tramitador.apellido2}" />
+		
 		<div class="card">
 			<div class="card-header row" style="margin-left: 0px;margin-right:0px;">
 				<h3 class="card-title text-primary" th:text="${tramitador.nombreCompleto}" id="nombreCompletoTramitadorH3"></h3>
@@ -181,7 +134,15 @@
 						<h5 class="card-title">Datos del tramitador</h5>
 					</div>
 					<div class="row">
-						<div class="col-sm-4">
+						<div class="col-sm-3">
+							<div class="card">
+								<div class="card-body">
+									<h5 class="card-title">Login</h5>
+									<p class="card-text" th:text="${#strings.defaultString(tramitador.login,'&nbsp;')}" id="loginTramitadorP"></p>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-2">
 							<div class="card">
 								<div class="card-body">
 									<h5 class="card-title">NIF</h5>
@@ -197,10 +158,10 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-sm-4">
+						<div class="col-sm-3">
 							<div class="card">
 								<div class="card-body">
-									<h5 class="card-title">Tel�fono</h5>
+									<h5 class="card-title">Teléfono</h5>
 									<p class="card-text" th:text="${#strings.defaultString(tramitador.telefono, '&nbsp;')}" id="telefonoTramitadorP"></p>
 								</div>
 							</div>
@@ -209,8 +170,7 @@
 				</li>
 				<li class="list-group-item">
 					<div class="card-body">
-						<h5 class="card-title">Permisos tramitador
-						</h5>
+						<h5 class="card-title">Permisos tramitador</h5>
 					</div>
 					<div class="row col-sm-12">
 						<form action="asignarSedesTramitador" method="post">
@@ -223,10 +183,14 @@
 								</thead>
 								<tbody>
 									<tr th:each="empresa: ${listaEmpresas}">
-										<td th:text="${empresa.denominacion}" style="font-weight:bold"></td>
+										<td style="font-weight:bold">
+											<input type="checkbox" th:id="'marcar_sedes_empresas_' + ${empresa.idEmpresa}" class="marcar_sedes_empresas" th:value="${empresa.idEmpresa}" 
+												th:title="'Seleccionar todas las sedes de la empresa ' + ${empresa.denominacion}"/>
+											<label th:text="${empresa.denominacion}" th:for="'marcar_sedes_empresas_' + ${empresa.idEmpresa}"/>
+										</td>
 										<td th:each="sede : ${empresa.sedes}">
-											<input type="checkbox" th:id="${'sedes_tramitador' + sede.idSede}" th:name="sedes_tramitador" value="${sede.idSede}"
-												th:checked="${#lists.contains(tramitador.sedes, sede)}"/>1
+											<input type="checkbox" th:id="${'sedes_tramitador' + sede.idSede}" th:name="sedes_tramitador" th:value="${sede.idSede}"
+												th:checked="${#lists.contains(tramitador.sedes, sede)}" th:class="'sedes_empresas_' + ${empresa.idEmpresa}" />
 											<label for="${'permiso_sede_' + sede.idSede}" th:text="${sede.denominacion}"></label>
 										</td>
 									</tr>
@@ -234,12 +198,110 @@
 							</table>
 							<input type="submit" class="btn btn-sm btn-success" style="height: 30px"
 								value="Modificar permisos"/>
-							<input name="idTramitador" id="idTramitador" value="${tramitador.idTramitador}"/>
+							<input type="hidden" name="idTramitador" id="idTramitadorSedes" th:value="${tramitador.idTramitador}"/>
 						</form>
 					</div>
 				</li>
 			</ul>
 		</div>
+	</div>
+	
+	<div class="modal fade" id="tramitadorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<form method="post" id="formTramitador" action="" >
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title text-primary" id="labelTramitador">Nuevo tramitador</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="container">
+							 <div class="row">
+  								<div class="col-12">
+									<div class="form-group">
+										<label for="loginUsuario">Login tramitador</label>
+										<input type="text" class="form-control form-control-sm"
+											name="login" id="loginTramitador" placeholder="Login tramitador" required="true"
+											autofocus="true" maxlength="50"/>
+									</div>
+								</div>
+							</div>
+							<div class="row" id="filaActivarModificarPassword">
+								<div class="form-group col-12">
+									<input type="checkbox" id="activarModificarPassword"/> <label for="activarModificarPassword">Modificar contraseña</label>
+								</div>
+							</div>
+							
+							<div class="row" id="filaPassword">
+								<div class="form-group col-6">
+									<label for="passwordResponsable">Contraseña</label>
+									<input type="password"
+										class="form-control form-control-sm" id="passwordResponsable" name="password"
+										aria-describedby="nuevoPasswordHelp" placeholder="Contraseña" />
+									<div class="input-group-append">
+									    <span class="input-group-text" id="passwordHelp" style="font-size: 14px;">6 carácteres mínimo</span>
+									</div>
+								</div>
+								<div class="form-group col-6">
+									<label for="repitaPasswordResponsable">Repita Contraseña</label>
+									<input type="password"
+										class="form-control form-control-sm" id="repitaPasswordResponsable" name="repitaPassword"
+										aria-describedby="nuevoPasswordHelp" placeholder="Repita contraseña" />
+									<div class="input-group-append">
+									    <span class="input-group-text" id="repitaPasswordHelp" style="font-size: 14px;">6 carácteres mínimo</span>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group col-sm-12 col-md-6">
+									<label for="nombreTramitador">Nombre</label>
+									<input type="text" name="nombre"
+										class="form-control form-control-sm" id="nombreTramitador" maxlength="150" placeholder="Nombre" />						
+								</div>
+								<div class="form-group col-sm-12 col-md-6">
+									<label for="apellido1Tramitador">1º Apellido</label>
+									<input type="text" name="apellido1"
+										class="form-control form-control-sm" id="apellido1Tramitador" maxlength="150" placeholder="1º apellido" />
+								</div>								
+							</div>
+							<div class="row">
+								<div class="form-group col-sm-12 col-md-6">
+									<label for="apellido2Responsable">2º Apellido</label>
+									<input type="text" name="apellido2"
+										class="form-control form-control-sm" id="apellido2Tramitador" maxlength="150" placeholder="2ª apellido" />
+								</div>
+								<div class="form-group col-sm-12 col-md-6">
+									<label for="NIFTramitador">NIF</label>
+									<input type="text" name="NIF"
+										class="form-control w-50 form-control-sm" id="NIFTramitador" maxlength="9" placeholder="NIF" />
+								</div>
+							</div>
+							<div class="row">			
+								<div class="form-group col-sm-12 col-md-6">
+									<label for="emailTramitador">Email</label>
+									<input type="text" name="email" required="required"
+										class="form-control form-control-sm" id="emailTramitador" maxlength="50" placeholder="Email" />
+								</div>
+								<div class="form-group col-sm-12 col-md-6">
+									<label for="telefonoTramitador">Teléfono</label>
+									<input type="text" name="telefono"
+										class="form-control form-control-sm  w-50" id="telefonoTramitador" maxlength="9" placeholder="Teléfono" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Cancelar</button>
+						<button type="submit" class="btn btn-primary" >Confirmar</button>
+					</div>
+				</div>
+			</div>
+			<input type="hidden" name="idTramitador" id="idTramitadorForm" />
+		</form>
 	</div>
 	
 	<div th:replace="fragments/footer.html :: footer" />

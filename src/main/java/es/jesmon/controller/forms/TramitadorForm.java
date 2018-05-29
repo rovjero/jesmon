@@ -2,28 +2,20 @@ package es.jesmon.controller.forms;
 
 import java.io.Serializable;
 
-public class ResponsableForm implements Serializable {
-
-	private static final long serialVersionUID = -4918431090059307101L;
-	private Integer idEmpresa;
-	private Integer idResponsable;
+public class TramitadorForm implements Serializable {
+	
+	private static final long serialVersionUID = -3345912440715722860L;
 	private String nif;
 	private String nombre;
 	private String apellido1;
 	private String apellido2;
 	private String email;
 	private String telefono;
-	private String cargo;
-	private String password;
-	private String repitaPassword;
+	private Integer activo;
+	private byte[] password;
 	private String login;
+	private String repitaPassword;
 	
-	public Integer getIdEmpresa() {
-		return idEmpresa;
-	}
-	public void setIdEmpresa(Integer idEmpresa) {
-		this.idEmpresa = idEmpresa;
-	}
 	public String getNif() {
 		return nif;
 	}
@@ -60,34 +52,28 @@ public class ResponsableForm implements Serializable {
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
-	public String getCargo() {
-		return cargo;
+	public Integer getActivo() {
+		return activo;
 	}
-	public void setCargo(String cargo) {
-		this.cargo = cargo;
+	public void setActivo(Integer activo) {
+		this.activo = activo;
 	}
-	public String getPassword() {
+	public byte[] getPassword() {
 		return password;
 	}
-	public void setPassword(String password) {
+	public void setPassword(byte[] password) {
 		this.password = password;
-	}
-	public String getRepitaPassword() {
-		return repitaPassword;
-	}
-	public void setRepitaPassword(String repitaPassword) {
-		this.repitaPassword = repitaPassword;
-	}
-	public Integer getIdResponsable() {
-		return idResponsable;
-	}
-	public void setIdResponsable(Integer idResponsable) {
-		this.idResponsable = idResponsable;
 	}
 	public String getLogin() {
 		return login;
 	}
 	public void setLogin(String login) {
 		this.login = login;
+	}
+	public String getRepitaPassword() {
+		return repitaPassword;
+	}
+	public void setRepitaPassword(String repitaPassword) {
+		this.repitaPassword = repitaPassword;
 	}
 }
