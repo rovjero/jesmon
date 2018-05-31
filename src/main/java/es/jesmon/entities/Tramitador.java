@@ -25,8 +25,8 @@ import org.hibernate.annotations.DynamicUpdate;
  */
 @Entity
 @Table(name = "tramitador", catalog = "jesmon")
-@DynamicUpdate(value=true)
 @DynamicInsert(value=true)
+@DynamicUpdate(value=true)
 
 public class Tramitador extends JesmonEntity implements java.io.Serializable {
 
@@ -182,7 +182,7 @@ public class Tramitador extends JesmonEntity implements java.io.Serializable {
 		this.estadoIncidencias = estadoIncidencias;
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "tramitadors")
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "tramitadores")
 	public Set<Sede> getSedes() {
 		return this.sedes;
 	}

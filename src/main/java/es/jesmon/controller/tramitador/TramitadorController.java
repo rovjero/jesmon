@@ -94,14 +94,39 @@ public class TramitadorController extends JesmonController {
 		@RequestParam(value = "idTramitador", required = true) Integer idTramitador) {
 		try {
 			Tramitador tramitador = (Tramitador)jesmonService.buscarByPK(Tramitador.class, "idTramitador", idTramitador);
-	    	Set<Sede> sedes = new HashSet<Sede>();
+	    	/*
+			Set<Sede> sedes = new HashSet<Sede>();
 			tramitador.setSedes(sedes);
 			String[] sedesTramitador = request.getParameterValues("sedes_tramitador");
 			if(sedesTramitador != null)
 				for(String idSede : sedesTramitador)
 					sedes.add(new Sede(new Integer(idSede)));
+			*/
 			
-			jesmonService.modificar(tramitador);
+			List<Sede> listaSedesTramitador = new ArrayList<Sede>();
+			String[] sedesTramitador = request.getParameterValues("sedes_tramitador");
+			if(sedesTramitador != null)
+				for(String idSede : sedesTramitador)
+					listaSedesTramitador.add(new Sede(new Integer(idSede)));			
+			
+			tramitador.setSedes(new HashSet<Sede>(listaSedesTramitador));
+			
+			CriteriosBusqueda criteriosBusquedaSedes = new CriteriosBusqueda();
+			criteriosBusquedaSedes.agregarAlias("tramitadores", "tramitadores", AliasBean.LEFT_JOIN);
+			List<Sede> listaSedes = (List)jesmonService.getLista(null, null, Sede.class);
+			List<Sede> listaSedesModificar = new ArrayList<Sede>();
+			for(Sede sede : listaSedes) {
+				if(listaSedesTramitador.contains(sede) && !sede.getTramitadores().contains(tramitador)) {
+					sede.getTramitadores().add(tramitador);
+					listaSedesModificar.add(sede);
+				}
+				else if(!listaSedesTramitador.contains(sede) && sede.getTramitadores().contains(tramitador)) {
+					sede.getTramitadores().remove(tramitador);
+					listaSedesModificar.add(sede);
+				}
+			}
+			
+			jesmonService.modificarLista((List)listaSedesModificar);
 			return postTramitadores(request, model, idTramitador);
 	    }
 		catch (Exception e) {

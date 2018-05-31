@@ -93,6 +93,9 @@
 	<div sec:authorize="hasRole('ROLE_TRAMITADOR')">
 		<div th:replace="fragments/header.html :: navegacionTramitador" />
 	</div>
+	<div sec:authorize="hasRole('ROLE_ADMIN')">
+		<div th:replace="fragments/header.html :: navegacionAdmin" />
+	</div>
 	
 	<br />
 		<div class="container">

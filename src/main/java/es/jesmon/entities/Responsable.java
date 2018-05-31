@@ -212,8 +212,8 @@ public class Responsable extends JesmonEntity implements java.io.Serializable {
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "rel_responsable_sede", catalog = "jesmon", joinColumns = {
-			@JoinColumn(name = "id_responsable", nullable = false, updatable = false) }, inverseJoinColumns = {
-					@JoinColumn(name = "id_sede", nullable = false, updatable = false) })
+			@JoinColumn(name = "id_responsable", nullable = false, updatable = true) }, inverseJoinColumns = {
+					@JoinColumn(name = "id_sede", nullable = false, updatable = true) })
 	public Set<Sede> getSedes() {
 		return this.sedes;
 	}

@@ -55,7 +55,7 @@ public class AfterLoginFilter extends GenericFilterBean {
 					criteriosBusqueda.agregarAlias("tramitador.sedes", "sede", AliasBean.INNER_JOIN);
 					criteriosBusqueda.agregarAlias("sede.empresa", "empresa", AliasBean.INNER_JOIN);
 					criteriosBusqueda.agregarAlias("empresa.direccion", "direccion", AliasBean.LEFT_JOIN);
-					criteriosBusqueda.addCriterio("tramitador.nif", user.getUsername());
+					criteriosBusqueda.addCriterio("tramitador.login", user.getUsername());
 					try {
 						List<Tramitador> listaTramitadores = (List<Tramitador>)(List)jesmonServices.getLista(criteriosBusqueda, null, Tramitador.class);
 						Tramitador tramitador = listaTramitadores.get(0);
@@ -81,7 +81,7 @@ public class AfterLoginFilter extends GenericFilterBean {
 					criteriosBusqueda.agregarAlias("responsable.sedes", "sede", AliasBean.INNER_JOIN);
 					criteriosBusqueda.agregarAlias("sede.empresa", "empresa", AliasBean.INNER_JOIN);
 					criteriosBusqueda.agregarAlias("empresa.direccion", "direccion", AliasBean.LEFT_JOIN);
-					criteriosBusqueda.addCriterio("responsable.nif", user.getUsername());
+					criteriosBusqueda.addCriterio("responsable.login", user.getUsername());
 					try {
 						List<Responsable> listaResponsables = (List<Responsable>)(List)jesmonServices.getLista(criteriosBusqueda, null, Responsable.class);
 						Responsable responsable = listaResponsables.get(0);

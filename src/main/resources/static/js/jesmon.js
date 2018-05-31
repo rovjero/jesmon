@@ -179,16 +179,11 @@ var empresaFomRules = {
 		minlength: 3
 	},
 	nif: {
-      required: function(element){
-          return $("#nifEmpresa").val()!="";
-      },
       minlength: 9
     },
     telefono: {
-      required: function(element){
-          return $("#telefonoEmpresa").val()!="";
-      },
-      minlength: 9
+    	number: true,
+    	minlength: 9
     },
     email: {
       required: function(element){
@@ -211,17 +206,58 @@ var usuarioFomRules = {
 	},
 	nombre: {
 		required: true
-	}
+	},
+	telefono: {
+    	minlength: 9,
+    	number: true
+	},
+	password: {
+		required: true,
+		minlength: 6
+    },
+    repitaPassword: {
+      required: true,
+      equalTo: "#passwordResponsable",
+      minlength: 6
+    },
+	nif: {
+      minlength: 9
+    },
+    email: {
+    	required: true,
+    	email: true
+    }
 };
 
 
 var tramitadorFomRules = {
 	login: {
-		required: true
+		required: true,
+		minlength: 6
 	},
 	nombre: {
 		required: true
-	}
+	},
+	password: {
+      required: true,
+      minlength: 6
+    },
+    repitaPassword: {
+      required: true,
+      equalTo: "#passwordTramitador",
+      minlength: 6
+    },
+    telefono: {
+    	minlength: 9,
+    	number: true
+	},
+	nif: {
+      minlength: 9
+    },
+    email: {
+    	required: true,
+    	email: true
+    }
 };
 
 

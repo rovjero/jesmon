@@ -301,7 +301,12 @@
 											<input type="hidden" th:id="${'nombreResponsable_' + responsable.idResponsable}" th:value="${responsable.nombre}"/>
 											<input type="hidden" th:id="${'apellido1Responsable_' + responsable.idResponsable}" th:value="${responsable.apellido1}"/>
 											<input type="hidden" th:id="${'apellido2Responsable_' + responsable.idResponsable}" th:value="${responsable.apellido2}"/>
-											
+											<br />
+											Lista sedes responsable:
+											<br />
+											<ul style="padding-left: 5px;">
+												<li th:each="sedeTmp : ${responsable.sedes}" style="list-style-type: none;" th:text="${sedeTmp.idSede}" />												
+											</ul>											
 										</td>
 										<td align="center">
 											<input type="radio" name="idRepresentante" th:value="${responsable.idResponsable}" th:checked="${responsable == empresa.responsable}" />
@@ -576,7 +581,7 @@
 								</div>
 								<div class="form-group col-sm-12 col-md-6">
 									<label for="NIFResponsable">NIF</label>
-									<input type="text" name="NIF"
+									<input type="text" name="nif"
 										class="form-control w-50 form-control-sm" id="NIFResponsable" maxlength="9" placeholder="NIF" />
 								</div>
 							</div>
