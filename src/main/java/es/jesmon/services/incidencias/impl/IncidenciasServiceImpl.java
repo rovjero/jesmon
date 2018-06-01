@@ -85,7 +85,7 @@ public class IncidenciasServiceImpl implements IncidenciasService {
 			List<PrioridadIncidencia> listaPrioridadIncidencia = SingletonJesmon.getLista(SingletonJesmon.LISTA_PRIORIDADES_INCIDENCIA);
 			if(listaPrioridadIncidencia == null) {
 				List<ParBean> criteriosOrdenacion = new ArrayList<ParBean>();
-				criteriosOrdenacion.add(new ParBean("denominacion", CriteriosBusqueda.ASC));
+				criteriosOrdenacion.add(new ParBean("idPrioridadIncidencia", CriteriosBusqueda.ASC));
 				listaPrioridadIncidencia = jesmonRepository.getLista(null, criteriosOrdenacion, PrioridadIncidencia.class);
 				SingletonJesmon.addLista(SingletonJesmon.LISTA_PRIORIDADES_INCIDENCIA, listaPrioridadIncidencia);
 			}

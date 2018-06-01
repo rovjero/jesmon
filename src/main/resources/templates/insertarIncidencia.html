@@ -16,7 +16,7 @@
 
 </head>
 <body>
-	<div th:replace="fragments/header.html :: navegacionCliente" />
+	<div th:replace="fragments/header.html :: navegacionCliente('incidencias')" />
 
 	<br />
 	<form action="insertarIncidencia" th:action="@{/cliente/insertarIncidencia}" th:object="${incidenciaForm}" 
@@ -81,7 +81,7 @@
 					<div class="form-group col-6">
 						<label for="idPrioridadIncidencia">Prioridad</label> <select name="idPrioridadIncidencia" id="idPrioridadIncidencia" class="form-control form-control-sm">
 							<option></option>
-							<option th:each="prioridadIncidencia : ${listaPrioridadesIncidencia}"
+							<option th:each="prioridadIncidencia : ${listaPrioridadesIncidencia}" th:class="${prioridadIncidencia.classCss}"
 								th:value="${prioridadIncidencia.idPrioridadIncidencia}" th:text="${prioridadIncidencia.denominacion}" />
 						</select>
 					</div>

@@ -155,7 +155,7 @@ public class IncidenciasController extends JesmonController {
 		}
     }
 	
-	@PostMapping("/cliente/insertarIncidencia")
+	@PostMapping(value={"/cliente/insertarIncidencia", "/admin/insertarIncidencia"})
     public String postMappingInsertarIncidencia(@Valid IncidenciaForm incidenciaForm,
     		HttpServletRequest request, BindingResult bindingResult, @RequestParam(value = "fichero1", required = false) MultipartFile fichero1,
     		@RequestParam(value = "fichero2", required = false) MultipartFile fichero2,

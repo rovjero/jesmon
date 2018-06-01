@@ -24,7 +24,7 @@
 </head>
 <body>
 	<div sec:authorize="hasRole('ROLE_CLIENTE')">
-		<div th:replace="fragments/header.html :: navegacionCliente" />
+		<div th:replace="fragments/header.html :: navegacionCliente('contacto')" />
 	</div>
 	<div sec:authorize="hasRole('ROLE_TRAMITADOR')">
 		<div th:replace="fragments/header.html :: navegacionTramitador" />

@@ -1,18 +1,24 @@
 package es.jesmon.entities;
 // Generated 29-ene-2018 22:17:55 by Hibernate Tools 5.2.6.Final
 
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -139,6 +145,13 @@ public class Empresa implements java.io.Serializable {
 
 	public void setSedes(Set<Sede> sedes) {
 		this.sedes = sedes;
+	}
+	
+	@Transient
+	public List<Sede> getListaSedes (){
+		List<Sede> listaSedes = new ArrayList<Sede>(sedes);
+		listaSedes.sort(Comparator.comparing(Sede::getDenominacion).reversed());
+		return listaSedes;
 	}
 	
 	public boolean equals (Object o) {

@@ -37,5 +37,9 @@ public class Admin extends JesmonEntity {
 	public String getNombreCompleto() {
 		return "ADMINISTRADOR";
 	}
+	
+	public String getLogin() {
+		return "administrador";
+	}
 
 }

@@ -82,7 +82,7 @@
 
 </head>
 <body>
-	<div th:replace="fragments/header.html :: navegacionAdmin" />
+	<div th:replace="fragments/header.html :: navegacionAdmin('tramitadores')" />
 
 	<br />
 	<div th:if="${param.mensaje != null}">
@@ -188,7 +188,7 @@
 												th:title="'Seleccionar todas las sedes de la empresa ' + ${empresa.denominacion}"/>
 											<label th:text="${empresa.denominacion}" th:for="'marcar_sedes_empresas_' + ${empresa.idEmpresa}"/>
 										</td>
-										<td th:each="sede : ${empresa.sedes}">
+										<td th:each="sede : ${empresa.listaSedes}">
 											<input type="checkbox" th:id="${'sedes_tramitador' + sede.idSede}" th:name="sedes_tramitador" th:value="${sede.idSede}"
 												th:checked="${#lists.contains(tramitador.sedes, sede)}" th:class="'sedes_empresas_' + ${empresa.idEmpresa}" />
 											<label th:for="${'sedes_tramitador' + sede.idSede}" th:text="${sede.denominacion}"></label>

@@ -73,6 +73,7 @@ public class TramitadorController extends JesmonController {
 	    	
 			CriteriosBusqueda criteriosBusquedaEmpresas = new CriteriosBusqueda();
 			criteriosBusquedaEmpresas.agregarAlias("sedes", "sedes", AliasBean.LEFT_JOIN);
+			criteriosBusquedaEmpresas.setUnicoResultado(true);
 			List<ParBean> criteriosOrdenacionEmpresas = new ArrayList<ParBean>();
 			criteriosOrdenacionEmpresas.add(new ParBean("denominacion", CriteriosBusqueda.ASC));
 			List<Empresa> listaEmpresas = (List)jesmonService.getLista(criteriosBusquedaEmpresas, criteriosOrdenacionEmpresas, Empresa.class);

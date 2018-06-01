@@ -65,6 +65,10 @@ public abstract class JesmonEntity implements Serializable {
 	@Transient
 	public abstract String getNombreCompleto();
 	
+	
+	@Transient
+	public abstract String getLogin();
+	
 	public void setListaEmpresas(List<Empresa> listaEmpresas) {
 		this.listaEmpresas = listaEmpresas;
 	}

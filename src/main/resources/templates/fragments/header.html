@@ -35,7 +35,6 @@
 				aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-
 			<div class="collapse navbar-collapse" id="navbarColor02">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item active">
@@ -46,7 +45,7 @@
 		</nav>
 	</div>
 
-	<div th:fragment="navegacionCliente">
+	<div th:fragment="navegacionCliente(navActive)">
 		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
 			<a class="navbar-brand" href="#">Jesmon Seguridad</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -54,16 +53,15 @@
 				aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-
 			<div class="collapse navbar-collapse" id="navbarColor02">
 				<ul class="navbar-nav mr-auto">
-					<li th:class="${#httpServletRequest.getRequestURI().contains('ncidencia')? 'nav-item active': 'nav-item'}">
-						<a class="nav-link" href="incidencias">Mis incidencias</a>
+					<li th:class="${(navActive == 'incidencias')? 'nav-item active': 'nav-item'}">
+						<a class="nav-link" href="incidencias">Mis incidencias</a>						
 					</li>
-					<li th:class="${#httpServletRequest.getRequestURI().contains('Perfil')? 'nav-item active': 'nav-item'}">
+					<li th:class="${(navActive == 'perfil')? 'nav-item active': 'nav-item'}">
 						<a class="nav-link" href="consultarPerfil">Mis datos</a>
 					</li>
-					<li th:class="${#httpServletRequest.getRequestURI().contains('contacto')? 'nav-item active': 'nav-item'}">
+					<li th:class="${(navActive == 'contacto')? 'nav-item active': 'nav-item'}">
 						<a class="nav-link" href="contacto">Contaco</a>
 					</li>
 				</ul>
@@ -71,7 +69,7 @@
 		</nav>
 	</div>
 
-	<div th:fragment="navegacionAdmin">
+	<div th:fragment="navegacionAdmin(navActive)">
 		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
 			<a class="navbar-brand" href="#">Jesmon Seguridad</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -81,13 +79,13 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarColor02">
 				<ul class="navbar-nav mr-auto">
-					<li th:class="${#httpServletRequest.getRequestURI().contains('ncidencia')? 'nav-item active': 'nav-item'}">
+					<li th:class="${(navActive == 'incidencias')? 'nav-item active': 'nav-item'}">
 						<a class="nav-link" href="incidencias">Incidencias</a>
 					</li>
-					<li th:class="${#httpServletRequest.getRequestURI().contains('mpresa')? 'nav-item active': 'nav-item'}">
+					<li th:class="${(navActive == 'empresas')? 'nav-item active': 'nav-item'}">
 						<a class="nav-link" href="empresas">Empresas</a>
 					</li>
-					<li th:class="${#httpServletRequest.getRequestURI().contains('ramitador')? 'nav-item active': 'nav-item'}">
+					<li th:class="${(navActive == 'tramitadores')? 'nav-item active': 'nav-item'}">
 						<a class="nav-link" href="tramitadores">Tramitadores</a>
 					</li>
 				</ul>
@@ -95,13 +93,11 @@
 		</nav>
 	</div>
 
-
 	<div th:fragment="nav-vacio">
 		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
 			<a class="navbar-brand" href="#">Jesmon Seguridad</a>
 		</nav>
 	</div>
-
 
 </body>
 </html>

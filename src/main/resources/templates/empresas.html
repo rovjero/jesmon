@@ -71,6 +71,7 @@
 		$("#sedeModal #municipioSede").val(jQuery("#municipioSede" + idSede).val());
 		$("#sedeModal #codigoPostalSede").val(jQuery("#codigoPostalSede" + idSede).val());
 		$("#sedeModal #provinciaSede").val(jQuery("#cdProvinciaSede" + idSede).val());
+		$("#sedeModal #idSedeModal").val(idSede);
 		$("#sedeModal").modal();
 	}
 
@@ -131,7 +132,7 @@
 
 </head>
 <body>
-	<div th:replace="fragments/header.html :: navegacionAdmin" />
+	<div th:replace="fragments/header.html :: navegacionAdmin('empresas')" />
 
 	<br />
 	<div th:if="${param.mensaje != null}">

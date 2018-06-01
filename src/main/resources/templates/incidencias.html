@@ -23,14 +23,14 @@
 
 </head>
 <body>
-	<div sec:authorize="hasRole('ROLE_CLIENTE')">
-		<div th:replace="fragments/header.html :: navegacionCliente" />
+	<div sec:authorize="hasRole('ROLE_CLIENTE')">	
+		<div th:replace="fragments/header.html :: navegacionCliente('incidencias')" />
 	</div>
 	<div sec:authorize="hasRole('ROLE_TRAMITADOR')">
 		<div th:replace="fragments/header.html :: navegacionTramitador" />
 	</div>
 	<div sec:authorize="hasRole('ROLE_ADMIN')">
-		<div th:replace="fragments/header.html :: navegacionAdmin" />
+		<div th:replace="fragments/header.html :: navegacionAdmin('incidencias')" />
 	</div>
 	<br />
 	<form action="incidencias" method="post"
@@ -54,7 +54,7 @@
 						<label for="idEstado">Estado</label> <select name="idEstado"
 							id="idEstado" class="form-control form-control-sm">
 							<option></option>
-							<option th:each="estado : ${listaEstados}"
+							<option th:each="estado : ${listaEstados}" th:class="${estado.classCss}"
 								th:value="${estado.idEstado}" th:text="${estado.descripcion}"
 								th:selected="${estado.idEstado ==  buscadorIncidenciasForm.idEstado}" />
 						</select>
@@ -117,7 +117,8 @@
 					<div class="form-group col-6">
 						<label for="idPrioridadIncidencia">Prioridad</label> <select name="idPrioridadIncidencia" id="idPrioridadIncidencia" class="form-control form-control-sm">
 							<option></option>
-							<option th:each="prioridadIncidencia : ${listaPrioridadesIncidencia}" th:selected="${prioridadIncidencia.idPrioridadIncidencia ==  buscadorIncidenciasForm.idPrioridadIncidencia}"
+							<option th:each="prioridadIncidencia : ${listaPrioridadesIncidencia}" th:class="${prioridadIncidencia.classCss}"
+								th:selected="${prioridadIncidencia.idPrioridadIncidencia ==  buscadorIncidenciasForm.idPrioridadIncidencia}"
 								th:value="${prioridadIncidencia.idPrioridadIncidencia}" th:text="${prioridadIncidencia.denominacion}" />
 						</select>
 					</div>
@@ -157,8 +158,8 @@
 						<td th:text="${incidencia.responsable.nombre}">Text ...</td>
 						<td th:text="${incidencia.sede.denominacion}">Text ...</td>
 						<td th:text="${incidencia.sede.empresa.denominacion}" sec:authorize="hasRole('ROLE_TRAMITADOR')">Text...</td>
-						<td th:text="${incidencia.estadoActual.descripcion}">Text ...</td>
-						<td th:text="${incidencia.prioridadIncidencia == null ? '' : incidencia.prioridadIncidencia.denominacion}">Text ...</td>
+						<td th:text="${incidencia.estadoActual.descripcion}" th:class="${incidencia.estadoActual.classCss}">Text ...</td>
+						<td th:text="${incidencia.prioridadIncidencia == null ? '' : incidencia.prioridadIncidencia.denominacion}" th:class="${incidencia.prioridadIncidencia == null ? '' : incidencia.prioridadIncidencia.classCss}">Text ...</td>
 						<td th:text="${incidencia.tipoIncidencia == null ? '' : incidencia.tipoIncidencia.denominacion}">Text ...</td>
 						<td>
 							<input type="button" class="btn btn-sm btn-primary"
