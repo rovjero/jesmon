@@ -1,8 +1,8 @@
 function FnBuscarSedes(){
 	var idEmpresa = jQuery("#idEmpresa").val();
 	//alert(idEmpresa);
-	if(idEmpresa == ""){
-		document.getElementById("idSede").options.length = 0;
+	document.getElementById("idSede").options.length = 0;
+	if(idEmpresa == ""){		
 		jQuery("#celdaSede").hide();
 	}
 	else {
@@ -33,9 +33,9 @@ function FnBuscarSedes(){
 function FnBuscarResponsables(){
 	var idEmpresa = jQuery("#idEmpresa").val();
 	//alert(idEmpresa);
-	if(idEmpresa == "")
-		document.getElementById("idResponsable").options.length = 0;
-	else {
+	
+	document.getElementById("idResponsable").options.length = 0;
+	if(idEmpresa != "") {
 		var parametros = {};
 		parametros["idEmpresa"] = idEmpresa;
 		
