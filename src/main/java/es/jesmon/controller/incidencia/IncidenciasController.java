@@ -161,7 +161,7 @@ public class IncidenciasController extends JesmonController {
     		@RequestParam(value = "fichero2", required = false) MultipartFile fichero2,
     		@RequestParam(value = "fichero3", required = false) MultipartFile fichero3) {
     	try {
-			if (bindingResult.hasErrors()) 
+			if (bindingResult.hasErrors())
 				procesarViewResolver("insertarIncidencia", request);
 			
     		Incidencia incidencia = new Incidencia();
@@ -172,7 +172,7 @@ public class IncidenciasController extends JesmonController {
     			incidencia.setPrioridadIncidencia((PrioridadIncidencia)jesmonService.buscarByPK(PrioridadIncidencia.class, "idPrioridadIncidencia", incidenciaForm.getIdPrioridadIncidencia()));
     		
     		if(incidenciaForm.getIdTipoIncidencia() != null)
-    			incidencia.setTipoIncidencia((TipoIncidencia)jesmonService.buscarByPK(TipoIncidencia.class, "idTipoIncidencia",incidenciaForm.getIdTipoIncidencia()));
+    			incidencia.setTipoIncidencia((TipoIncidencia)jesmonService.buscarByPK(TipoIncidencia.class, "idTipoIncidencia", incidenciaForm.getIdTipoIncidencia()));
     		
     		List<Fichero> listaFicheros = new ArrayList<Fichero>();
     		addFichero(fichero1, listaFicheros);
@@ -353,7 +353,6 @@ public class IncidenciasController extends JesmonController {
 					BeanUtils.copyProperties(buscadorIncidenciasForm, buscadorIncidenciasFormSesion);
 				}
 			}
-			
 			
 			int evalPageSize = pageSize.orElse(INITIAL_PAGE_SIZE);
 	        // Evaluate page. If requested parameter is null or less than 0 (to

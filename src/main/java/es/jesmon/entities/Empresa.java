@@ -47,10 +47,11 @@ public class Empresa implements java.io.Serializable {
 	private String iban3;
 	private String iban4;
 	private String iban5;
+	private String iban6;
 	private Set<Responsable> responsables = new HashSet<Responsable>(0);
 	private Set<Sede> sedes = new HashSet<Sede>(0);
 	private Set<ContratoSistemaSeguridad> contratosSistemaSeguridad = new HashSet<ContratoSistemaSeguridad>(0);
-	private Set<ContratoIncencidios> contratosIncencidios = new HashSet<ContratoIncencidios>(0);
+	private Set<ContratoIncendios> contratosIncencidios = new HashSet<ContratoIncendios>(0);
 
 	public Empresa() {
 	}
@@ -206,7 +207,7 @@ public class Empresa implements java.io.Serializable {
 		this.iban4 = iban4;
 	}
 
-	@Column(name = "iban5", length = 5)
+	@Column(name = "iban5", length = 4)
 	public String getIban5() {
 		return this.iban5;
 	}
@@ -215,6 +216,15 @@ public class Empresa implements java.io.Serializable {
 		this.iban5 = iban5;
 	}
 
+	@Column(name = "iban6", length = 4)
+	public String getIban6() {
+		return this.iban6;
+	}
+
+	public void setIban6(String iban6) {
+		this.iban6 = iban6;
+	}
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "empresa")
 	public Set<ContratoSistemaSeguridad> getContratosSistemaSeguridad() {
 		return contratosSistemaSeguridad;
@@ -225,11 +235,11 @@ public class Empresa implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "empresa")
-	public Set<ContratoIncencidios> getContratosIncencidios() {
+	public Set<ContratoIncendios> getContratosIncencidios() {
 		return contratosIncencidios;
 	}
 
-	public void setContratosIncencidios(Set<ContratoIncencidios> contratosIncencidios) {
+	public void setContratosIncencidios(Set<ContratoIncendios> contratosIncencidios) {
 		this.contratosIncencidios = contratosIncencidios;
 	}
 

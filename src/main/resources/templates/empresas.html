@@ -5,15 +5,23 @@
 <link rel="icon" href="../img/logo_small.png"/>
 <div th:replace="fragments/header.html :: header-css" />
 
-<script type="text/javascript">
-
+<script type="text/javascript" th:inline="javascript">
+	
 	jQuery(document).ready( function() {
 		jQuery("#idEmpresa").bind('change', function() {
 			document.getElementById("formEmpresas").submit();
 		});
 
+		jQuery(document).ready( function() {
+			jQuery(".fecha").datepicker({changeYear:true});
+		});
+
 		jQuery("#activarModificarPassword").bind('click', function() {
 			FnActivarModificarPassword(this);
+		});
+
+		jQuery("#tablaPrecioContratoIncendio :text").bind('blur', function() {
+			FnCalcularTotalIncendio();
 		});
 		
 		$('#formEmpresa').validate(getValidationObject(empresaFomRules));
@@ -121,13 +129,36 @@
 	function FnAsignarRepreEmpresa() {
 		document.getElementById("formResponsables").action = "asignarRepreEmpresa";
 	}
+	
+	function FnNuevoContratoIncendios(){
+		while (numElementosIncendio > 1)
+			FnEliminarElemento();
+		$("#contratoIncendiosModal h5").html("Nuevo contrato incendios");
+		$("#contratoIncendiosModal form").attr("action", "insertarContratoIncendios");
+		$("#contratoIncendiosModal :text").val("");
+		$("#contratoIncendiosModal select").val("");
+		$("#contratoIncendiosModal").modal();
+	}
 
+	function FnCalcularTotalIncendio(){
+		var total = (toFloat($("#unidadesSistemaDeteccion").val()) * toFloat($("#precioUnitarioSistemaDeteccion").val())) + 
+			(toFloat($("#unidadesBocaIncendio").val()) * toFloat($("#precioUnitarioBocaIncendio").val())) +
+			(toFloat($("#unidadesGrupoPresion").val()) * toFloat($("#precioUnitarioGrupoPresion").val())) +
+			(toFloat($("#unidadesRevisionExtintor").val()) * toFloat($("#precioUnitarioRevisionExtintor").val())) + 
+			(toFloat($("#unidadesAlumbradoEmergencia").val()) * toFloat($("#precioUnitarioAlumbradoEmergencia").val()));
+
+		$("#totalIncendios").val(floatToString(redondeo2decimales(total)));				
+	}
+
+	var numElementosIncendio = 0;
+	
+	
 </script>
 
 <style type="text/css">
-.table-striped td {
-	padding: 4px;
-}
+	.table-striped td {
+		padding: 4px;
+	}	
 </style>
 
 </head>
@@ -338,6 +369,24 @@
 						</h5>
 					</div>
 					<div class="row col-sm-12">
+						<table class="table table-striped" style="font-size: 12px;">
+							<thead>
+								<tr>
+									<th>Nº contrato</th>
+									<th>Fecha</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="contrato : ${empresa.contratosIncencidios}">
+									<td th:text="${contrato.numeroContrato}">Text ...</td>
+									<td th:text="${contrato.fechaContrato == null ? '' : #dates.format(contrato.fechaContrato, 'dd/MM/yyyy')}">Text ...</td>
+									<td>
+										<a th:href="@{'generarContrato.html?idContratoIncendio=' + ${contrato.idContrato}}">Generar</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</li>
 				<li class="list-group-item">
@@ -611,6 +660,221 @@
 			</div>
 			<input type="hidden" name="idEmpresa" id="idEmpresaResponsable" th:value="${empresa == null ? '' : empresa.idEmpresa}" />
 			<input type="hidden" name="idResponsable" id="idResponsable" />
+		</form>
+	</div>
+	
+	<div class="modal fade" id="contratoIncendiosModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<form method="post" id="formContratoIncendios" action="" >
+			<div class="modal-dialog" role="document" style="margin-left: 50px">
+				<div class="modal-content" style="width: 200%">
+					<div class="modal-header">
+						<h5 class="modal-title text-primary" id="labelContratoIncendios">Nuevo contrato</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="container">
+							 <div class="row">
+  								<div class="col-10">
+									<div class="form-group">
+										<label for="numeroContratoIncendios">Nº contrato</label>
+										<input type="text" class="form-control form-control-sm w-75"
+											name="numeroContrato" id="numeroContratoIncendios" placeholder="Nº contrato" required="true"
+											autofocus="true" maxlength="45"/>
+									</div>
+								</div>
+								<div class="col-2">
+									<div class="form-group">
+										<label for="numeroContratoIncendios">Fecha</label>
+										<input type="text"
+											name="fechaContrato" id="fechaContrato" class="fecha form-control form-control-sm" required="true" maxlength="10"/>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+  								<div class="col-12">
+  									<h6>Objeto y precio</h6>
+  									<table class="table table-striped" style="font-size: 12px;" id="tablaPrecioContratoIncendio">
+  										<thead>
+											<tr>
+												<th>Descripción</th>
+												<th>Unidades</th>
+												<th>Precio unitario</th>						
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>
+													Sistema de detección de incendios
+												</td>
+												<td>
+													<input type="text" class="form-control form-control-sm text-right"
+														name="unidadesSistemaDeteccion" id="unidadesSistemaDeteccion" placeholder="Unidades" />
+												</td>
+												<td>
+													<input type="text" class="form-control form-control-sm text-right"
+														name="precioUnitarioSistemaDeteccion" id="precioUnitarioSistemaDeteccion" placeholder="Precio" />
+												</td>
+											</tr>
+											<tr>
+												<td>
+													Boca de incendios equipada (BIE)
+												</td>
+												<td>
+													<input type="text" class="form-control form-control-sm text-right"
+														name="unidadesBocaIncendio" id="unidadesBocaIncendio" placeholder="Unidades" />
+												</td>
+												<td>
+													<input type="text" class="form-control form-control-sm text-right"
+														name="precioUnitarioBocaIncendio" id="precioUnitarioBocaIncendio" placeholder="Precio" />
+												</td>
+											</tr>
+											<tr>
+												<td>
+													Grupo de presión
+												</td>
+												<td>
+													<input type="text" class="form-control form-control-sm text-right"
+														name="unidadesGrupoPresion" id="unidadesGrupoPresion" placeholder="Unidades" 
+														/>
+												</td>
+												<td>
+													<input type="text" class="form-control form-control-sm text-right"
+														name="precioUnitarioGrupoPresion" id="precioUnitarioGrupoPresion" placeholder="Precio" />
+												</td>
+											</tr>
+											<tr>
+												<td>
+													Revisión de extintor
+												</td>
+												<td>
+													<input type="text" class="form-control form-control-sm text-right"
+														name="unidadesRevisionExtintor" id="unidadesRevisionExtintor" placeholder="Unidades" />
+												</td>
+												<td>
+													<input type="text" class="form-control form-control-sm text-right"
+														name="precioUnitarioRevisionExtintor" id="precioUnitarioRevisionExtintor" placeholder="Precio" />
+												</td>
+											</tr>
+											<tr>
+												<td>
+													Alumbrado de emergencias
+												</td>
+												<td>
+													<input type="text" class="form-control form-control-sm text-right"
+														name="unidadesAlumbradoEmergencia" id="unidadesAlumbradoEmergencia" placeholder="Unidades" />
+												</td>
+												<td>
+													<input type="text" class="form-control form-control-sm text-right"
+														name="precioUnitarioAlumbradoEmergencia" id="precioUnitarioAlumbradoEmergencia" placeholder="Precio" />
+												</td>
+											</tr>
+										</tbody>
+										<tfoot>
+											<tr>
+												<td class="font-weight-bold">
+													TOTAL
+												</td>
+												<td colspan="2" align="right">
+													<input type="text" class="form-control form-control-sm text-right"
+														name="total" id="totalIncendios" placeholder="Total" />
+												</td>
+											</tr>
+										</tfoot>		
+  									</table>
+  								</div>
+  							</div>
+  							<div class="row">
+  								<div class="col-6">
+  									<input type="radio" name="tipoContrato" id="tipoContratoInstalacion" value="0" checked="checked"/> <label for="tipoContratoInstalacion">Instalacion</label>
+  								</div>
+			  					<div class="col-6">
+  									<input type="radio" name="tipoContrato" id="tipoContratoMantenimiento" value="1"/> <label for="tipoContratoMantenimiento">Mantenimiento</label>
+  								</div>
+  							</div>
+  							<div class="row">
+  								<div class="col-12">
+  									Forma de pago
+  									<select name="formaPago" id="formaPago" required="true" class="form-control form-control-sm">
+  										<option value="Cargo en cuenta">Cargo en cuenta</option>
+  										<option value="Recibo">Recibo</option>
+  										<option value="Transferencia">Transferencia</option>
+  									</select>	
+  								</div>
+  							</div>
+  							<div class="row">
+  								<div class="col-12">
+  									<br />
+  									<h6>Descripción de equipos
+  										<input type="button" class="btn btn-sm btn-success"
+											value="Nuevo equipo" onclick="FnAddElementosIncendio()"/>  									
+  									</h6>
+  									<table class="table table-striped" style="font-size: 12px;">
+  										<thead>
+											<tr>
+												<th>Unidades</th>
+												<th>Elemento</th>
+												<th>Peso</th>
+												<th>Ubicación</th>
+												<th>F. Fabricación</th>
+												<th>F. Retrimbrado</th>
+												<th>Nº Serie</th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr id="filaElementoIncendio_1" style="display: none" >
+												<td style="width: 9%">
+													<input type="text" class="form-control form-control-sm text-right"
+														name="unidades_1" id="unidades_1" placeholder="Unidades" />
+												</td>
+												<td style="width: 15%">
+													<select name="elemento_1" id="elemento_1" class="form-control form-control-sm">
+														<option></option>
+														<option th:each="elemento : ${T(es.jesmon.entities.EquipoIncendios).listaElementos}"
+															th:value="${elemento}" th:text="${elemento}" />
+													</select>
+												</td>
+												<td style="width: 8%">
+													<input type="text" class="form-control form-control-sm text-right"
+														name="peso_1" id="peso_1" placeholder="Peso" />
+												</td>
+												<td style="width: 30%">
+													<input type="text" class="form-control form-control-sm"
+														name="ubicacion_1" id="ubicacion_1" placeholder="Ubicación"/>
+												</td>
+												<td style="width: 8%">
+													<input type="text" class="form-control form-control-sm text-center"
+														name="fechaFabricacion_1" id="fechaFabricacion_1" placeholder="F. Fabricación" maxlength="4"/>
+												</td>
+												<td style="width: 8%">
+													<input type="text" class="form-control form-control-sm text-center"
+														name="fechaRetimbrado_1" id="fechaRetimbrado_1" placeholder="F. Retrimbrado" maxlength="4"/>
+												</td>
+												<td style="width: 20%">
+													<input type="text" class="form-control form-control-sm"
+														name="numeroSerie_1" id="numeroSerie_1" placeholder="Nº Serie" />
+												</td>
+												<td style="width: 2%">
+													<a id="enlaceEliminarElemento_1" href="#" onclick="FnEliminarElemento()"><img src="../img/icon_eliminar.gif" alt="Eliminar elemento" title="Eliminar elemento"/></a>
+												</td>
+											</tr>
+										</tbody>
+  									</table>
+  								</div>
+  							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Cancelar</button>
+						<button type="submit" class="btn btn-primary" >Confirmar</button>
+					</div>
+				</div>
+			</div>
+			<input type="hidden" name="idEmpresa" id="idEmpresaContratoIncendio" th:value="${empresa != null ? empresa.idEmpresa : ''}"/>
+			<input type="hidden" name="numElementosIncendio" id="numElementosIncendio"/>
 		</form>
 	</div>
 

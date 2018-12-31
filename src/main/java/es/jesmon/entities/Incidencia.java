@@ -53,6 +53,9 @@ public class Incidencia implements java.io.Serializable {
 	private Set<EstadoIncidencia> estadosIncidencia = new HashSet<EstadoIncidencia>(0);
 	private TipoIncidencia tipoIncidencia;
 	private PrioridadIncidencia prioridadIncidencia;
+	private Date fechaTramitacion;
+	private PrioridadIncidencia prioridadTramitacion;
+	private Integer tiempoEstimadoTramitacion; 
 	
 	public Incidencia() {
 	}
@@ -215,6 +218,35 @@ public class Incidencia implements java.io.Serializable {
 		List<EstadoIncidencia> listaEstados = new ArrayList<EstadoIncidencia>(estadosIncidencia);
 		listaEstados.sort(Comparator.comparing(EstadoIncidencia::getFechaEstado).reversed());
 		return listaEstados;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "fecha_tramitacion", nullable = false, length = 19)
+	public Date getFechaTramitacion() {
+		return fechaTramitacion;
+	}
+
+	public void setFechaTramitacion(Date fechaTramitacion) {
+		this.fechaTramitacion = fechaTramitacion;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_prioridad_tramitacion")
+	public PrioridadIncidencia getPrioridadTramitacion() {
+		return prioridadTramitacion;
+	}
+
+	public void setPrioridadTramitacion(PrioridadIncidencia prioridadTramitacion) {
+		this.prioridadTramitacion = prioridadTramitacion;
+	}
+
+	@Column(name = "tiempo_estimado_tramitacion", nullable = true, length = 4)
+	public Integer getTiempoEstimadoTramitacion() {
+		return tiempoEstimadoTramitacion;
+	}
+
+	public void setTiempoEstimadoTramitacion(Integer tiempoEstimadoTramitacion) {
+		this.tiempoEstimadoTramitacion = tiempoEstimadoTramitacion;
 	}
 	
 }

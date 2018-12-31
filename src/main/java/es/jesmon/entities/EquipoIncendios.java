@@ -1,12 +1,16 @@
 package es.jesmon.entities;
 // Generated 21-may-2018 20:52:25 by Hibernate Tools 5.2.6.Final
 
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,27 +31,36 @@ import org.hibernate.annotations.DynamicUpdate;
 
 public class EquipoIncendios implements java.io.Serializable {
 
+	private static List<String> listaElementos = new ArrayList<String>(); 
+	
 	private static final long serialVersionUID = -121490754592431657L;
 	private Integer idEquipo;
-	private ContratoIncencidios contratoIncencidios;
+	private ContratoIncendios contratoIncendios;
 	private Integer unidades;
 	private String elemento;
 	private Double peso;
 	private String ubicacion;
-	private Date fechaFabricacion;
-	private Date fechaRetimbrado;
+	private Integer fechaFabricacion;
+	private Integer fechaRetimbrado;
 	private String numeroSerie;
+	
+	static {
+		listaElementos.add("BIE");
+		listaElementos.add("Espumógeno");
+		listaElementos.add("Extintor ABC");
+		listaElementos.add("Extintor CO2");
+	}
 
 	public EquipoIncendios() {
 	}
 
-	public EquipoIncendios(ContratoIncencidios contratoIncencidios) {
-		this.contratoIncencidios = contratoIncencidios;
+	public EquipoIncendios(ContratoIncendios contratoIncendios) {
+		this.contratoIncendios = contratoIncendios;
 	}
 
-	public EquipoIncendios(ContratoIncencidios contratoIncencidios, Integer unidades, String elemento, Double peso,
-			String ubicacion, Date fechaFabricacion, Date fechaRetimbrado, String numeroSerie) {
-		this.contratoIncencidios = contratoIncencidios;
+	public EquipoIncendios(ContratoIncendios contratoIncendios, Integer unidades, String elemento, Double peso,
+			String ubicacion, Integer fechaFabricacion, Integer fechaRetimbrado, String numeroSerie) {
+		this.contratoIncendios = contratoIncendios;
 		this.unidades = unidades;
 		this.elemento = elemento;
 		this.peso = peso;
@@ -71,12 +84,12 @@ public class EquipoIncendios implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_contrato", nullable = false)
-	public ContratoIncencidios getContratoIncencidios() {
-		return this.contratoIncencidios;
+	public ContratoIncendios getContratoIncendios() {
+		return this.contratoIncendios;
 	}
 
-	public void setContratoIncencidios(ContratoIncencidios contratoIncencidios) {
-		this.contratoIncencidios = contratoIncencidios;
+	public void setContratoIncendios(ContratoIncendios contratoIncendios) {
+		this.contratoIncendios = contratoIncendios;
 	}
 
 	@Column(name = "unidades")
@@ -115,23 +128,21 @@ public class EquipoIncendios implements java.io.Serializable {
 		this.ubicacion = ubicacion;
 	}
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "fecha_fabricacion", length = 10)
-	public Date getFechaFabricacion() {
+	@Column(name = "fecha_fabricacion")
+	public Integer getFechaFabricacion() {
 		return this.fechaFabricacion;
 	}
 
-	public void setFechaFabricacion(Date fechaFabricacion) {
+	public void setFechaFabricacion(Integer fechaFabricacion) {
 		this.fechaFabricacion = fechaFabricacion;
 	}
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "fecha_retimbrado", length = 10)
-	public Date getFechaRetimbrado() {
+	@Column(name = "fecha_retimbrado")
+	public Integer getFechaRetimbrado() {
 		return this.fechaRetimbrado;
 	}
 
-	public void setFechaRetimbrado(Date fechaRetimbrado) {
+	public void setFechaRetimbrado(Integer fechaRetimbrado) {
 		this.fechaRetimbrado = fechaRetimbrado;
 	}
 
@@ -142,6 +153,14 @@ public class EquipoIncendios implements java.io.Serializable {
 
 	public void setNumeroSerie(String numeroSerie) {
 		this.numeroSerie = numeroSerie;
+	}
+
+	public static List<String> getListaElementos() {
+		return listaElementos;
+	}
+
+	public static void setListaElementos(List<String> listaElementos) {
+		EquipoIncendios.listaElementos = listaElementos;
 	}
 
 }

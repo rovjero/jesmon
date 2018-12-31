@@ -1,6 +1,7 @@
 package es.jesmon.services.pdf.impl;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import com.itextpdf.text.pdf.PdfStamper;
 import es.jesmon.repository.util.ParBean;
 import es.jesmon.services.exception.ServicesExpception;
 import es.jesmon.services.pdf.PdfService;
+import es.jesmon.util.UtilJesmon;
 
 @Service
 public class PdfServiceImpl implements PdfService {
@@ -30,6 +32,7 @@ public class PdfServiceImpl implements PdfService {
 			AcroFields form = stamp.getAcroFields();
 			for(ParBean valor : listaValores)
 				form.setField(valor.getNombre(), valor.getValor());
+				
 			stamp.setFullCompression();
 			stamp.close();
 			fout.close();
@@ -41,6 +44,22 @@ public class PdfServiceImpl implements PdfService {
 			e.printStackTrace();
 			throw new ServicesExpception(e);
 		}		
+	}
+	
+	public static void main(String[] args) {
+		try {
+			PdfServiceImpl pdfServiceImpl = new PdfServiceImpl();
+			byte[] plantilla = UtilJesmon.leerBytesFichero("D:/usuarios/java/proyectos/Tasas/plantillas/Formulario_790052/Transformacion_PDF/original_v4.pdf");
+			List<ParBean> listaValores = new ArrayList<ParBean>();
+			listaValores.add(new ParBean("Numero_Justificante", "79005211111111"));
+			byte[] pdf = pdfServiceImpl.generarPDF(plantilla, listaValores);
+			UtilJesmon.grabarFichero("D:/contrato_jesmon2.pdf", pdf);
+			
+		}
+		catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			e.printStackTrace();
+		}
 	}
 
 }

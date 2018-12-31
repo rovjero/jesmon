@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
@@ -58,6 +60,8 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
                 .logout()
 					.permitAll()
 					.and()
+				    .rememberMe().rememberMeParameter("remember-me").tokenRepository(tokenRepository())
+				.and()
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler);
     }
     
@@ -100,4 +104,11 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     	return new AfterLoginFilter();
     }
     */
+    
+    @Bean
+    public PersistentTokenRepository tokenRepository() {
+      JdbcTokenRepositoryImpl jdbcTokenRepositoryImpl = new JdbcTokenRepositoryImpl();
+      jdbcTokenRepositoryImpl.setDataSource(dataSource());
+      return jdbcTokenRepositoryImpl;
+    }
 }

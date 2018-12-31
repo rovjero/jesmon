@@ -297,3 +297,67 @@ function validarEmail(valor) {
 	else
 		return false;
 }
+
+
+function redondeo2decimales(numero) {
+	if(numero == null || numero == 0)
+		return "0,00";
+
+	numero += 0.0000000000003;
+	return +(Math.round(numero + "e+2") + "e-2");
+}
+
+
+function floatToString(numero) {
+	if(numero == null || numero == undefined || numero == 0)
+		return "0,00";
+	
+	numero = numero + "";
+	numero = numero.replace(".", ",");
+	
+	if(numero.indexOf(",") == -1)
+		numero += ",00"; 
+	else if(numero.endsWith(",0"))
+		numero += "0";
+	return numero;
+}
+
+function toFloat(numero){
+	if(numero == null || numero == undefined || numero == "")
+		return 0;
+	return parseFloat(numero.replace(',','.'));
+}
+
+
+function FnAddElementosIncendio(){
+	var numElementosIncendioAnt = numElementosIncendio;
+	numElementosIncendio ++;
+	if(numElementosIncendio == 1)
+		$('#filaElementoIncendio_1').show();
+	else {
+		var html = $('#filaElementoIncendio_1').html();
+		html = "<tr id='filaElementoIncendio_" + numElementosIncendio + "'>" + html + "</tr>";
+			//"<td><a id='enlaceEliminarElemento_" + numElementosIncendio + "' href='#' onclick='FnEliminarElemento()' ><img src='../img/icon_eliminar.gif' alt='Eliminar elemento' title='Eliminar elemento'></a></td>" +
+			//"</tr>";
+		html = html.replace (/_1/g , '_' + numElementosIncendio);
+		$('#filaElementoIncendio_' + numElementosIncendioAnt).after(html);
+	}
+	$('#enlaceEliminarElemento_' + numElementosIncendioAnt).hide();
+	$("#filaElementoIncendio_" + numElementosIncendio + " :text").val("");
+	$("#filaElementoIncendio_" + numElementosIncendio + " select").val("");
+	$("#unidades_" + numElementosIncendio)[0].focus();
+	$("#numElementosIncendio").val(numElementosIncendio);
+}
+
+
+function FnEliminarElemento(){
+	var numElementosIncendioAnt = numElementosIncendio;
+	numElementosIncendio --;
+	if(numElementosIncendio == 0)
+		$('#filaElementoIncendio_1').hide();
+	else {
+		$('#filaElementoIncendio_' + numElementosIncendioAnt).remove();
+		$('#enlaceEliminarElemento_' + numElementosIncendio).show();
+	}
+	$("#numElementosIncendio").val(numElementosIncendio);
+}

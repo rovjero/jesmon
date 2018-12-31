@@ -80,9 +80,10 @@ public class EmpresaController extends JesmonController {
 	public MailSender mailSender;
 	
 	@GetMapping("/admin/empresas")
-    public String getEmpresas(HttpServletRequest request) {
+    public String getEmpresas(HttpServletRequest request, Model model, @RequestParam(value = "idEmpresa", required = false) Integer idEmpresa) {
 		try {
-			//model.addAttribute("incidenciaForm", new IncidenciaForm());
+			if(idEmpresa != null)
+				return postEmpresa(request, model, idEmpresa);
 	    	return procesarViewResolver("empresas", request);
 	    }
 		catch (Exception e) {
@@ -95,21 +96,18 @@ public class EmpresaController extends JesmonController {
 	
 	@PostMapping("/admin/empresas")
 	public String postEmpresa(HttpServletRequest request, Model model,
-		@RequestParam(value = "idEmpresa", required = true) String idEmpresaStr) {
+		@RequestParam(value = "idEmpresa", required = true) Integer idEmpresa) {
 		try {
-			if(StringUtils.isNotBlank(idEmpresaStr)) {
-				Integer idEmpresa = new Integer(idEmpresaStr);
-				CriteriosBusqueda criteriosBusqueda = new CriteriosBusqueda();
-				criteriosBusqueda.addCriterio("idEmpresa", idEmpresa);
-				criteriosBusqueda.addCriterio("sedes", "sedes", AliasBean.LEFT_JOIN);
-				criteriosBusqueda.addCriterio("responsables", "responsables", AliasBean.LEFT_JOIN);
-				criteriosBusqueda.addCriterio("contratosSistemaSeguridad", "contratosSistemaSeguridad", AliasBean.LEFT_JOIN);
-				criteriosBusqueda.addCriterio("contratosIncencidios", "contratosIncencidios", AliasBean.LEFT_JOIN);
-				
-				Empresa empresa = (Empresa)jesmonService.buscarByPK(Empresa.class, "idEmpresa", idEmpresa, criteriosBusqueda);
-				model.addAttribute("listaProvincias", provinciaService.getListaProvincias());
-				model.addAttribute("empresa", empresa);
-			}
+			CriteriosBusqueda criteriosBusqueda = new CriteriosBusqueda();
+			criteriosBusqueda.addCriterio("idEmpresa", idEmpresa);
+			criteriosBusqueda.addCriterio("sedes", "sedes", AliasBean.LEFT_JOIN);
+			criteriosBusqueda.addCriterio("responsables", "responsables", AliasBean.LEFT_JOIN);
+			criteriosBusqueda.addCriterio("contratosSistemaSeguridad", "contratosSistemaSeguridad", AliasBean.LEFT_JOIN);
+			criteriosBusqueda.addCriterio("contratosIncencidios", "contratosIncencidios", AliasBean.LEFT_JOIN);
+			
+			Empresa empresa = (Empresa)jesmonService.buscarByPK(Empresa.class, "idEmpresa", idEmpresa, criteriosBusqueda);
+			model.addAttribute("listaProvincias", provinciaService.getListaProvincias());
+			model.addAttribute("empresa", empresa);
 	    	return procesarViewResolver("empresas", request);
 	    }
 		catch (Exception e) {
@@ -122,9 +120,8 @@ public class EmpresaController extends JesmonController {
 	
 	@PostMapping("/admin/modificarSedesResponsables")
 	public String postModificarSedesResponsable(HttpServletRequest request, Model model,
-			@RequestParam(value = "idEmpresa", required = true) String idEmpresaStr) {
+			@RequestParam(value = "idEmpresa", required = true) Integer idEmpresa) {
 		try {
-			Integer idEmpresa = new Integer(idEmpresaStr);
 			CriteriosBusqueda criteriosBusqueda = new CriteriosBusqueda();
 			criteriosBusqueda.addCriterio("empresa", new Empresa(idEmpresa));
 			List<Responsable> listaResponsables = (List<Responsable>)(List)jesmonService.getLista(criteriosBusqueda, null, Responsable.class);
@@ -139,7 +136,7 @@ public class EmpresaController extends JesmonController {
 			jesmonService.modificarLista((List)listaResponsables);
 			request.setAttribute("mensaje", "Sedes asignadas a los usurarios de forma correcta");
 				
-	    	return postEmpresa(request, model, idEmpresaStr);
+	    	return postEmpresa(request, model, idEmpresa);
 	    }
 		catch (Exception e) {
 			e.printStackTrace();
@@ -160,7 +157,7 @@ public class EmpresaController extends JesmonController {
 			jesmonService.insertar(empresa);
 			empresaServices.setEmpresasUsuario(getUsuarioSesion(request));
 			request.setAttribute("mensaje", "Empresa insertada de forma correcta");
-	    	return postEmpresa(request, model, empresa.getIdEmpresa().toString());
+	    	return postEmpresa(request, model, empresa.getIdEmpresa());
 	    }
 		catch (Exception e) {
 			e.printStackTrace();
@@ -182,7 +179,7 @@ public class EmpresaController extends JesmonController {
 			jesmonService.modificar(empresa);
 			empresaServices.setEmpresasUsuario(getUsuarioSesion(request));
 			request.setAttribute("mensaje", "Empresa modificada de forma correcta");
-	    	return postEmpresa(request, model, empresa.getIdEmpresa().toString());
+	    	return postEmpresa(request, model, empresa.getIdEmpresa());
 	    }
 		catch (Exception e) {
 			e.printStackTrace();
@@ -212,7 +209,7 @@ public class EmpresaController extends JesmonController {
 			jesmonService.insertar(sede);
 			empresaServices.setEmpresasUsuario(getUsuarioSesion(request));
 			request.setAttribute("mensaje", "Sede insertada de forma correcta");
-	    	return postEmpresa(request, model, sedeForm.getIdEmpresa().toString());
+	    	return postEmpresa(request, model, sedeForm.getIdEmpresa());
 	    }
 		catch (Exception e) {
 			e.printStackTrace();
@@ -242,7 +239,7 @@ public class EmpresaController extends JesmonController {
 			jesmonService.modificar(sede);
 			empresaServices.setEmpresasUsuario(getUsuarioSesion(request));
 			request.setAttribute("mensaje", "Sede modificada de forma correcta");
-	    	return postEmpresa(request, model, sedeForm.getIdEmpresa().toString());
+	    	return postEmpresa(request, model, sedeForm.getIdEmpresa());
 	    }
 		catch (Exception e) {
 			e.printStackTrace();
@@ -270,7 +267,7 @@ public class EmpresaController extends JesmonController {
 			responsable.setPassword(passwordEncoder.encode(responsableForm.getPassword()).getBytes(StandardCharsets.UTF_8));
 			jesmonService.insertar(responsable);
 			request.setAttribute("mensaje", "Usuario insertado de forma correcta");
-	    	return postEmpresa(request, model, responsableForm.getIdEmpresa().toString());
+	    	return postEmpresa(request, model, responsableForm.getIdEmpresa());
 	    }
 		catch (Exception e) {
 			e.printStackTrace();
@@ -298,7 +295,7 @@ public class EmpresaController extends JesmonController {
 			}
 			jesmonService.modificar(responsable);
 			request.setAttribute("mensaje", "Usuario modificado de forma correcta");
-	    	return postEmpresa(request, model, responsableForm.getIdEmpresa().toString());
+	    	return postEmpresa(request, model, responsableForm.getIdEmpresa());
 	    }
 		catch (Exception e) {
 			e.printStackTrace();
@@ -319,7 +316,7 @@ public class EmpresaController extends JesmonController {
 				empresa.setSede(new Sede(idSedeCentral));
 			jesmonService.modificar(empresa);
 			request.setAttribute("mensaje", "Sede central asignada de forma correcta");
-	    	return postEmpresa(request, model, idEmpresa.toString());
+	    	return postEmpresa(request, model, idEmpresa);
 	    }
 		catch (Exception e) {
 			e.printStackTrace();
@@ -340,7 +337,7 @@ public class EmpresaController extends JesmonController {
 				empresa.setResponsable(new Responsable(idRepresentante));
 			jesmonService.modificar(empresa);
 			request.setAttribute("mensaje", "Representante de la empresa " + empresa.getDenominacion() + " modificada de forma correcta");
-	    	return postEmpresa(request, model, idEmpresa.toString());
+	    	return postEmpresa(request, model, idEmpresa);
 	    }
 		catch (Exception e) {
 			e.printStackTrace();
@@ -363,7 +360,7 @@ public class EmpresaController extends JesmonController {
 			}
 			jesmonService.modificarLista((List)listaResponsables);
 			request.setAttribute("mensaje", "Usuarios modificados de forma correcta");
-	    	return postEmpresa(request, model, idEmpresa.toString());
+	    	return postEmpresa(request, model, idEmpresa);
 	    }
 		catch (Exception e) {
 			e.printStackTrace();
